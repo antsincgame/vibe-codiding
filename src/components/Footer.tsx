@@ -81,7 +81,20 @@ export default function Footer() {
                 {settings.phone || '+375 (29) 282-88-78'}
               </a>
             </div>
-            <div>{settings.email || 'info@vibe-codiding.by'}</div>
+            <div>
+              📧 <a
+                href="mailto:info@vibe-codiding.by"
+                style={{
+                  color: 'inherit',
+                  textDecoration: 'none',
+                  transition: 'color 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--neon-green)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
+              >
+                {settings.email || 'info@vibe-codiding.by'}
+              </a>
+            </div>
             <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
               <a
                 href="https://wa.me/375292828878"

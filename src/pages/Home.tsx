@@ -39,8 +39,8 @@ export default function Home() {
             fontSize: 'clamp(40px, 8vw, 80px)',
             marginBottom: '20px',
             lineHeight: '1.2'
-          }} className="glitch" data-text="VIBECODIDING">
-            <span className="neon-text">VIBECODIDING</span>
+          }} className="glitch" data-text="VIBE-CODIDING">
+            <span className="neon-text">VIBE-CODIDING</span>
           </h1>
 
           <h2 style={{
@@ -57,7 +57,7 @@ export default function Home() {
             textShadow: '0 0 20px rgba(0, 255, 249, 0.5)',
             lineHeight: '1.4'
           }}>
-            VibeCoding - первая в гродно школа вайб кодинга
+            vibe-codiding - первая в гродно школа вайб кодинга
           </h2>
 
           <p style={{
@@ -66,7 +66,7 @@ export default function Home() {
             opacity: 0.9,
             lineHeight: '1.8'
           }}>
-            Забудьте о сложных языках программирования! В VibeCoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб кодинг.
+            Забудьте о сложных языках программирования! В vibe-codiding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб кодинг.
           </p>
         </div>
         
@@ -182,25 +182,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="cyber-card" style={{ marginTop: '80px', marginBottom: '60px', textAlign: 'center' }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 5vw, 48px)',
-            marginBottom: '30px',
-            color: 'var(--neon-cyan)'
-          }}>
-            VibeCoding — это революционный подход к обучению программированию
-          </h2>
-          <p style={{
-            fontSize: '20px',
-            lineHeight: '1.8',
-            opacity: 0.9,
-            marginBottom: '20px'
-          }}>
-            где не нужно учить сложные языки кода. Мы первая школа в Гродно, где дети и взрослые создают настоящие программы, просто описывая свои идеи на обычном языке.
-          </p>
-        </div>
-
-        <div className="cyber-card" style={{ marginBottom: '60px' }}>
+<div className="cyber-card" style={{ marginBottom: '60px' }}>
           <h2 style={{
             fontSize: 'clamp(32px, 5vw, 48px)',
             marginBottom: '30px',
