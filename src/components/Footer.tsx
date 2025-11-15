@@ -81,7 +81,51 @@ export default function Footer() {
                 {settings.phone || '+375 (29) 282-88-78'}
               </a>
             </div>
-            <div>✉️ {settings.email || 'info@vibe-codiding.by'}</div>
+            <div>{settings.email || 'info@vibe-codiding.by'}</div>
+            <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+              <a
+                href="https://wa.me/375292828878"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: '28px',
+                  textDecoration: 'none',
+                  transition: 'transform 0.3s, opacity 0.3s',
+                  opacity: 0.8
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.2)';
+                  e.currentTarget.style.opacity = '1';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.opacity = '0.8';
+                }}
+              >
+                💬
+              </a>
+              <a
+                href="https://t.me/vibecodiding"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: '28px',
+                  textDecoration: 'none',
+                  transition: 'transform 0.3s, opacity 0.3s',
+                  opacity: 0.8
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.2)';
+                  e.currentTarget.style.opacity = '1';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.opacity = '0.8';
+                }}
+              >
+                ✈️
+              </a>
+            </div>
           </div>
         </div>
         

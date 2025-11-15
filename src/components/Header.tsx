@@ -49,15 +49,6 @@ export default function Header() {
           }}>
             Главная
           </Link>
-          <Link to="/courses" style={{
-            fontFamily: 'Rajdhani, sans-serif',
-            fontSize: '18px',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '1px'
-          }}>
-            Курсы
-          </Link>
           <Link to="/about" style={{
             fontFamily: 'Rajdhani, sans-serif',
             fontSize: '18px',

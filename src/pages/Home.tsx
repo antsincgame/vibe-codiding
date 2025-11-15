@@ -172,9 +172,9 @@ export default function Home() {
               }}>
                 {course.price}
               </div>
-              <Link to="/trial" style={{ width: '100%', display: 'block' }}>
+              <Link to={`/course/${course.slug}`} style={{ width: '100%', display: 'block' }}>
                 <button className="cyber-button" style={{ width: '100%' }}>
-                  Записаться
+                  Читать о курсе
                 </button>
               </Link>
             </div>

@@ -9,6 +9,7 @@ export interface Course {
   features: string[];
   is_active: boolean;
   order_index: number;
+  slug?: string;
   created_at: string;
   updated_at: string;
 }
