@@ -1,0 +1,64 @@
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  age_group: string;
+  price: string;
+  image_url: string;
+  features: string[];
+  is_active: boolean;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TrialRegistration {
+  id?: string;
+  age_group: 'child' | 'adult';
+  parent_name: string;
+  child_name: string | null;
+  child_age: number | null;
+  phone: string;
+  email: string;
+  course_id?: string;
+  message?: string;
+  status?: string;
+  created_at?: string;
+}
+
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+  order_index: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SiteSetting {
+  id: string;
+  key: string;
+  value: string;
+  description: string;
+  updated_at: string;
+}
+
+export interface EmailSettings {
+  id?: string;
+  smtp_host: string;
+  smtp_port: number;
+  smtp_user: string;
+  smtp_password: string;
+  from_email: string;
+  from_name: string;
+  notification_email: string;
+  auto_reply_enabled: boolean;
+  auto_reply_subject: string;
+  auto_reply_body: string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
