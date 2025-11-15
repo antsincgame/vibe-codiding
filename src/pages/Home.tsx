@@ -57,7 +57,7 @@ export default function Home() {
             textShadow: '0 0 20px rgba(0, 255, 249, 0.5)',
             lineHeight: '1.4'
           }}>
-            VibeCodiing - первая в гродно школа вайб кодинга
+            VibeCoding - первая в гродно школа вайб кодинга
           </h2>
 
           <p style={{
@@ -66,7 +66,7 @@ export default function Home() {
             opacity: 0.9,
             lineHeight: '1.8'
           }}>
-            Забудьте о сложных языках программирования! В VibeCodiing мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб кодинг.
+            Забудьте о сложных языках программирования! В VibeCoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб кодинг.
           </p>
         </div>
         
@@ -85,7 +85,7 @@ export default function Home() {
       </section>
 
       <section style={{
-        padding: '80px 20px',
+        padding: '40px 20px 80px',
         maxWidth: '1200px',
         margin: '0 auto'
       }}>
@@ -93,7 +93,16 @@ export default function Home() {
           fontSize: 'clamp(32px, 5vw, 48px)',
           textAlign: 'center',
           marginBottom: '20px',
-          color: 'var(--neon-pink)'
+          fontFamily: 'Orbitron, sans-serif',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          letterSpacing: '2px',
+          background: 'linear-gradient(90deg, var(--neon-pink), var(--neon-cyan))',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          textShadow: '0 0 30px rgba(255, 0, 255, 0.6)',
+          filter: 'drop-shadow(0 0 10px rgba(0, 255, 249, 0.5))'
         }}>
           Выбери свой курс
         </h2>
@@ -179,7 +188,7 @@ export default function Home() {
             marginBottom: '30px',
             color: 'var(--neon-cyan)'
           }}>
-            VibeCodiding — это революционный подход к обучению программированию
+            VibeCoding — это революционный подход к обучению программированию
           </h2>
           <p style={{
             fontSize: '20px',
