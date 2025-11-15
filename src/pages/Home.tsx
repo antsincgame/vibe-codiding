@@ -39,34 +39,19 @@ export default function Home() {
             fontSize: 'clamp(40px, 8vw, 80px)',
             marginBottom: '30px',
             lineHeight: '1.2'
-          }} className="glitch" data-text="VIBE CODING SCHOOL">
-            <span className="neon-text">VIBE CODING</span><br />
-            <span style={{ color: 'var(--neon-pink)' }}>SCHOOL</span>
+          }} className="glitch" data-text="VIBECODIDING">
+            <span className="neon-text">VIBECODIDING</span><br />
+            <span style={{ color: 'var(--neon-pink)' }}>ПЕРВАЯ ШКОЛА ВАЙБ-КОДИНГА В ГРОДНО</span>
           </h1>
-          
+
           <p style={{
             fontSize: 'clamp(18px, 3vw, 24px)',
             marginBottom: '40px',
             opacity: 0.9,
             lineHeight: '1.8'
           }}>
-            Школа программирования для детей и взрослых в Гродно
-            <br />
-            Погрузись в мир веб-разработки!
+            Забудьте о сложных языках программирования! В VibeCodiing мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб кодинг.
           </p>
-          
-          <div style={{
-            display: 'flex',
-            gap: '20px',
-            justifyContent: 'center',
-            flexWrap: 'wrap'
-          }}>
-            <Link to="/trial">
-              <button className="cyber-button" style={{ fontSize: '18px' }}>
-                Записаться на пробный урок
-              </button>
-            </Link>
-          </div>
         </div>
         
         <div style={{
@@ -88,6 +73,50 @@ export default function Home() {
         maxWidth: '1200px',
         margin: '0 auto'
       }}>
+        <div className="cyber-card" style={{ marginBottom: '60px', textAlign: 'center' }}>
+          <h2 style={{
+            fontSize: 'clamp(32px, 5vw, 48px)',
+            marginBottom: '30px',
+            color: 'var(--neon-cyan)'
+          }}>
+            VibeCodiding — это революционный подход к обучению программированию
+          </h2>
+          <p style={{
+            fontSize: '20px',
+            lineHeight: '1.8',
+            opacity: 0.9,
+            marginBottom: '20px'
+          }}>
+            где не нужно учить сложные языки кода. Мы первая школа в Гродно, где дети и взрослые создают настоящие программы, просто описывая свои идеи на обычном языке.
+          </p>
+        </div>
+
+        <div className="cyber-card" style={{ marginBottom: '60px' }}>
+          <h2 style={{
+            fontSize: 'clamp(32px, 5vw, 48px)',
+            marginBottom: '30px',
+            color: 'var(--neon-pink)',
+            textAlign: 'center'
+          }}>
+            Что такое вайб-кодинг?
+          </h2>
+          <p style={{
+            fontSize: '18px',
+            lineHeight: '1.8',
+            opacity: 0.9,
+            marginBottom: '20px'
+          }}>
+            Вайб-кодинг (vibe coding) — это современный метод разработки программ с помощью искусственного интеллекта, который был представлен в 2025 году исследователем AI Андреем Карпати из OpenAI. Вместо написания кода строка за строкой, вы просто общаетесь с AI-помощником на обычном языке, описывая что хотите создать, а искусственный интеллект превращает ваши идеи в работающие приложения.
+          </p>
+          <p style={{
+            fontSize: '18px',
+            lineHeight: '1.8',
+            opacity: 0.9
+          }}>
+            Это означает, что программирование теперь доступно каждому — независимо от возраста, образования или предыдущего опыта.
+          </p>
+        </div>
+
         <h2 style={{
           fontSize: 'clamp(32px, 5vw, 48px)',
           textAlign: 'center',

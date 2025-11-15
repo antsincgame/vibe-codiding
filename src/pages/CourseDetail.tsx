@@ -219,7 +219,7 @@ export default function CourseDetail() {
                 marginBottom: '20px',
                 color: 'var(--neon-pink)'
               }}>
-                Готовы начать обучение?
+                Заинтересовались курсом?
               </h3>
               <p style={{
                 fontSize: '18px',
@@ -227,17 +227,33 @@ export default function CourseDetail() {
                 marginBottom: '30px',
                 lineHeight: '1.7'
               }}>
-                Запишитесь на бесплатное пробное занятие и познакомьтесь с нашей методикой обучения!
-                Вы сможете задать все вопросы преподавателю и понять, подходит ли вам этот курс.
+                Свяжитесь с нами, чтобы узнать больше о курсе и получить ответы на все ваши вопросы!
               </p>
-              <Link to="/trial">
-                <button className="cyber-button" style={{
-                  fontSize: '20px',
-                  padding: '15px 50px'
-                }}>
-                  Записаться на пробный урок
-                </button>
-              </Link>
+              <div style={{
+                display: 'flex',
+                gap: '20px',
+                justifyContent: 'center',
+                flexWrap: 'wrap'
+              }}>
+                <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer">
+                  <button className="cyber-button" style={{
+                    fontSize: '18px',
+                    padding: '15px 35px'
+                  }}>
+                    WhatsApp
+                  </button>
+                </a>
+                <a href="https://t.me/vibecodiding" target="_blank" rel="noopener noreferrer">
+                  <button className="cyber-button" style={{
+                    fontSize: '18px',
+                    padding: '15px 35px',
+                    borderColor: 'var(--neon-cyan)',
+                    color: 'var(--neon-cyan)'
+                  }}>
+                    Telegram
+                  </button>
+                </a>
+              </div>
             </div>
           </section>
 
