@@ -66,15 +66,6 @@ export default function Home() {
                 Записаться на пробный урок
               </button>
             </Link>
-            <Link to="/courses">
-              <button className="cyber-button" style={{
-                fontSize: '18px',
-                borderColor: 'var(--neon-pink)',
-                color: 'var(--neon-pink)'
-              }}>
-                Смотреть курсы
-              </button>
-            </Link>
           </div>
         </div>
         
@@ -182,41 +173,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section style={{
-        padding: '80px 20px',
-        background: 'rgba(19, 19, 26, 0.5)'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          textAlign: 'center'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 5vw, 48px)',
-            marginBottom: '30px',
-            color: 'var(--neon-green)'
-          }}>
-            ГОТОВ НАЧАТЬ?
-          </h2>
-          <p style={{
-            fontSize: '20px',
-            opacity: 0.8,
-            marginBottom: '40px',
-            maxWidth: '700px',
-            margin: '0 auto 40px'
-          }}>
-            Запишись на бесплатное пробное занятие и окунись в мир программирования!
-          </p>
-          <Link to="/trial">
-            <button className="cyber-button" style={{
-              fontSize: '20px',
-              padding: '15px 40px'
-            }}>
-              Записаться на пробный урок
-            </button>
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }
