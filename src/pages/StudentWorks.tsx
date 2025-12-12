@@ -3,27 +3,32 @@ import { supabase } from '../lib/supabase';
 import type { StudentWork } from '../types';
 
 export default function StudentWorks() {
-  const [works, setWorks] = useState<StudentWork[]>([]);
-  const [filter, setFilter] = useState<'all' | 'bolt' | 'cursor'>('all');
+  const [websites, setWebsites] = useState<StudentWork[]>([]);
+  const [apps, setApps] = useState<StudentWork[]>([]);
 
   useEffect(() => {
+    document.title = 'Программирование в Гродно, работы учеников | Vibecoding';
     loadWorks();
   }, []);
 
   const loadWorks = async () => {
-    const { data } = await supabase
+    const { data: boltData } = await supabase
       .from('student_works')
       .select('*')
       .eq('is_active', true)
+      .eq('tool_type', 'bolt')
       .order('order_index', { ascending: true });
 
-    if (data) setWorks(data);
-  };
+    const { data: cursorData } = await supabase
+      .from('student_works')
+      .select('*')
+      .eq('is_active', true)
+      .eq('tool_type', 'cursor')
+      .order('order_index', { ascending: true });
 
-  const filteredWorks = works.filter((work) => {
-    if (filter === 'all') return true;
-    return work.tool_type === filter;
-  });
+    if (boltData) setWebsites(boltData);
+    if (cursorData) setApps(cursorData);
+  };
 
   const WorkCard = ({ work }: { work: StudentWork }) => (
     <div className="cyber-card" style={{
@@ -82,7 +87,7 @@ export default function StudentWorks() {
         {work.project_description}
       </p>
 
-      {work.project_url && (
+      {work.project_url ? (
         <a
           href={work.project_url}
           target="_blank"
@@ -98,6 +103,21 @@ export default function StudentWorks() {
         >
           Перейти на сайт
         </a>
+      ) : (
+        <div
+          style={{
+            display: 'block',
+            textAlign: 'center',
+            fontSize: '14px',
+            padding: '12px 24px',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '4px',
+            color: 'rgba(255, 255, 255, 0.4)',
+            cursor: 'default'
+          }}
+        >
+          Ссылка скоро появится
+        </div>
       )}
     </div>
   );
@@ -124,7 +144,7 @@ export default function StudentWorks() {
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text'
         }}>
-          Примеры работ наших учеников
+          Работы учеников
         </h1>
         <p style={{
           textAlign: 'center',
@@ -140,65 +160,86 @@ export default function StudentWorks() {
         </p>
 
         <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '15px',
-          marginBottom: '50px',
-          flexWrap: 'wrap'
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '40px'
         }}>
-          <button
-            onClick={() => setFilter('all')}
-            className="cyber-button"
-            style={{
-              opacity: filter === 'all' ? 1 : 0.5,
-              padding: '12px 30px'
-            }}
-          >
-            Все работы
-          </button>
-          <button
-            onClick={() => setFilter('bolt')}
-            className="cyber-button"
-            style={{
-              opacity: filter === 'bolt' ? 1 : 0.5,
-              borderColor: 'var(--neon-cyan)',
+          <div>
+            <h2 style={{
+              fontSize: '28px',
+              marginBottom: '30px',
               color: 'var(--neon-cyan)',
-              padding: '12px 30px'
-            }}
-          >
-            Bolt.new
-          </button>
-          <button
-            onClick={() => setFilter('cursor')}
-            className="cyber-button"
-            style={{
-              opacity: filter === 'cursor' ? 1 : 0.5,
-              borderColor: 'var(--neon-pink)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px'
+            }}>
+              <span style={{
+                background: 'var(--neon-cyan)',
+                color: 'var(--bg-dark)',
+                padding: '6px 16px',
+                borderRadius: '4px',
+                fontSize: '14px',
+                fontWeight: 700
+              }}>
+                BOLT.NEW
+              </span>
+              Сайты
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+              {websites.length > 0 ? (
+                websites.map((work) => (
+                  <WorkCard key={work.id} work={work} />
+                ))
+              ) : (
+                <div className="cyber-card" style={{ textAlign: 'center', padding: '40px 20px' }}>
+                  <p style={{ opacity: 0.6 }}>Пока нет работ</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h2 style={{
+              fontSize: '28px',
+              marginBottom: '30px',
               color: 'var(--neon-pink)',
-              padding: '12px 30px'
-            }}
-          >
-            Cursor AI
-          </button>
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px'
+            }}>
+              <span style={{
+                background: 'var(--neon-pink)',
+                color: 'var(--bg-dark)',
+                padding: '6px 16px',
+                borderRadius: '4px',
+                fontSize: '14px',
+                fontWeight: 700
+              }}>
+                CURSOR AI
+              </span>
+              Приложения
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+              {apps.length > 0 ? (
+                apps.map((work) => (
+                  <WorkCard key={work.id} work={work} />
+                ))
+              ) : (
+                <div className="cyber-card" style={{ textAlign: 'center', padding: '40px 20px' }}>
+                  <p style={{ opacity: 0.6 }}>Пока нет работ</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        {filteredWorks.length === 0 ? (
-          <div className="cyber-card" style={{ textAlign: 'center', padding: '60px 20px' }}>
-            <p style={{ fontSize: '20px', opacity: 0.8 }}>
-              Пока нет работ для отображения
-            </p>
-          </div>
-        ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '30px'
-          }}>
-            {filteredWorks.map((work) => (
-              <WorkCard key={work.id} work={work} />
-            ))}
-          </div>
-        )}
+        <style>{`
+          @media (max-width: 768px) {
+            .works-grid {
+              grid-template-columns: 1fr !important;
+            }
+          }
+        `}</style>
       </div>
     </div>
   );

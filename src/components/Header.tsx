@@ -76,6 +76,15 @@ export default function Header() {
           }}>
             Вопросы
           </Link>
+          <Link to="/works" style={{
+            fontFamily: 'Rajdhani, sans-serif',
+            fontSize: '18px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
+          }}>
+            Работы
+          </Link>
           <Link to="/trial" style={{
             fontFamily: 'Rajdhani, sans-serif',
             fontSize: '18px',

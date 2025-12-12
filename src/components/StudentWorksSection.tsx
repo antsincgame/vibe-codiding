@@ -89,7 +89,7 @@ export default function StudentWorksSection() {
         {work.project_description}
       </p>
 
-      {work.project_url && (
+      {work.project_url ? (
         <a
           href={work.project_url}
           target="_blank"
@@ -105,6 +105,21 @@ export default function StudentWorksSection() {
         >
           Перейти на сайт
         </a>
+      ) : (
+        <div
+          style={{
+            display: 'block',
+            textAlign: 'center',
+            fontSize: '14px',
+            padding: '10px 20px',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '4px',
+            color: 'rgba(255, 255, 255, 0.4)',
+            cursor: 'default'
+          }}
+        >
+          Ссылка скоро появится
+        </div>
       )}
     </div>
   );
@@ -132,7 +147,7 @@ export default function StudentWorksSection() {
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text'
       }}>
-        Примеры работ наших учеников
+        Работы учеников
       </h2>
       <p style={{
         textAlign: 'center',
@@ -145,75 +160,69 @@ export default function StudentWorksSection() {
         Посмотрите, что создают наши ученики уже после нескольких занятий. От простых сайтов до полноценных веб-приложений!
       </p>
 
-      {boltWorks.length > 0 && (
-        <div style={{ marginBottom: '60px' }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: '40px'
+      }}>
+        <div>
           <h3 style={{
-            fontSize: '28px',
-            marginBottom: '30px',
+            fontSize: '24px',
+            marginBottom: '25px',
             color: 'var(--neon-cyan)',
             display: 'flex',
             alignItems: 'center',
-            gap: '15px'
+            gap: '12px'
           }}>
             <span style={{
               background: 'var(--neon-cyan)',
               color: 'var(--bg-dark)',
-              padding: '6px 16px',
+              padding: '5px 14px',
               borderRadius: '4px',
-              fontSize: '14px',
+              fontSize: '12px',
               fontWeight: 700
             }}>
               BOLT.NEW
             </span>
-            Сайты и лендинги
+            Сайты
           </h3>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '30px'
-          }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
             {boltWorks.map((work) => (
               <WorkCard key={work.id} work={work} />
             ))}
           </div>
         </div>
-      )}
 
-      {cursorWorks.length > 0 && (
-        <div style={{ marginBottom: '40px' }}>
+        <div>
           <h3 style={{
-            fontSize: '28px',
-            marginBottom: '30px',
+            fontSize: '24px',
+            marginBottom: '25px',
             color: 'var(--neon-pink)',
             display: 'flex',
             alignItems: 'center',
-            gap: '15px'
+            gap: '12px'
           }}>
             <span style={{
               background: 'var(--neon-pink)',
               color: 'var(--bg-dark)',
-              padding: '6px 16px',
+              padding: '5px 14px',
               borderRadius: '4px',
-              fontSize: '14px',
+              fontSize: '12px',
               fontWeight: 700
             }}>
               CURSOR AI
             </span>
-            Веб-приложения
+            Приложения
           </h3>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '30px'
-          }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
             {cursorWorks.map((work) => (
               <WorkCard key={work.id} work={work} />
             ))}
           </div>
         </div>
-      )}
+      </div>
 
-      <div style={{ textAlign: 'center', marginTop: '40px' }}>
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <Link to="/works" style={{ textDecoration: 'none' }}>
           <button className="cyber-button" style={{
             fontSize: '18px',
@@ -223,6 +232,14 @@ export default function StudentWorksSection() {
           </button>
         </Link>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          section > div:nth-child(3) {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
