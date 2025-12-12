@@ -104,7 +104,7 @@ export default function About() {
               background: 'var(--dark-surface)'
             }}>
               <img
-                src="https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=800"
+                src="/founder.jpg"
                 alt="Дмитрий Орлов"
                 style={{
                   width: '100%',
