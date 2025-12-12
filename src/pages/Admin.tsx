@@ -761,12 +761,32 @@ function StudentWorkModal({
 
         <div style={{ marginBottom: '15px' }}>
           <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>URL проекта</label>
-          <input
-            type="url"
-            value={formData.project_url}
-            onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
-            placeholder="https://example.com"
-          />
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <input
+              type="url"
+              value={formData.project_url}
+              onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
+              placeholder="https://example.com"
+              style={{ flex: 1 }}
+            />
+            {formData.project_url && (
+              <a
+                href={formData.project_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cyber-button"
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '12px',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
+                }}
+              >
+                Открыть
+              </a>
+            )}
+          </div>
         </div>
 
         <div style={{ marginBottom: '15px' }}>

@@ -103,7 +103,7 @@ export default function StudentWorksSection() {
             padding: '10px 20px'
           }}
         >
-          Посмотреть проект
+          Перейти на сайт
         </a>
       )}
     </div>

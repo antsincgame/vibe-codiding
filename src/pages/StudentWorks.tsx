@@ -96,7 +96,7 @@ export default function StudentWorks() {
             padding: '12px 24px'
           }}
         >
-          Посмотреть проект
+          Перейти на сайт
         </a>
       )}
     </div>
