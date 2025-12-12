@@ -48,7 +48,7 @@ export default function Footer() {
             marginBottom: '20px',
             color: 'var(--neon-cyan)'
           }}>
-            {settings.school_name || 'Vibe Coding School'}
+            {settings.school_name || 'Vibecoding'}
           </h3>
           <p style={{ opacity: 0.8, lineHeight: '1.8' }}>
             {settings.about_text || 'Школа программирования для детей и взрослых, обучение веб разработки, веб приложений'}
@@ -83,7 +83,7 @@ export default function Footer() {
             </div>
             <div>
               📧 <a
-                href="mailto:info@vibe-codiding.by"
+                href="mailto:info@vibecoding.by"
                 style={{
                   color: 'inherit',
                   textDecoration: 'none',
@@ -92,7 +92,7 @@ export default function Footer() {
                 onMouseEnter={(e) => e.currentTarget.style.color = 'var(--neon-green)'}
                 onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
               >
-                {settings.email || 'info@vibe-codiding.by'}
+                {settings.email || 'info@vibecoding.by'}
               </a>
             </div>
             <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
@@ -118,7 +118,7 @@ export default function Footer() {
                 💬
               </a>
               <a
-                href="https://t.me/vibecodiding"
+                href="https://t.me/vibecoding"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -161,7 +161,7 @@ export default function Footer() {
           onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
           onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
         >
-          © 2025 Vibe Coding School. Все права защищены.
+          © 2025 Vibecoding. Все права защищены.
         </span>
       </div>
     </footer>

@@ -67,7 +67,7 @@ export default function FAQ() {
           opacity: 0.8,
           marginBottom: '60px'
         }}>
-          Ответы на самые популярные вопросы о школе вайб кодинга
+          Ответы на самые популярные вопросы о школе Vibecoding
         </p>
 
         {loading ? (
@@ -189,7 +189,7 @@ export default function FAQ() {
                 Написать в WhatsApp
               </button>
             </a>
-            <a href="mailto:info@vibe-codiding.by">
+            <a href="mailto:info@vibecoding.by">
               <button className="cyber-button" style={{
                 borderColor: 'var(--neon-green)',
                 color: 'var(--neon-green)'

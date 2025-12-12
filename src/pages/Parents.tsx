@@ -382,7 +382,7 @@ export default function Parents() {
                 WhatsApp
               </button>
             </a>
-            <a href="https://t.me/vibecodiding" target="_blank" rel="noopener noreferrer">
+            <a href="https://t.me/vibecoding" target="_blank" rel="noopener noreferrer">
               <button className="cyber-button" style={{
                 fontSize: '20px',
                 padding: '15px 40px',
@@ -392,7 +392,7 @@ export default function Parents() {
                 Telegram
               </button>
             </a>
-            <a href="mailto:info@vibe-codiding.by">
+            <a href="mailto:info@vibecoding.by">
               <button className="cyber-button" style={{
                 fontSize: '20px',
                 padding: '15px 40px',

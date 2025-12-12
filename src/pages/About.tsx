@@ -26,14 +26,14 @@ export default function About() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${settings.api_key}`,
             'HTTP-Referer': window.location.origin,
-            'X-Title': 'Vibe Coding School'
+            'X-Title': 'Vibecoding'
           },
           body: JSON.stringify({
             model: settings.model,
             messages: [
               {
                 role: 'user',
-                content: 'Создай короткую вдохновляющую цитату (2-3 предложения) о Vibe Coding - современном подходе к обучению программированию, где сочетается практический опыт, AI-инструменты и понятная подача материала. Цитата должна быть от лица преподавателя и мотивировать учеников. Только текст цитаты, без кавычек и атрибуции.'
+                content: 'Создай короткую вдохновляющую цитату (2-3 предложения) о Vibecoding - современном подходе к обучению программированию, где сочетается практический опыт, AI-инструменты и понятная подача материала. Цитата должна быть от лица преподавателя и мотивировать учеников. Только текст цитаты, без кавычек и атрибуции.'
               }
             ]
           })
@@ -434,7 +434,7 @@ export default function About() {
                   WhatsApp
                 </button>
               </a>
-              <a href="https://t.me/vibecodiding" target="_blank" rel="noopener noreferrer">
+              <a href="https://t.me/vibecoding" target="_blank" rel="noopener noreferrer">
                 <button className="cyber-button" style={{
                   fontSize: '18px',
                   padding: '15px 35px',

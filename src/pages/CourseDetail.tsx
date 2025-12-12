@@ -243,7 +243,7 @@ export default function CourseDetail() {
                     WhatsApp
                   </button>
                 </a>
-                <a href="https://t.me/vibecodiding" target="_blank" rel="noopener noreferrer">
+                <a href="https://t.me/vibecoding" target="_blank" rel="noopener noreferrer">
                   <button className="cyber-button" style={{
                     fontSize: '18px',
                     padding: '15px 35px',
@@ -288,7 +288,7 @@ export default function CourseDetail() {
                   WhatsApp
                 </button>
               </a>
-              <a href="https://t.me/vibecodiding" target="_blank" rel="noopener noreferrer">
+              <a href="https://t.me/vibecoding" target="_blank" rel="noopener noreferrer">
                 <button className="cyber-button" style={{
                   borderColor: 'var(--neon-cyan)',
                   color: 'var(--neon-cyan)'
@@ -296,7 +296,7 @@ export default function CourseDetail() {
                   Telegram
                 </button>
               </a>
-              <a href="mailto:info@vibe-codiding.by">
+              <a href="mailto:info@vibecoding.by">
                 <button className="cyber-button" style={{
                   borderColor: 'var(--neon-green)',
                   color: 'var(--neon-green)'

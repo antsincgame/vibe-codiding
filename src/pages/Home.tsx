@@ -39,8 +39,8 @@ export default function Home() {
             fontSize: 'clamp(40px, 8vw, 80px)',
             marginBottom: '20px',
             lineHeight: '1.2'
-          }} className="glitch" data-text="VIBE-CODIDING">
-            <span className="neon-text">VIBE-CODIDING</span>
+          }} className="glitch" data-text="VIBECODING">
+            <span className="neon-text">VIBECODING</span>
           </h1>
 
           <h2 style={{
@@ -57,7 +57,7 @@ export default function Home() {
             textShadow: '0 0 20px rgba(0, 255, 249, 0.5)',
             lineHeight: '1.4'
           }}>
-            vibe-codiding - первая в гродно школа вайб кодинга
+            Vibecoding - первая в Гродно школа вайб-кодинга
           </h2>
 
           <p style={{
@@ -66,7 +66,7 @@ export default function Home() {
             opacity: 0.9,
             lineHeight: '1.8'
           }}>
-            Забудьте о сложных языках программирования! В vibe-codiding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб кодинг.
+            Забудьте о сложных языках программирования! В Vibecoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб-кодинг.
           </p>
         </div>
         

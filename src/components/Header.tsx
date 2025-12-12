@@ -29,8 +29,8 @@ export default function Header() {
           fontWeight: 900,
           textDecoration: 'none'
         }}>
-          <span className="neon-text glitch" data-text="VIBECODIDING">
-            VIBECODIDING
+          <span className="neon-text glitch" data-text="VIBECODING">
+            VIBECODING
           </span>
         </Link>
         

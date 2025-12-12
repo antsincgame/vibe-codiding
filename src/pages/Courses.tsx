@@ -244,7 +244,7 @@ export default function Courses() {
                 WhatsApp
               </button>
             </a>
-            <a href="https://t.me/vibecodiding" target="_blank" rel="noopener noreferrer">
+            <a href="https://t.me/vibecoding" target="_blank" rel="noopener noreferrer">
               <button className="cyber-button" style={{
                 fontSize: '18px',
                 padding: '12px 30px',
@@ -254,7 +254,7 @@ export default function Courses() {
                 Telegram
               </button>
             </a>
-            <a href="mailto:info@vibe-codiding.by">
+            <a href="mailto:info@vibecoding.by">
               <button className="cyber-button" style={{
                 fontSize: '18px',
                 padding: '12px 30px',
