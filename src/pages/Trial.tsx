@@ -53,6 +53,7 @@ export default function Trial() {
     }
 
     await sendTrialRegistrationEmails({
+      age_group: formData.age_group,
       parent_name: formData.parent_name,
       child_name: formData.child_name || formData.parent_name,
       child_age: parseInt(formData.child_age) || 18,
