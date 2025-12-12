@@ -78,3 +78,19 @@ export interface StudentWork {
   created_at: string;
   updated_at: string;
 }
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  image_url: string;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  is_published: boolean;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+}

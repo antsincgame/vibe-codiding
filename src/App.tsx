@@ -11,6 +11,8 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import CourseDetail from './pages/CourseDetail';
 import StudentWorks from './pages/StudentWorks';
+import Blog from './pages/Blog';
+import BlogPostPage from './pages/BlogPostPage';
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/parents" element={<Parents />} />
                 <Route path="/works" element={<StudentWorks />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPostPage />} />
               </Routes>
               <Footer />
             </>

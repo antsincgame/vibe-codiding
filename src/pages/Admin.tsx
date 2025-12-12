@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import type { Course, FAQ, TrialRegistration, StudentWork } from '../types';
+import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost } from '../types';
 import EmailSettingsForm from '../components/EmailSettingsForm';
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'email' | 'works'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'email' | 'works' | 'blog'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [registrations, setRegistrations] = useState<TrialRegistration[]>([]);
   const [studentWorks, setStudentWorks] = useState<StudentWork[]>([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
 
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [editingFaq, setEditingFaq] = useState<FAQ | null>(null);
   const [editingWork, setEditingWork] = useState<StudentWork | null>(null);
+  const [editingBlogPost, setEditingBlogPost] = useState<BlogPost | null>(null);
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
@@ -54,6 +56,12 @@ export default function Admin() {
         .select('*')
         .order('order_index');
       if (data) setStudentWorks(data);
+    } else if (activeTab === 'blog') {
+      const { data } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (data) setBlogPosts(data);
     }
   };
 
@@ -103,6 +111,26 @@ export default function Admin() {
       await supabase.from('student_works').insert([workWithoutId]);
     }
     setEditingWork(null);
+    loadData();
+  };
+
+  const deleteBlogPost = async (id: string) => {
+    if (!confirm('Удалить статью?')) return;
+    await supabase.from('blog_posts').delete().eq('id', id);
+    loadData();
+  };
+
+  const saveBlogPost = async (post: Partial<BlogPost>) => {
+    if (post.id) {
+      await supabase.from('blog_posts').update({
+        ...post,
+        updated_at: new Date().toISOString()
+      }).eq('id', post.id);
+    } else {
+      const { id, ...postWithoutId } = post;
+      await supabase.from('blog_posts').insert([postWithoutId]);
+    }
+    setEditingBlogPost(null);
     loadData();
   };
 
@@ -194,6 +222,17 @@ export default function Admin() {
             }}
           >
             Работы учеников
+          </button>
+          <button
+            onClick={() => setActiveTab('blog')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'blog' ? 1 : 0.5,
+              borderColor: 'var(--neon-pink)',
+              color: 'var(--neon-pink)'
+            }}
+          >
+            Блог
           </button>
         </div>
 
@@ -470,6 +509,127 @@ export default function Admin() {
             </div>
           </div>
         )}
+
+        {activeTab === 'blog' && (
+          <div>
+            <button
+              onClick={() => setEditingBlogPost({
+                id: '',
+                title: '',
+                slug: '',
+                excerpt: '',
+                content: '',
+                image_url: '',
+                meta_title: '',
+                meta_description: '',
+                meta_keywords: '',
+                is_published: false,
+                published_at: null,
+                created_at: '',
+                updated_at: ''
+              })}
+              className="cyber-button"
+              style={{ marginBottom: '30px' }}
+            >
+              + Добавить статью
+            </button>
+
+            <div style={{ display: 'grid', gap: '20px' }}>
+              {blogPosts.map((post) => (
+                <div key={post.id} className="cyber-card">
+                  <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                    {post.image_url && (
+                      <div style={{
+                        width: '200px',
+                        height: '120px',
+                        background: `url(${post.image_url}) center/cover no-repeat`,
+                        borderRadius: '4px',
+                        flexShrink: 0
+                      }} />
+                    )}
+                    <div style={{ flex: 1, minWidth: '200px' }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        marginBottom: '8px',
+                        flexWrap: 'wrap'
+                      }}>
+                        <h3 style={{ fontSize: '20px', color: 'var(--neon-pink)', margin: 0 }}>
+                          {post.title}
+                        </h3>
+                        <span style={{
+                          background: post.is_published ? 'var(--neon-green)' : 'rgba(255, 255, 255, 0.2)',
+                          color: post.is_published ? 'var(--bg-dark)' : 'inherit',
+                          padding: '2px 10px',
+                          borderRadius: '4px',
+                          fontSize: '11px',
+                          fontWeight: 700
+                        }}>
+                          {post.is_published ? 'Опубликовано' : 'Черновик'}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '13px', color: 'var(--neon-cyan)', marginBottom: '8px' }}>
+                        /{post.slug}
+                      </div>
+                      <p style={{ opacity: 0.8, marginBottom: '15px', fontSize: '14px' }}>
+                        {post.excerpt || 'Нет описания'}
+                      </p>
+                      {post.meta_title && (
+                        <div style={{ fontSize: '12px', opacity: 0.6, marginBottom: '10px' }}>
+                          SEO: {post.meta_title}
+                        </div>
+                      )}
+                      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                        <button
+                          onClick={() => setEditingBlogPost(post)}
+                          className="cyber-button"
+                          style={{ padding: '8px 20px', fontSize: '14px' }}
+                        >
+                          Редактировать
+                        </button>
+                        {post.is_published && (
+                          <a
+                            href={`/blog/${post.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="cyber-button"
+                            style={{
+                              padding: '8px 20px',
+                              fontSize: '14px',
+                              textDecoration: 'none',
+                              borderColor: 'var(--neon-cyan)',
+                              color: 'var(--neon-cyan)'
+                            }}
+                          >
+                            Открыть
+                          </a>
+                        )}
+                        <button
+                          onClick={() => deleteBlogPost(post.id)}
+                          className="cyber-button"
+                          style={{
+                            padding: '8px 20px',
+                            fontSize: '14px',
+                            borderColor: 'var(--neon-pink)',
+                            color: 'var(--neon-pink)'
+                          }}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {blogPosts.length === 0 && (
+                <div className="cyber-card" style={{ textAlign: 'center', padding: '40px' }}>
+                  <p style={{ opacity: 0.6 }}>Пока нет статей. Нажмите "Добавить статью" чтобы создать первую.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {editingCourse && (
@@ -493,6 +653,14 @@ export default function Admin() {
           work={editingWork}
           onSave={saveWork}
           onClose={() => setEditingWork(null)}
+        />
+      )}
+
+      {editingBlogPost && (
+        <BlogPostModal
+          post={editingBlogPost}
+          onSave={saveBlogPost}
+          onClose={() => setEditingBlogPost(null)}
         />
       )}
     </div>
@@ -839,6 +1007,234 @@ function StudentWorkModal({
               style={{ width: '20px', height: '20px' }}
             />
             <span style={{ color: 'var(--neon-cyan)' }}>Показывать на сайте</span>
+          </label>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={() => onSave(formData)}
+            className="cyber-button"
+            style={{ flex: 1 }}
+          >
+            Сохранить
+          </button>
+          <button
+            onClick={onClose}
+            className="cyber-button"
+            style={{
+              flex: 1,
+              borderColor: 'var(--neon-pink)',
+              color: 'var(--neon-pink)'
+            }}
+          >
+            Отмена
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BlogPostModal({
+  post,
+  onSave,
+  onClose
+}: {
+  post: BlogPost;
+  onSave: (post: Partial<BlogPost>) => void;
+  onClose: () => void;
+}) {
+  const [formData, setFormData] = useState(post);
+
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[а-яё]/gi, (char) => {
+        const ru = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+        const en = ['a','b','v','g','d','e','yo','zh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','','y','','e','yu','ya'];
+        const index = ru.indexOf(char.toLowerCase());
+        return index >= 0 ? en[index] : char;
+      })
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
+
+  const handleTitleChange = (title: string) => {
+    setFormData({
+      ...formData,
+      title,
+      slug: formData.slug || generateSlug(title)
+    });
+  };
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'rgba(0, 0, 0, 0.9)',
+      display: 'flex',
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '20px',
+      overflow: 'auto'
+    }}>
+      <div className="cyber-card" style={{
+        maxWidth: '900px',
+        width: '100%',
+        margin: '40px 0'
+      }}>
+        <h2 style={{ fontSize: '28px', marginBottom: '25px', color: 'var(--neon-pink)' }}>
+          {post.id ? 'Редактировать статью' : 'Новая статья'}
+        </h2>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Заголовок *
+          </label>
+          <input
+            type="text"
+            value={formData.title}
+            onChange={(e) => handleTitleChange(e.target.value)}
+            placeholder="Название статьи"
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            URL (slug) *
+          </label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ opacity: 0.6 }}>/blog/</span>
+            <input
+              type="text"
+              value={formData.slug}
+              onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })}
+              placeholder="url-statyi"
+              style={{ flex: 1 }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Краткое описание (для превью)
+          </label>
+          <textarea
+            value={formData.excerpt}
+            onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+            rows={3}
+            placeholder="Краткое описание статьи для списка блога"
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Содержимое статьи *
+          </label>
+          <textarea
+            value={formData.content}
+            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+            rows={15}
+            placeholder="Текст статьи. Поддерживается **жирный** и *курсив*"
+            style={{ fontFamily: 'monospace', fontSize: '14px' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            URL обложки
+          </label>
+          <input
+            type="url"
+            value={formData.image_url}
+            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+            placeholder="https://example.com/image.jpg"
+          />
+          {formData.image_url && (
+            <div style={{
+              marginTop: '10px',
+              width: '100%',
+              height: '200px',
+              background: `url(${formData.image_url}) center/cover no-repeat`,
+              borderRadius: '4px',
+              border: '1px solid var(--neon-cyan)'
+            }} />
+          )}
+        </div>
+
+        <div style={{
+          background: 'rgba(0, 255, 249, 0.05)',
+          padding: '20px',
+          borderRadius: '8px',
+          marginBottom: '20px',
+          border: '1px solid rgba(0, 255, 249, 0.2)'
+        }}>
+          <h3 style={{ color: 'var(--neon-green)', marginBottom: '15px', fontSize: '18px' }}>
+            SEO настройки
+          </h3>
+
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>
+              Meta Title (заголовок в поиске)
+            </label>
+            <input
+              type="text"
+              value={formData.meta_title}
+              onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
+              placeholder="Заголовок страницы для поисковиков (50-60 символов)"
+            />
+            <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '4px' }}>
+              {formData.meta_title.length}/60 символов
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>
+              Meta Description (описание в поиске)
+            </label>
+            <textarea
+              value={formData.meta_description}
+              onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
+              rows={3}
+              placeholder="Описание страницы для поисковиков (150-160 символов)"
+            />
+            <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '4px' }}>
+              {formData.meta_description.length}/160 символов
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>
+              Meta Keywords (ключевые слова)
+            </label>
+            <input
+              type="text"
+              value={formData.meta_keywords}
+              onChange={(e) => setFormData({ ...formData, meta_keywords: e.target.value })}
+              placeholder="программирование, гродно, обучение, курсы"
+            />
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '25px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={formData.is_published}
+              onChange={(e) => setFormData({
+                ...formData,
+                is_published: e.target.checked,
+                published_at: e.target.checked && !formData.published_at
+                  ? new Date().toISOString()
+                  : formData.published_at
+              })}
+              style={{ width: '20px', height: '20px' }}
+            />
+            <span style={{ color: 'var(--neon-green)', fontWeight: 600 }}>Опубликовать статью</span>
           </label>
         </div>
 

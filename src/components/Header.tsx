@@ -85,6 +85,15 @@ export default function Header() {
           }}>
             Работы
           </Link>
+          <Link to="/blog" style={{
+            fontFamily: 'Rajdhani, sans-serif',
+            fontSize: '18px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
+          }}>
+            Блог
+          </Link>
           <Link to="/trial" style={{
             fontFamily: 'Rajdhani, sans-serif',
             fontSize: '18px',
