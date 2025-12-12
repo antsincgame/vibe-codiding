@@ -90,6 +90,32 @@ export default function Home() {
         maxWidth: '1200px',
         margin: '0 auto'
       }}>
+        <div className="cyber-card" style={{ marginBottom: '60px' }}>
+          <h2 style={{
+            fontSize: 'clamp(32px, 5vw, 48px)',
+            marginBottom: '30px',
+            color: 'var(--neon-pink)',
+            textAlign: 'center'
+          }}>
+            Что такое вайб-кодинг?
+          </h2>
+          <p style={{
+            fontSize: '18px',
+            lineHeight: '1.8',
+            opacity: 0.9,
+            marginBottom: '20px'
+          }}>
+            Вайб-кодинг (vibe coding) — это современный метод разработки программ с помощью искусственного интеллекта, который был представлен в 2025 году исследователем AI Андреем Карпати из OpenAI. Вместо написания кода строка за строкой, вы просто общаетесь с AI-помощником на обычном языке, описывая что хотите создать, а искусственный интеллект превращает ваши идеи в работающие приложения.
+          </p>
+          <p style={{
+            fontSize: '18px',
+            lineHeight: '1.8',
+            opacity: 0.9
+          }}>
+            Это означает, что программирование теперь доступно каждому — независимо от возраста, образования или предыдущего опыта.
+          </p>
+        </div>
+
         <h2 style={{
           fontSize: 'clamp(32px, 5vw, 48px)',
           textAlign: 'center',
@@ -115,7 +141,7 @@ export default function Home() {
         }}>
           У нас есть два курса они различаются только технологиями, подходят как для детей 12+ так и для взрослых, занятия проходят в раздельных группах
         </p>
-        
+
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
@@ -181,32 +207,6 @@ export default function Home() {
               </Link>
             </div>
           ))}
-        </div>
-
-<div className="cyber-card" style={{ marginBottom: '60px' }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 5vw, 48px)',
-            marginBottom: '30px',
-            color: 'var(--neon-pink)',
-            textAlign: 'center'
-          }}>
-            Что такое вайб-кодинг?
-          </h2>
-          <p style={{
-            fontSize: '18px',
-            lineHeight: '1.8',
-            opacity: 0.9,
-            marginBottom: '20px'
-          }}>
-            Вайб-кодинг (vibe coding) — это современный метод разработки программ с помощью искусственного интеллекта, который был представлен в 2025 году исследователем AI Андреем Карпати из OpenAI. Вместо написания кода строка за строкой, вы просто общаетесь с AI-помощником на обычном языке, описывая что хотите создать, а искусственный интеллект превращает ваши идеи в работающие приложения.
-          </p>
-          <p style={{
-            fontSize: '18px',
-            lineHeight: '1.8',
-            opacity: 0.9
-          }}>
-            Это означает, что программирование теперь доступно каждому — независимо от возраста, образования или предыдущего опыта.
-          </p>
         </div>
       </section>
 
