@@ -63,3 +63,18 @@ export interface EmailSettings {
   created_at?: string;
   updated_at?: string;
 }
+
+export interface StudentWork {
+  id: string;
+  student_name: string;
+  student_age: number;
+  project_title: string;
+  project_description: string;
+  project_url: string;
+  image_url: string;
+  tool_type: 'bolt' | 'cursor';
+  is_active: boolean;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Course } from '../types';
+import StudentWorksSection from '../components/StudentWorksSection';
 
 export default function Home() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -209,6 +210,7 @@ export default function Home() {
         </div>
       </section>
 
+      <StudentWorksSection />
     </div>
   );
 }

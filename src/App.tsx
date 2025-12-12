@@ -10,6 +10,7 @@ import Parents from './pages/Parents';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import CourseDetail from './pages/CourseDetail';
+import StudentWorks from './pages/StudentWorks';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/trial" element={<Trial />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/parents" element={<Parents />} />
+                <Route path="/works" element={<StudentWorks />} />
               </Routes>
               <Footer />
             </>
