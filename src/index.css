@@ -331,12 +331,10 @@ textarea.cyber-input {
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     z-index: 99;
-    visibility: hidden;
   }
 
   .nav-links.open {
     transform: translateX(0);
-    visibility: visible;
   }
 
   .nav-link {
