@@ -26,22 +26,24 @@ function App() {
         <Route
           path="/*"
           element={
-            <>
+            <div className="app-layout">
               <Header />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/courses" element={<Courses />} />
-                <Route path="/course/:slug" element={<CourseDetail />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/trial" element={<Trial />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/parents" element={<Parents />} />
-                <Route path="/works" element={<StudentWorks />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:slug" element={<BlogPostPage />} />
-              </Routes>
-              <Footer />
-            </>
+              <main className="app-content">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/courses" element={<Courses />} />
+                  <Route path="/course/:slug" element={<CourseDetail />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/trial" element={<Trial />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/parents" element={<Parents />} />
+                  <Route path="/works" element={<StudentWorks />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:slug" element={<BlogPostPage />} />
+                </Routes>
+                <Footer />
+              </main>
+            </div>
           }
         />
       </Routes>
