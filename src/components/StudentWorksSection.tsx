@@ -12,7 +12,7 @@ export default function StudentWorksSection() {
   }, []);
 
   const loadWorks = async () => {
-    const { data: bolt } = await supabase
+    const { data: bolt, error: boltError } = await supabase
       .from('student_works')
       .select('*')
       .eq('tool_type', 'bolt')
@@ -20,13 +20,16 @@ export default function StudentWorksSection() {
       .order('order_index', { ascending: true })
       .limit(3);
 
-    const { data: cursor } = await supabase
+    const { data: cursor, error: cursorError } = await supabase
       .from('student_works')
       .select('*')
       .eq('tool_type', 'cursor')
       .eq('is_active', true)
       .order('order_index', { ascending: true })
       .limit(3);
+
+    if (boltError) console.error('Bolt works error:', boltError);
+    if (cursorError) console.error('Cursor works error:', cursorError);
 
     if (bolt) setBoltWorks(bolt);
     if (cursor) setCursorWorks(cursor);

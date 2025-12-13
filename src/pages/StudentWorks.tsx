@@ -12,19 +12,22 @@ export default function StudentWorks() {
   }, []);
 
   const loadWorks = async () => {
-    const { data: boltData } = await supabase
+    const { data: boltData, error: boltError } = await supabase
       .from('student_works')
       .select('*')
       .eq('is_active', true)
       .eq('tool_type', 'bolt')
       .order('order_index', { ascending: true });
 
-    const { data: cursorData } = await supabase
+    const { data: cursorData, error: cursorError } = await supabase
       .from('student_works')
       .select('*')
       .eq('is_active', true)
       .eq('tool_type', 'cursor')
       .order('order_index', { ascending: true });
+
+    if (boltError) console.error('Bolt works error:', boltError);
+    if (cursorError) console.error('Cursor works error:', cursorError);
 
     if (boltData) setWebsites(boltData);
     if (cursorData) setApps(cursorData);
