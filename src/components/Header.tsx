@@ -1,8 +1,17 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import LoginModal from './LoginModal';
 
 export default function Header() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   return (
-    <header style={{
+    <>
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
+      <header style={{
       position: 'fixed',
       top: 0,
       left: 0,
@@ -94,22 +103,19 @@ export default function Header() {
           }}>
             Блог
           </Link>
-          <Link to="/trial" style={{
-            fontFamily: 'Rajdhani, sans-serif',
-            fontSize: '18px',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '1px'
-          }}>
-            <button className="cyber-button" style={{
+          <button
+            onClick={() => setIsLoginModalOpen(true)}
+            className="cyber-button"
+            style={{
               padding: '8px 20px',
               fontSize: '14px'
-            }}>
-              Пробный урок
-            </button>
-          </Link>
+            }}
+          >
+            Вход
+          </button>
         </div>
       </nav>
     </header>
+    </>
   );
 }
