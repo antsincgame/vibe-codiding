@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LoginModal from './LoginModal';
 
 export default function Header() {
@@ -7,6 +7,17 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
 
   const navLinks = [
     { to: '/', label: 'Главная' },
@@ -41,28 +52,45 @@ export default function Header() {
             <span className="burger-line"></span>
           </button>
 
-          <div className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
+          <div className="nav-links-desktop">
             {navLinks.map(link => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="nav-link"
-                onClick={closeMenu}
-              >
+              <Link key={link.to} to={link.to} className="nav-link">
                 {link.label}
               </Link>
             ))}
             <button
-              onClick={() => {
-                setIsLoginModalOpen(true);
-                closeMenu();
-              }}
+              onClick={() => setIsLoginModalOpen(true)}
               className="cyber-button header-login-btn"
             >
               Вход
             </button>
           </div>
         </nav>
+
+        {isMenuOpen && (
+          <div className="mobile-menu-overlay" onClick={closeMenu} />
+        )}
+        <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+          {navLinks.map(link => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="mobile-menu-link"
+              onClick={closeMenu}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <button
+            onClick={() => {
+              setIsLoginModalOpen(true);
+              closeMenu();
+            }}
+            className="cyber-button mobile-menu-btn"
+          >
+            Вход
+          </button>
+        </div>
       </header>
     </>
   );
