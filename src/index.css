@@ -198,88 +198,95 @@ textarea.cyber-input {
 
 .site-header {
   background: rgba(10, 10, 15, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--neon-cyan);
-  box-shadow: 0 0 20px rgba(0, 255, 249, 0.3);
+  backdrop-filter: blur(0.625rem);
+  border-bottom: 0.0625rem solid var(--neon-cyan);
+  box-shadow: 0 0 1.25rem rgba(0, 255, 249, 0.3);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
 .header-nav {
-  max-width: 1200px;
+  max-width: 75rem;
   margin: 0 auto;
-  padding: 20px;
+  padding: clamp(0.75rem, 2vw, 1.5rem) clamp(1rem, 3vw, 2rem);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
 
 .header-logo {
-  font-size: clamp(18px, 4vw, 24px);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
   font-family: 'Orbitron', sans-serif;
   font-weight: 900;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .nav-links {
   display: flex;
-  gap: clamp(12px, 2vw, 30px);
+  gap: clamp(0.5rem, 1.5vw, 1.5rem);
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 .nav-link {
   font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(14px, 1.5vw, 18px);
+  font-size: clamp(0.75rem, 1.2vw, 1rem);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: clamp(0px, 0.1vw, 1px);
+  letter-spacing: 0.05em;
   color: white;
   text-decoration: none;
   transition: color 0.3s, text-shadow 0.3s;
   white-space: nowrap;
+  padding: 0.25em 0;
 }
 
 .nav-link:hover {
   color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan);
+  text-shadow: 0 0 0.625rem var(--neon-cyan);
 }
 
 .header-login-btn {
-  padding: 8px 20px;
-  font-size: 14px;
+  padding: 0.4em 1.2em;
+  font-size: clamp(0.7rem, 1vw, 0.875rem);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
 }
 
 .burger-button {
   display: none;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
-  width: 40px;
-  height: 40px;
+  gap: 0.3125rem;
+  width: 2.5rem;
+  height: 2.5rem;
   background: transparent;
-  border: 1px solid var(--neon-cyan);
-  border-radius: 4px;
+  border: 0.0625rem solid var(--neon-cyan);
+  border-radius: 0.25rem;
   cursor: pointer;
-  padding: 8px;
+  padding: 0.5rem;
   transition: all 0.3s;
+  flex-shrink: 0;
 }
 
 .burger-button:hover {
-  box-shadow: 0 0 15px rgba(0, 255, 249, 0.5);
+  box-shadow: 0 0 0.9375rem rgba(0, 255, 249, 0.5);
 }
 
 .burger-line {
   display: block;
   width: 100%;
-  height: 2px;
+  height: 0.125rem;
   background: var(--neon-cyan);
   transition: all 0.3s;
-  box-shadow: 0 0 5px var(--neon-cyan);
+  box-shadow: 0 0 0.3125rem var(--neon-cyan);
 }
 
 .burger-button.active .burger-line:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+  transform: rotate(45deg) translate(0.3125rem, 0.3125rem);
 }
 
 .burger-button.active .burger-line:nth-child(2) {
@@ -287,26 +294,25 @@ textarea.cyber-input {
 }
 
 .burger-button.active .burger-line:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
+  transform: rotate(-45deg) translate(0.3125rem, -0.3125rem);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 64rem) {
   .nav-links {
-    gap: 15px;
+    gap: 0.75rem;
   }
 
   .nav-link {
-    font-size: 14px;
-    letter-spacing: 0;
+    font-size: 0.875rem;
   }
 
   .header-login-btn {
-    padding: 6px 16px;
-    font-size: 12px;
+    padding: 0.35em 1em;
+    font-size: 0.75rem;
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 48rem) {
   .burger-button {
     display: flex;
   }
@@ -320,8 +326,8 @@ textarea.cyber-input {
     background: rgba(10, 10, 15, 0.98);
     flex-direction: column;
     justify-content: center;
-    gap: clamp(20px, 5vh, 30px);
-    padding: 20px;
+    gap: clamp(1.5rem, 5vh, 2.5rem);
+    padding: 2rem;
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     z-index: 99;
@@ -332,36 +338,13 @@ textarea.cyber-input {
   }
 
   .nav-link {
-    font-size: clamp(18px, 5vw, 24px);
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
     text-align: center;
-    letter-spacing: 1px;
+    padding: 0.5em 0;
   }
 
   .header-login-btn {
-    padding: 12px 30px;
-    font-size: 16px;
-  }
-
-  .header-nav {
-    padding: 15px 20px;
-  }
-
-  .header-logo {
-    font-size: clamp(16px, 5vw, 20px);
-  }
-}
-
-@media (max-width: 400px) {
-  .nav-link {
-    font-size: 16px;
-  }
-
-  .header-login-btn {
-    padding: 10px 24px;
-    font-size: 14px;
-  }
-
-  .header-logo {
-    font-size: 16px;
+    padding: 0.75em 2em;
+    font-size: clamp(1rem, 3vw, 1.25rem);
   }
 }
