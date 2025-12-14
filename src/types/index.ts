@@ -94,3 +94,12 @@ export interface BlogPost {
   created_at: string;
   updated_at: string;
 }
+
+export interface HomePageSettings {
+  title: string;
+  subtitle: string;
+  description: string;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+}

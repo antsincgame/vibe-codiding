@@ -2,18 +2,19 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { uploadStudentWorkImage } from '../lib/storageService';
-import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost } from '../types';
+import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 import EmailSettingsForm from '../components/EmailSettingsForm';
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'email' | 'works' | 'blog'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'email' | 'works' | 'blog' | 'home'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [registrations, setRegistrations] = useState<TrialRegistration[]>([]);
   const [studentWorks, setStudentWorks] = useState<StudentWork[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [homeSettings, setHomeSettings] = useState<HomePageSettings | null>(null);
 
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [editingFaq, setEditingFaq] = useState<FAQ | null>(null);
@@ -63,7 +64,52 @@ export default function Admin() {
         .select('*')
         .order('created_at', { ascending: false });
       if (data) setBlogPosts(data);
+    } else if (activeTab === 'home') {
+      await loadHomeSettings();
     }
+  };
+
+  const loadHomeSettings = async () => {
+    const { data } = await supabase
+      .from('system_settings')
+      .select('key, value')
+      .in('key', ['home_title', 'home_subtitle', 'home_description', 'home_meta_title', 'home_meta_description', 'home_meta_keywords']);
+
+    if (data && data.length > 0) {
+      const settingsMap: Record<string, string> = {};
+      data.forEach(item => {
+        settingsMap[item.key] = item.value;
+      });
+
+      setHomeSettings({
+        title: settingsMap['home_title'] || '',
+        subtitle: settingsMap['home_subtitle'] || '',
+        description: settingsMap['home_description'] || '',
+        meta_title: settingsMap['home_meta_title'] || '',
+        meta_description: settingsMap['home_meta_description'] || '',
+        meta_keywords: settingsMap['home_meta_keywords'] || '',
+      });
+    }
+  };
+
+  const saveHomeSettings = async (settings: HomePageSettings) => {
+    const updates = [
+      { key: 'home_title', value: settings.title },
+      { key: 'home_subtitle', value: settings.subtitle },
+      { key: 'home_description', value: settings.description },
+      { key: 'home_meta_title', value: settings.meta_title },
+      { key: 'home_meta_description', value: settings.meta_description },
+      { key: 'home_meta_keywords', value: settings.meta_keywords },
+    ];
+
+    for (const update of updates) {
+      await supabase
+        .from('system_settings')
+        .update({ value: update.value })
+        .eq('key', update.key);
+    }
+
+    setHomeSettings(settings);
   };
 
   const deleteCourse = async (id: string) => {
@@ -234,6 +280,17 @@ export default function Admin() {
             }}
           >
             Блог
+          </button>
+          <button
+            onClick={() => setActiveTab('home')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'home' ? 1 : 0.5,
+              borderColor: 'var(--neon-cyan)',
+              color: 'var(--neon-cyan)'
+            }}
+          >
+            Главная страница
           </button>
         </div>
 
@@ -630,6 +687,13 @@ export default function Admin() {
               )}
             </div>
           </div>
+        )}
+
+        {activeTab === 'home' && homeSettings && (
+          <HomePageSettingsModal
+            settings={homeSettings}
+            onSave={saveHomeSettings}
+          />
         )}
       </div>
 
@@ -1317,6 +1381,145 @@ function BlogPostModal({
             }}
           >
             Отмена
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+function HomePageSettingsModal({
+  settings,
+  onSave,
+}: {
+  settings: HomePageSettings;
+  onSave: (settings: HomePageSettings) => void;
+}) {
+  const [formData, setFormData] = useState(settings);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await onSave(formData);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div style={{
+      background: 'rgba(0, 0, 0, 0.5)',
+      padding: '40px 20px',
+    }}>
+      <div className="cyber-card" style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <h2 style={{ fontSize: '28px', marginBottom: '30px', color: 'var(--neon-cyan)' }}>
+          Редактирование главной страницы
+        </h2>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Заголовок *
+          </label>
+          <input
+            type="text"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            placeholder="Основной заголовок страницы"
+            style={{ width: '100%' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Подзаголовок *
+          </label>
+          <input
+            type="text"
+            value={formData.subtitle}
+            onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+            placeholder="Подзаголовок под основным заголовком"
+            style={{ width: '100%' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Описание *
+          </label>
+          <textarea
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            rows={5}
+            placeholder="Основной текст описания на главной странице"
+            style={{ width: '100%' }}
+          />
+        </div>
+
+        <div style={{
+          background: 'rgba(0, 255, 249, 0.05)',
+          padding: '20px',
+          borderRadius: '8px',
+          marginBottom: '20px',
+          border: '1px solid rgba(0, 255, 249, 0.2)'
+        }}>
+          <h3 style={{ color: 'var(--neon-green)', marginBottom: '15px', fontSize: '18px' }}>
+            SEO настройки для главной страницы
+          </h3>
+
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>
+              Meta Title (заголовок в поиске)
+            </label>
+            <input
+              type="text"
+              value={formData.meta_title}
+              onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
+              placeholder="Заголовок для поисковиков (50-60 символов)"
+              style={{ width: '100%' }}
+            />
+            <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '4px' }}>
+              {formData.meta_title.length}/60 символов
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>
+              Meta Description (описание в поиске)
+            </label>
+            <textarea
+              value={formData.meta_description}
+              onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
+              rows={3}
+              placeholder="Описание для поисковиков (150-160 символов)"
+              style={{ width: '100%' }}
+            />
+            <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '4px' }}>
+              {formData.meta_description.length}/160 символов
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>
+              Meta Keywords (ключевые слова)
+            </label>
+            <input
+              type="text"
+              value={formData.meta_keywords}
+              onChange={(e) => setFormData({ ...formData, meta_keywords: e.target.value })}
+              placeholder="программирование, веб-разработка, гродно, курсы"
+              style={{ width: '100%' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="cyber-button"
+            style={{ flex: 1 }}
+          >
+            {isSaving ? 'Сохранение...' : 'Сохранить'}
           </button>
         </div>
       </div>

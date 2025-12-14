@@ -1,15 +1,57 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import type { Course } from '../types';
+import type { Course, HomePageSettings } from '../types';
 import StudentWorksSection from '../components/StudentWorksSection';
+
+const defaultSettings: HomePageSettings = {
+  title: 'VIBECODING',
+  subtitle: 'Vibecoding - первая в Гродно школа вайб-кодинга',
+  description: 'Забудьте о сложных языках программирования! В Vibecoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб-кодинг.',
+  meta_title: 'Vibecoding - школа веб-разработки в Гродно',
+  meta_description: 'Научитесь создавать сайты и веб-приложения с нуля. Школа Vibecoding предлагает инновационный подход к обучению веб-разработке для детей и взрослых.',
+  meta_keywords: 'программирование, веб-разработка, обучение, гродно, курсы, дети',
+};
 
 export default function Home() {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [settings, setSettings] = useState<HomePageSettings>(defaultSettings);
 
   useEffect(() => {
-    loadCourses();
+    loadData();
   }, []);
+
+  const loadData = async () => {
+    await loadSettings();
+    await loadCourses();
+  };
+
+  const loadSettings = async () => {
+    try {
+      const { data } = await supabase
+        .from('system_settings')
+        .select('key, value')
+        .in('key', ['home_title', 'home_subtitle', 'home_description', 'home_meta_title', 'home_meta_description', 'home_meta_keywords']);
+
+      if (data && data.length > 0) {
+        const settingsMap: Record<string, string> = {};
+        data.forEach(item => {
+          settingsMap[item.key] = item.value;
+        });
+
+        setSettings({
+          title: settingsMap['home_title'] || defaultSettings.title,
+          subtitle: settingsMap['home_subtitle'] || defaultSettings.subtitle,
+          description: settingsMap['home_description'] || defaultSettings.description,
+          meta_title: settingsMap['home_meta_title'] || defaultSettings.meta_title,
+          meta_description: settingsMap['home_meta_description'] || defaultSettings.meta_description,
+          meta_keywords: settingsMap['home_meta_keywords'] || defaultSettings.meta_keywords,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading settings:', error);
+    }
+  };
 
   const loadCourses = async () => {
     const { data } = await supabase
@@ -18,7 +60,7 @@ export default function Home() {
       .eq('is_active', true)
       .order('order_index', { ascending: true })
       .limit(3);
-    
+
     if (data) {
       setCourses(data);
     }
@@ -40,8 +82,8 @@ export default function Home() {
             fontSize: 'clamp(40px, 8vw, 80px)',
             marginBottom: '20px',
             lineHeight: '1.2'
-          }} className="glitch" data-text="VIBECODING">
-            <span className="neon-text">VIBECODING</span>
+          }} className="glitch" data-text={settings.title}>
+            <span className="neon-text">{settings.title}</span>
           </h1>
 
           <h2 style={{
@@ -58,7 +100,7 @@ export default function Home() {
             textShadow: '0 0 20px rgba(0, 255, 249, 0.5)',
             lineHeight: '1.4'
           }}>
-            Vibecoding - первая в Гродно школа вайб-кодинга
+            {settings.subtitle}
           </h2>
 
           <p style={{
@@ -67,7 +109,7 @@ export default function Home() {
             opacity: 0.9,
             lineHeight: '1.8'
           }}>
-            Забудьте о сложных языках программирования! В Vibecoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб-кодинг.
+            {settings.description}
           </p>
         </div>
         
