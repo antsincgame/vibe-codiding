@@ -93,23 +93,35 @@ export default function Admin() {
   };
 
   const saveHomeSettings = async (settings: HomePageSettings) => {
-    const updates = [
-      { key: 'home_title', value: settings.title },
-      { key: 'home_subtitle', value: settings.subtitle },
-      { key: 'home_description', value: settings.description },
-      { key: 'home_meta_title', value: settings.meta_title },
-      { key: 'home_meta_description', value: settings.meta_description },
-      { key: 'home_meta_keywords', value: settings.meta_keywords },
-    ];
+    try {
+      const updates = [
+        { key: 'home_title', value: settings.title },
+        { key: 'home_subtitle', value: settings.subtitle },
+        { key: 'home_description', value: settings.description },
+        { key: 'home_meta_title', value: settings.meta_title },
+        { key: 'home_meta_description', value: settings.meta_description },
+        { key: 'home_meta_keywords', value: settings.meta_keywords },
+      ];
 
-    for (const update of updates) {
-      await supabase
-        .from('system_settings')
-        .update({ value: update.value })
-        .eq('key', update.key);
+      for (const update of updates) {
+        const { error } = await supabase
+          .from('system_settings')
+          .update({ value: update.value, updated_at: new Date().toISOString() })
+          .eq('key', update.key);
+
+        if (error) {
+          console.error('Error updating setting:', update.key, error);
+          throw error;
+        }
+      }
+
+      setHomeSettings(settings);
+      alert('Настройки успешно сохранены');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      alert('Ошибка при сохранении настроек');
+      throw error;
     }
-
-    setHomeSettings(settings);
   };
 
   const deleteCourse = async (id: string) => {
@@ -1749,15 +1761,19 @@ function HomePageSettingsModal({
   onSave,
 }: {
   settings: HomePageSettings;
-  onSave: (settings: HomePageSettings) => void;
+  onSave: (settings: HomePageSettings) => Promise<void>;
 }) {
   const [formData, setFormData] = useState(settings);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const handleSave = async () => {
     setIsSaving(true);
+    setSaveError(null);
     try {
       await onSave(formData);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Ошибка сохранения');
     } finally {
       setIsSaving(false);
     }
@@ -1769,9 +1785,20 @@ function HomePageSettingsModal({
       padding: '40px 20px',
     }}>
       <div className="cyber-card" style={{ maxWidth: '900px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '28px', marginBottom: '30px', color: 'var(--neon-cyan)' }}>
+        <h2 style={{ fontSize: '28px', marginBottom: '15px', color: 'var(--neon-cyan)' }}>
           Редактирование главной страницы
         </h2>
+        <div style={{
+          background: 'rgba(0, 255, 249, 0.1)',
+          border: '1px solid rgba(0, 255, 249, 0.3)',
+          padding: '12px 15px',
+          borderRadius: '6px',
+          marginBottom: '30px',
+          fontSize: '14px',
+          opacity: 0.8
+        }}>
+          После сохранения изменений обновите главную страницу, чтобы увидеть новые настройки
+        </div>
 
         <div style={{ marginBottom: '20px' }}>
           <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
@@ -1868,6 +1895,19 @@ function HomePageSettingsModal({
             />
           </div>
         </div>
+
+        {saveError && (
+          <div style={{
+            color: 'var(--neon-pink)',
+            background: 'rgba(255, 100, 100, 0.1)',
+            padding: '15px',
+            borderRadius: '4px',
+            marginBottom: '20px',
+            border: '1px solid var(--neon-pink)'
+          }}>
+            {saveError}
+          </div>
+        )}
 
         <div style={{ display: 'flex', gap: '10px' }}>
           <button

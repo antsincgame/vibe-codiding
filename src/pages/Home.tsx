@@ -21,6 +21,20 @@ export default function Home() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    document.title = settings.meta_title || 'Vibecoding - школа веб-разработки в Гродно';
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', settings.meta_description || defaultSettings.meta_description);
+    }
+
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+      metaKeywords.setAttribute('content', settings.meta_keywords || defaultSettings.meta_keywords);
+    }
+  }, [settings]);
+
   const loadData = async () => {
     await loadSettings();
     await loadCourses();
