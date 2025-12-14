@@ -44,7 +44,7 @@ export default function Admin() {
       const { data } = await supabase.from('courses').select('*').order('order_index');
       if (data) setCourses(data);
     } else if (activeTab === 'faqs') {
-      const { data } = await supabase.from('faqs').select('*').order('category, order_index');
+      const { data } = await supabase.from('faqs').select('*').order('category').order('order_index');
       if (data) setFaqs(data);
     } else if (activeTab === 'registrations') {
       const { data } = await supabase

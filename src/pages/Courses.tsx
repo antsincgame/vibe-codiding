@@ -13,12 +13,16 @@ export default function Courses() {
 
   const loadCourses = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('courses')
       .select('*')
       .eq('is_active', true)
       .order('order_index', { ascending: true });
-    
+
+    if (error) {
+      console.error('Error loading courses:', error);
+    }
+
     if (data) {
       setCourses(data);
     }

@@ -17,11 +17,15 @@ export default function Blog() {
   }, []);
 
   const loadPosts = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('blog_posts')
       .select('*')
       .eq('is_published', true)
       .order('published_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading blog posts:', error);
+    }
 
     if (data) setPosts(data);
     setLoading(false);

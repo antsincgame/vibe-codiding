@@ -14,12 +14,16 @@ export default function CourseDetail() {
 
   const loadCourse = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('courses')
       .select('*')
       .eq('slug', slug)
       .eq('is_active', true)
       .maybeSingle();
+
+    if (error) {
+      console.error('Error loading course:', error);
+    }
 
     if (data) {
       setCourse(data);

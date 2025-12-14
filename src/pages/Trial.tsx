@@ -52,15 +52,19 @@ export default function Trial() {
       return;
     }
 
-    await sendTrialRegistrationEmails({
-      age_group: formData.age_group,
-      parent_name: formData.parent_name,
-      child_name: formData.child_name || formData.parent_name,
-      child_age: parseInt(formData.child_age) || 18,
-      phone: formData.phone,
-      email: formData.email,
-      message: formData.message
-    });
+    try {
+      await sendTrialRegistrationEmails({
+        age_group: formData.age_group,
+        parent_name: formData.parent_name,
+        child_name: formData.child_name || formData.parent_name,
+        child_age: parseInt(formData.child_age) || 18,
+        phone: formData.phone,
+        email: formData.email,
+        message: formData.message
+      });
+    } catch (emailError) {
+      console.error('Error sending emails:', emailError);
+    }
 
     setLoading(false);
     setShowModal(true);

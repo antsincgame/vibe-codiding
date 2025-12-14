@@ -16,12 +16,19 @@ export default function BlogPostPage() {
   }, [slug]);
 
   const loadPost = async (postSlug: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('blog_posts')
       .select('*')
       .eq('slug', postSlug)
       .eq('is_published', true)
       .maybeSingle();
+
+    if (error) {
+      console.error('Error loading blog post:', error);
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
 
     if (data) {
       setPost(data);
@@ -242,8 +249,19 @@ export default function BlogPostPage() {
   );
 }
 
+function sanitizeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function formatContent(content: string): string {
-  let formatted = content
+  let sanitized = sanitizeHtml(content);
+
+  let formatted = sanitized
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>')
     .replace(/^/, '<p>')

@@ -13,11 +13,16 @@ export default function FAQ() {
 
   const loadFAQs = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('faqs')
       .select('*')
       .eq('is_active', true)
-      .order('category, order_index', { ascending: true });
+      .order('category', { ascending: true })
+      .order('order_index', { ascending: true });
+
+    if (error) {
+      console.error('Error loading FAQs:', error);
+    }
     
     if (data) {
       setFaqs(data);
