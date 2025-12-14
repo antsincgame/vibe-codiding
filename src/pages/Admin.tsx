@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { uploadStudentWorkImage } from '../lib/storageService';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost } from '../types';
 import EmailSettingsForm from '../components/EmailSettingsForm';
 
@@ -865,6 +866,25 @@ function StudentWorkModal({
   onClose: () => void;
 }) {
   const [formData, setFormData] = useState(work);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const imageUrl = await uploadStudentWorkImage(file);
+      setFormData({ ...formData, image_url: imageUrl });
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Ошибка загрузки');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
     <div style={{
@@ -958,13 +978,24 @@ function StudentWorkModal({
         </div>
 
         <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>URL картинки</label>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Картинка</label>
           <input
-            type="url"
-            value={formData.image_url}
-            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-            placeholder="https://example.com/screenshot.png"
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            disabled={isUploading}
+            style={{ marginBottom: '10px' }}
           />
+          {uploadError && (
+            <div style={{ color: 'var(--neon-pink)', marginBottom: '10px', fontSize: '14px' }}>
+              {uploadError}
+            </div>
+          )}
+          {isUploading && (
+            <div style={{ color: 'var(--neon-cyan)', marginBottom: '10px' }}>
+              Загрузка...
+            </div>
+          )}
           {formData.image_url && (
             <div style={{
               marginTop: '10px',
@@ -1045,6 +1076,25 @@ function BlogPostModal({
   onClose: () => void;
 }) {
   const [formData, setFormData] = useState(post);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const imageUrl = await uploadStudentWorkImage(file);
+      setFormData({ ...formData, image_url: imageUrl });
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Ошибка загрузки');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const generateSlug = (title: string) => {
     return title
@@ -1146,14 +1196,25 @@ function BlogPostModal({
 
         <div style={{ marginBottom: '20px' }}>
           <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            URL обложки
+            Обложка
           </label>
           <input
-            type="url"
-            value={formData.image_url}
-            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-            placeholder="https://example.com/image.jpg"
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            disabled={isUploading}
+            style={{ marginBottom: '10px' }}
           />
+          {uploadError && (
+            <div style={{ color: 'var(--neon-pink)', marginBottom: '10px', fontSize: '14px' }}>
+              {uploadError}
+            </div>
+          )}
+          {isUploading && (
+            <div style={{ color: 'var(--neon-cyan)', marginBottom: '10px' }}>
+              Загрузка...
+            </div>
+          )}
           {formData.image_url && (
             <div style={{
               marginTop: '10px',
