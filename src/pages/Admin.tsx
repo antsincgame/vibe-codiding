@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { uploadStudentWorkImage } from '../lib/storageService';
+import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../lib/storageService';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 import EmailSettingsForm from '../components/EmailSettingsForm';
 
@@ -320,33 +320,100 @@ export default function Admin() {
             <div style={{ display: 'grid', gap: '20px' }}>
               {courses.map((course) => (
                 <div key={course.id} className="cyber-card">
-                  <h3 style={{ fontSize: '24px', color: 'var(--neon-cyan)', marginBottom: '10px' }}>
-                    {course.title}
-                  </h3>
-                  <p style={{ opacity: 0.8, marginBottom: '15px' }}>{course.description}</p>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                      onClick={() => setEditingCourse(course)}
-                      className="cyber-button"
-                      style={{ padding: '8px 20px', fontSize: '14px' }}
-                    >
-                      Редактировать
-                    </button>
-                    <button
-                      onClick={() => deleteCourse(course.id)}
-                      className="cyber-button"
-                      style={{
-                        padding: '8px 20px',
-                        fontSize: '14px',
-                        borderColor: 'var(--neon-pink)',
-                        color: 'var(--neon-pink)'
-                      }}
-                    >
-                      Удалить
-                    </button>
+                  <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                    {course.image_url && (
+                      <div style={{
+                        width: '180px',
+                        height: '120px',
+                        background: `url(${course.image_url}) center/cover no-repeat`,
+                        borderRadius: '6px',
+                        flexShrink: 0
+                      }} />
+                    )}
+                    <div style={{ flex: 1, minWidth: '250px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                        <h3 style={{ fontSize: '22px', color: 'var(--neon-cyan)', margin: 0 }}>
+                          {course.title}
+                        </h3>
+                        {!course.is_active && (
+                          <span style={{
+                            background: 'rgba(255, 100, 100, 0.2)',
+                            color: 'var(--neon-pink)',
+                            padding: '2px 10px',
+                            borderRadius: '4px',
+                            fontSize: '11px',
+                            fontWeight: 700
+                          }}>
+                            Скрыт
+                          </span>
+                        )}
+                        {course.slug && (
+                          <span style={{
+                            opacity: 0.5,
+                            fontSize: '13px'
+                          }}>
+                            /{course.slug}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '14px', color: 'var(--neon-green)', marginBottom: '8px' }}>
+                        {course.age_group} | {course.duration} | {course.price}
+                      </div>
+                      <p style={{ opacity: 0.8, marginBottom: '15px', fontSize: '14px' }}>
+                        {course.description.length > 150 ? course.description.substring(0, 150) + '...' : course.description}
+                      </p>
+                      {Array.isArray(course.features) && course.features.length > 0 && (
+                        <div style={{ fontSize: '12px', opacity: 0.6, marginBottom: '15px' }}>
+                          Особенности: {course.features.length} шт.
+                        </div>
+                      )}
+                      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                        <button
+                          onClick={() => setEditingCourse(course)}
+                          className="cyber-button"
+                          style={{ padding: '8px 20px', fontSize: '14px' }}
+                        >
+                          Редактировать
+                        </button>
+                        {course.slug && (
+                          <a
+                            href={`/course/${course.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="cyber-button"
+                            style={{
+                              padding: '8px 20px',
+                              fontSize: '14px',
+                              textDecoration: 'none',
+                              borderColor: 'var(--neon-green)',
+                              color: 'var(--neon-green)'
+                            }}
+                          >
+                            Открыть
+                          </a>
+                        )}
+                        <button
+                          onClick={() => deleteCourse(course.id)}
+                          className="cyber-button"
+                          style={{
+                            padding: '8px 20px',
+                            fontSize: '14px',
+                            borderColor: 'var(--neon-pink)',
+                            color: 'var(--neon-pink)'
+                          }}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
+              {courses.length === 0 && (
+                <div className="cyber-card" style={{ textAlign: 'center', padding: '40px' }}>
+                  <p style={{ opacity: 0.6 }}>Пока нет курсов. Нажмите "Добавить курс" чтобы создать первый.</p>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -742,6 +809,76 @@ function CourseModal({
   onClose: () => void;
 }) {
   const [formData, setFormData] = useState(course);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [newFeature, setNewFeature] = useState('');
+
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[а-яё]/gi, (char) => {
+        const ru = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+        const en = ['a','b','v','g','d','e','yo','zh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','','y','','e','yu','ya'];
+        const index = ru.indexOf(char.toLowerCase());
+        return index >= 0 ? en[index] : char;
+      })
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
+
+  const handleTitleChange = (title: string) => {
+    setFormData({
+      ...formData,
+      title,
+      slug: formData.slug || generateSlug(title)
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const imageUrl = await uploadCourseImage(file);
+      setFormData({ ...formData, image_url: imageUrl });
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Ошибка загрузки');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const addFeature = () => {
+    if (newFeature.trim()) {
+      const features = Array.isArray(formData.features) ? formData.features : [];
+      setFormData({
+        ...formData,
+        features: [...features, newFeature.trim()]
+      });
+      setNewFeature('');
+    }
+  };
+
+  const removeFeature = (index: number) => {
+    const features = Array.isArray(formData.features) ? formData.features : [];
+    setFormData({
+      ...formData,
+      features: features.filter((_, i) => i !== index)
+    });
+  };
+
+  const moveFeature = (index: number, direction: 'up' | 'down') => {
+    const features = Array.isArray(formData.features) ? [...formData.features] : [];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= features.length) return;
+    [features[index], features[newIndex]] = [features[newIndex], features[index]];
+    setFormData({ ...formData, features });
+  };
+
+  const features = Array.isArray(formData.features) ? formData.features : [];
 
   return (
     <div style={{
@@ -752,69 +889,289 @@ function CourseModal({
       bottom: 0,
       background: 'rgba(0, 0, 0, 0.9)',
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       justifyContent: 'center',
       zIndex: 1000,
       padding: '20px',
       overflow: 'auto'
     }}>
-      <div className="cyber-card" style={{ maxWidth: '600px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}>
-        <h2 style={{ fontSize: '28px', marginBottom: '20px', color: 'var(--neon-cyan)' }}>
+      <div className="cyber-card" style={{ maxWidth: '800px', width: '100%', margin: '40px 0' }}>
+        <h2 style={{ fontSize: '28px', marginBottom: '25px', color: 'var(--neon-cyan)' }}>
           {course.id ? 'Редактировать курс' : 'Новый курс'}
         </h2>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Название</label>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Название курса *
+          </label>
           <input
             type="text"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) => handleTitleChange(e.target.value)}
+            placeholder="Например: Веб-разработка для начинающих"
           />
         </div>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Описание</label>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            URL (slug)
+          </label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ opacity: 0.6 }}>/course/</span>
+            <input
+              type="text"
+              value={formData.slug || ''}
+              onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })}
+              placeholder="web-development"
+              style={{ flex: 1 }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Описание *
+          </label>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={4}
+            placeholder="Подробное описание курса"
           />
         </div>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Длительность</label>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+            Изображение курса
+          </label>
           <input
-            type="text"
-            value={formData.duration}
-            onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            disabled={isUploading}
+            style={{ marginBottom: '10px' }}
           />
+          {uploadError && (
+            <div style={{ color: 'var(--neon-pink)', marginBottom: '10px', fontSize: '14px' }}>
+              {uploadError}
+            </div>
+          )}
+          {isUploading && (
+            <div style={{ color: 'var(--neon-cyan)', marginBottom: '10px' }}>
+              Загрузка изображения...
+            </div>
+          )}
+          {formData.image_url && (
+            <div style={{ marginTop: '10px' }}>
+              <div style={{
+                width: '100%',
+                height: '200px',
+                background: `url(${formData.image_url}) center/cover no-repeat`,
+                borderRadius: '8px',
+                border: '1px solid var(--neon-cyan)',
+                marginBottom: '10px'
+              }} />
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, image_url: '' })}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid var(--neon-pink)',
+                  color: 'var(--neon-pink)',
+                  padding: '6px 12px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  borderRadius: '4px'
+                }}
+              >
+                Удалить изображение
+              </button>
+            </div>
+          )}
+          <div style={{ marginTop: '10px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', opacity: 0.8 }}>
+              Или укажите URL изображения:
+            </label>
+            <input
+              type="url"
+              value={formData.image_url}
+              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
         </div>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Возрастная группа</label>
-          <input
-            type="text"
-            value={formData.age_group}
-            onChange={(e) => setFormData({ ...formData, age_group: e.target.value })}
-          />
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+              Длительность *
+            </label>
+            <input
+              type="text"
+              value={formData.duration}
+              onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+              placeholder="3 месяца"
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+              Возрастная группа *
+            </label>
+            <input
+              type="text"
+              value={formData.age_group}
+              onChange={(e) => setFormData({ ...formData, age_group: e.target.value })}
+              placeholder="12-18 лет"
+            />
+          </div>
         </div>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Цена</label>
-          <input
-            type="text"
-            value={formData.price}
-            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-          />
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+              Цена *
+            </label>
+            <input
+              type="text"
+              value={formData.price}
+              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              placeholder="200 BYN/мес"
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
+              Порядок отображения
+            </label>
+            <input
+              type="number"
+              value={formData.order_index}
+              onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
+              min={0}
+            />
+          </div>
         </div>
-        
+
+        <div style={{
+          background: 'rgba(0, 255, 100, 0.05)',
+          padding: '20px',
+          borderRadius: '8px',
+          marginBottom: '20px',
+          border: '1px solid rgba(0, 255, 100, 0.2)'
+        }}>
+          <label style={{ display: 'block', marginBottom: '10px', color: 'var(--neon-green)', fontWeight: 600 }}>
+            Особенности курса (features)
+          </label>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '15px' }}>
+            {features.map((feature, index) => (
+              <div key={index} style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                padding: '10px 15px',
+                borderRadius: '6px'
+              }}>
+                <span style={{ flex: 1 }}>{feature}</span>
+                <div style={{ display: 'flex', gap: '5px' }}>
+                  <button
+                    type="button"
+                    onClick={() => moveFeature(index, 'up')}
+                    disabled={index === 0}
+                    style={{
+                      background: 'transparent',
+                      border: '1px solid var(--neon-cyan)',
+                      color: 'var(--neon-cyan)',
+                      width: '28px',
+                      height: '28px',
+                      cursor: index === 0 ? 'not-allowed' : 'pointer',
+                      opacity: index === 0 ? 0.3 : 1,
+                      borderRadius: '4px',
+                      fontSize: '12px'
+                    }}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveFeature(index, 'down')}
+                    disabled={index === features.length - 1}
+                    style={{
+                      background: 'transparent',
+                      border: '1px solid var(--neon-cyan)',
+                      color: 'var(--neon-cyan)',
+                      width: '28px',
+                      height: '28px',
+                      cursor: index === features.length - 1 ? 'not-allowed' : 'pointer',
+                      opacity: index === features.length - 1 ? 0.3 : 1,
+                      borderRadius: '4px',
+                      fontSize: '12px'
+                    }}
+                  >
+                    ▼
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeFeature(index)}
+                    style={{
+                      background: 'transparent',
+                      border: '1px solid var(--neon-pink)',
+                      color: 'var(--neon-pink)',
+                      width: '28px',
+                      height: '28px',
+                      cursor: 'pointer',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <input
+              type="text"
+              value={newFeature}
+              onChange={(e) => setNewFeature(e.target.value)}
+              placeholder="Добавить особенность..."
+              style={{ flex: 1 }}
+              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+            />
+            <button
+              type="button"
+              onClick={addFeature}
+              className="cyber-button"
+              style={{ padding: '10px 20px', fontSize: '14px' }}
+            >
+              Добавить
+            </button>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '25px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={formData.is_active}
+              onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+              style={{ width: '20px', height: '20px' }}
+            />
+            <span style={{ color: 'var(--neon-green)', fontWeight: 600 }}>Курс активен (отображается на сайте)</span>
+          </label>
+        </div>
+
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
             onClick={() => onSave(formData)}
             className="cyber-button"
             style={{ flex: 1 }}
           >
-            Сохранить
+            Сохранить курс
           </button>
           <button
             onClick={onClose}
@@ -1151,7 +1508,7 @@ function BlogPostModal({
     setUploadError(null);
 
     try {
-      const imageUrl = await uploadStudentWorkImage(file);
+      const imageUrl = await uploadBlogImage(file);
       setFormData({ ...formData, image_url: imageUrl });
     } catch (error) {
       setUploadError(error instanceof Error ? error.message : 'Ошибка загрузки');
