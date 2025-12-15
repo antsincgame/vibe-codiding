@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import LoginModal from '../components/LoginModal';
 
 interface LessonFile {
   id: string;
@@ -28,10 +27,38 @@ export default function Lessons() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    fetchLessons();
+    checkAuth();
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+      if (session) {
+        fetchLessons();
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      if (session) {
+        await fetchLessons();
+      }
+    } catch (error) {
+      console.error('Error checking auth:', error);
+    } finally {
+      setAuthLoading(false);
+      setLoading(false);
+    }
+  };
 
   const fetchLessons = async () => {
     try {
@@ -102,46 +129,100 @@ export default function Lessons() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Header />
-      <main style={{ flex: 1, padding: '80px 20px 40px' }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <h1
-            className="neon-text"
-            style={{
-              fontFamily: 'Orbitron, sans-serif',
-              fontSize: '48px',
-              marginBottom: '20px',
-              textAlign: 'center',
-            }}
-          >
-            Учебные Материалы
-          </h1>
-          <p
-            style={{
-              textAlign: 'center',
-              fontSize: '18px',
-              color: 'var(--text-secondary)',
-              marginBottom: '40px',
-              fontFamily: 'Rajdhani, sans-serif',
-            }}
-          >
-            Видеоуроки и материалы для обучения
-          </p>
+    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        redirectAfterLogin={false}
+      />
 
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px' }}>
-              <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
-                Загрузка...
-              </p>
-            </div>
-          ) : lessons.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px' }}>
-              <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
-                Уроки пока не добавлены
-              </p>
-            </div>
-          ) : (
+      <h1
+        className="neon-text"
+        style={{
+          fontFamily: 'Orbitron, sans-serif',
+          fontSize: '48px',
+          marginBottom: '20px',
+          textAlign: 'center',
+        }}
+      >
+        Учебные Материалы
+      </h1>
+      <p
+        style={{
+          textAlign: 'center',
+          fontSize: '18px',
+          color: 'var(--text-secondary)',
+          marginBottom: '40px',
+          fontFamily: 'Rajdhani, sans-serif',
+        }}
+      >
+        Видеоуроки и материалы для обучения
+      </p>
+
+      {authLoading ? (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
+            Загрузка...
+          </p>
+        </div>
+      ) : !isAuthenticated ? (
+        <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+          <div
+            style={{
+              maxWidth: '500px',
+              margin: '0 auto',
+              background: 'var(--bg-dark)',
+              border: '2px solid var(--neon-cyan)',
+              borderRadius: '8px',
+              padding: '40px',
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: 'Orbitron, sans-serif',
+                fontSize: '24px',
+                marginBottom: '20px',
+                color: 'var(--neon-cyan)',
+              }}
+            >
+              Доступ только для авторизованных пользователей
+            </h2>
+            <p
+              style={{
+                fontSize: '16px',
+                color: 'var(--text-secondary)',
+                marginBottom: '30px',
+                fontFamily: 'Rajdhani, sans-serif',
+                lineHeight: '1.6',
+              }}
+            >
+              Для просмотра учебных материалов необходимо войти в систему
+            </p>
+            <button
+              onClick={() => setShowLoginModal(true)}
+              className="cyber-button"
+              style={{
+                padding: '12px 40px',
+                fontSize: '18px',
+              }}
+            >
+              Войти
+            </button>
+          </div>
+        </div>
+      ) : loading ? (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
+            Загрузка...
+          </p>
+        </div>
+      ) : lessons.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
+            Уроки пока не добавлены
+          </p>
+        </div>
+      ) : (
             <div
               style={{
                 display: 'grid',
@@ -398,9 +479,6 @@ export default function Lessons() {
               )}
             </div>
           )}
-        </div>
-      </main>
-      <Footer />
     </div>
   );
 }

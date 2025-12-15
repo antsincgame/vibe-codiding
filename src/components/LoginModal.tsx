@@ -4,11 +4,18 @@ import { supabase } from '../lib/supabase';
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
+  redirectAfterLogin?: boolean;
 }
 
 type AuthMode = 'login' | 'register' | 'reset';
 
-export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export default function LoginModal({
+  isOpen,
+  onClose,
+  onSuccess,
+  redirectAfterLogin = true
+}: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -46,7 +53,14 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       if (error) throw error;
 
       onClose();
-      window.location.href = '/admin';
+
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      if (redirectAfterLogin) {
+        window.location.href = '/admin';
+      }
     } catch (err: any) {
       setError(err.message || 'Ошибка входа');
     } finally {
