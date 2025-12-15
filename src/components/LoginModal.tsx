@@ -87,7 +87,7 @@ export default function LoginModal({
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -97,10 +97,24 @@ export default function LoginModal({
 
       if (error) throw error;
 
-      setSuccess('Регистрация успешна! Проверьте email для подтверждения аккаунта.');
-      setTimeout(() => {
-        switchMode('login');
-      }, 3000);
+      if (data.user && data.session) {
+        setSuccess('Регистрация успешна! Перенаправляем в админ-панель...');
+
+        setTimeout(() => {
+          onClose();
+          if (onSuccess) {
+            onSuccess();
+          }
+          if (redirectAfterLogin) {
+            window.location.href = '/admin';
+          }
+        }, 1500);
+      } else {
+        setSuccess('Регистрация успешна! Проверьте email для подтверждения аккаунта.');
+        setTimeout(() => {
+          switchMode('login');
+        }, 3000);
+      }
     } catch (err: any) {
       if (err.message.includes('already registered')) {
         setError('Этот email уже зарегистрирован');
