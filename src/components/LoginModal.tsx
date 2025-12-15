@@ -76,14 +76,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/admin`,
+        },
       });
 
       if (error) throw error;
 
-      setSuccess('Регистрация успешна! Теперь вы можете войти.');
+      setSuccess('Регистрация успешна! Проверьте email для подтверждения аккаунта.');
       setTimeout(() => {
         switchMode('login');
-      }, 2000);
+      }, 3000);
     } catch (err: any) {
       if (err.message.includes('already registered')) {
         setError('Этот email уже зарегистрирован');

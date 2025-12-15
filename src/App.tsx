@@ -13,6 +13,7 @@ import CourseDetail from './pages/CourseDetail';
 import StudentWorks from './pages/StudentWorks';
 import Blog from './pages/Blog';
 import BlogPostPage from './pages/BlogPostPage';
+import Lessons from './pages/Lessons';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/courses" element={<Courses />} />
                   <Route path="/course/:slug" element={<CourseDetail />} />
+                  <Route path="/lessons" element={<Lessons />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/trial" element={<Trial />} />
                   <Route path="/faq" element={<FAQ />} />

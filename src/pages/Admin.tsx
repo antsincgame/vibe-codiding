@@ -4,10 +4,11 @@ import { supabase } from '../lib/supabase';
 import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../lib/storageService';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 import EmailSettingsForm from '../components/EmailSettingsForm';
+import LessonsManager from '../components/LessonsManager';
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'email' | 'works' | 'blog' | 'home'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'email' | 'works' | 'blog' | 'home' | 'lessons'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -303,6 +304,17 @@ export default function Admin() {
             }}
           >
             Главная страница
+          </button>
+          <button
+            onClick={() => setActiveTab('lessons')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'lessons' ? 1 : 0.5,
+              borderColor: '#ffff00',
+              color: '#ffff00'
+            }}
+          >
+            Уроки
           </button>
         </div>
 
@@ -773,6 +785,10 @@ export default function Admin() {
             settings={homeSettings}
             onSave={saveHomeSettings}
           />
+        )}
+
+        {activeTab === 'lessons' && (
+          <LessonsManager />
         )}
       </div>
 
