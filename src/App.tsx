@@ -36,7 +36,7 @@ function App() {
                   <Route path="/lessons" element={<Lessons />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/trial" element={<Trial />} />
-                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/q-a" element={<FAQ />} />
                   <Route path="/works" element={<StudentWorks />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogPostPage />} />
