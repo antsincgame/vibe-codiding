@@ -19,7 +19,6 @@ export default function Header() {
 
   const navLinks = [
     { to: '/', label: 'Главная' },
-    { to: '/lessons', label: 'Уроки' },
     { to: '/about', label: 'О преподавателе' },
     { to: '/q-a', label: 'Вопросы и ответы' },
     { to: '/works', label: 'Работы' },
