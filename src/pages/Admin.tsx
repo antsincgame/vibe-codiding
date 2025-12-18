@@ -503,13 +503,13 @@ export default function Admin() {
                   </div>
                   {reg.age_group === 'child' && reg.child_name && (
                     <div>
-                      <div style={{ fontSize: '12px', opacity: 0.6 }}>Ребёнок</div>
+                      <div style={{ fontSize: '12px', opacity: 0.6 }}>Подросток</div>
                       <div>{reg.child_name} ({reg.child_age} лет)</div>
                     </div>
                   )}
                   <div>
                     <div style={{ fontSize: '12px', opacity: 0.6 }}>Возрастная группа</div>
-                    <div>{reg.age_group === 'child' ? 'Ребёнок (12-18 лет)' : 'Взрослый (18+)'}</div>
+                    <div>{reg.age_group === 'child' ? 'Подросток (16-18 лет)' : 'Взрослый (18+)'}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: '12px', opacity: 0.6 }}>Телефон</div>
@@ -1036,7 +1036,7 @@ function CourseModal({
               type="text"
               value={formData.age_group}
               onChange={(e) => setFormData({ ...formData, age_group: e.target.value })}
-              placeholder="12-18 лет"
+              placeholder="16+"
             />
           </div>
         </div>

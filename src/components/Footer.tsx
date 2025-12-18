@@ -51,7 +51,7 @@ export default function Footer() {
             {settings.school_name || 'Vibecoding'}
           </h3>
           <p style={{ opacity: 0.8, lineHeight: '1.8' }}>
-            {settings.about_text || 'Школа программирования для детей и взрослых, обучение веб разработки, веб приложений'}
+            {settings.about_text || 'Школа программирования для подростков и взрослых, обучение веб разработки, веб приложений'}
           </p>
         </div>
         

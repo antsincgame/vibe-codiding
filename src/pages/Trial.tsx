@@ -188,7 +188,7 @@ export default function Trial() {
                   cursor: 'pointer'
                 }}
               >
-                <option value="child">Ребенок (12-18 лет)</option>
+                <option value="child">Подросток (16-18 лет)</option>
                 <option value="adult">Взрослый (18+)</option>
               </select>
             </div>
@@ -202,7 +202,7 @@ export default function Trial() {
                 textTransform: 'uppercase',
                 letterSpacing: '1px'
               }}>
-                {formData.age_group === 'child' ? 'Имя родителя *' : 'Ваше имя *'}
+                {formData.age_group === 'child' ? 'Контактное имя *' : 'Ваше имя *'}
               </label>
               <input
                 type="text"
@@ -210,7 +210,7 @@ export default function Trial() {
                 value={formData.parent_name}
                 onChange={handleChange}
                 required
-                placeholder={formData.age_group === 'child' ? 'Введите имя родителя' : 'Введите ваше имя'}
+                placeholder={formData.age_group === 'child' ? 'Введите контактное имя' : 'Введите ваше имя'}
               />
             </div>
 
@@ -225,7 +225,7 @@ export default function Trial() {
                     textTransform: 'uppercase',
                     letterSpacing: '1px'
                   }}>
-                    Имя ребёнка *
+                    Имя подростка *
                   </label>
                   <input
                     type="text"
@@ -233,7 +233,7 @@ export default function Trial() {
                     value={formData.child_name}
                     onChange={handleChange}
                     required={formData.age_group === 'child'}
-                    placeholder="Введите имя ребёнка"
+                    placeholder="Введите имя подростка"
                   />
                 </div>
 
@@ -246,7 +246,7 @@ export default function Trial() {
                     textTransform: 'uppercase',
                     letterSpacing: '1px'
                   }}>
-                    Возраст ребёнка *
+                    Возраст *
                   </label>
                   <input
                     type="number"
@@ -254,9 +254,9 @@ export default function Trial() {
                     value={formData.child_age}
                     onChange={handleChange}
                     required={formData.age_group === 'child'}
-                    min="12"
+                    min="16"
                     max="18"
-                    placeholder="Введите возраст (12-18)"
+                    placeholder="Введите возраст (16-18)"
                   />
                 </div>
               </>
@@ -299,7 +299,7 @@ export default function Trial() {
                 value={formData.message}
                 onChange={handleChange}
                 rows={4}
-                placeholder={formData.age_group === 'child' ? 'Расскажите об интересах ребёнка, предпочитаемом времени занятий или задайте вопрос' : 'Расскажите о своих интересах, предпочитаемом времени занятий или задайте вопрос'}
+                placeholder={formData.age_group === 'child' ? 'Расскажите об интересах, предпочитаемом времени занятий или задайте вопрос' : 'Расскажите о своих интересах, предпочитаемом времени занятий или задайте вопрос'}
                 style={{ resize: 'vertical' }}
               />
             </div>
