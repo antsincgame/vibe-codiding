@@ -1,7 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import SuccessModal from '../components/SuccessModal';
+
+const SEO = {
+  title: 'Пробный урок | Бесплатное занятие по вайб-кодингу | Cursor AI и Bolt.ai',
+  description: 'Запишитесь на бесплатный пробный урок вайб-кодинга. Познакомьтесь с Cursor AI и Bolt.ai. Онлайн обучение созданию веб-приложений для начинающих.',
+  keywords: 'пробный урок вайб кодинг, бесплатное занятие Cursor AI, Bolt.ai пробный урок, онлайн школа программирования, создание веб приложений обучение'
+};
 
 export default function Trial() {
   const navigate = useNavigate();
@@ -15,6 +21,14 @@ export default function Trial() {
     phone: '',
     message: ''
   });
+
+  useEffect(() => {
+    document.title = SEO.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', SEO.description);
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +128,7 @@ export default function Trial() {
           opacity: 0.8,
           marginBottom: '60px'
         }}>
-          Запишись на бесплатное пробное занятие и начни свой путь в IT!
+          Запишись на бесплатное онлайн-занятие по <strong>вайб-кодингу</strong> и начни <strong>создание веб-приложений</strong> с <strong>Cursor AI</strong> и <strong>Bolt.ai</strong>!
         </p>
 
         <div className="cyber-card" style={{ padding: '40px' }}>
@@ -136,11 +150,11 @@ export default function Trial() {
               padding: 0
             }}>
               {[
-                'Знакомство с преподавателем и форматом обучения',
-                'Первый практический проект',
-                'Определение подходящего курса',
-                'Ответы на все вопросы',
-                'Экскурсия по нашему учебному пространству'
+                'Знакомство с преподавателем и онлайн-форматом обучения',
+                'Первый практический проект с Cursor AI или Bolt.ai',
+                'Определение подходящего курса вайб-кодинга',
+                'Ответы на все вопросы о создании веб-приложений',
+                'Демонстрация реальных проектов учеников'
               ].map((item, idx) => (
                 <li key={idx} style={{
                   marginBottom: '12px',

@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
+const SEO = {
+  title: 'Учебные материалы | Уроки Cursor AI и Bolt.ai | Онлайн школа вайб-кодинга',
+  description: 'Видеоуроки и материалы по вайб-кодингу. Обучение Cursor AI и Bolt.ai для создания веб-приложений. Практические занятия онлайн школы программирования.',
+  keywords: 'уроки вайб кодинг, видеоуроки Cursor AI, Bolt.ai обучение, создание веб приложений уроки, онлайн школа программирования материалы'
+};
+
 interface LessonFile {
   id: string;
   file_name: string;
@@ -30,6 +36,12 @@ export default function Lessons() {
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
+    document.title = SEO.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', SEO.description);
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
+
     checkAuth();
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session);
@@ -148,7 +160,7 @@ export default function Lessons() {
           fontFamily: 'Rajdhani, sans-serif',
         }}
       >
-        Видеоуроки и материалы для обучения
+        Видеоуроки по вайб-кодингу, Cursor AI и Bolt.ai для создания веб-приложений
       </p>
 
       {authLoading ? (

@@ -1,11 +1,22 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
+const SEO = {
+  title: 'О преподавателе | Обучение Cursor AI и Bolt.ai | Онлайн школа вайб-кодинга',
+  description: 'Дмитрий Орлов - преподаватель вайб-кодинга с 15+ лет опыта в IT. Обучение Cursor AI, Bolt.ai и созданию веб-приложений. Практический подход к программированию с AI.',
+  keywords: 'преподаватель вайб кодинга, обучение Cursor AI, Bolt.ai курсы, онлайн школа программирования, создание веб приложений, AI разработка'
+};
+
 export default function About() {
   const [quote, setQuote] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = SEO.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', SEO.description);
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
     generateQuote();
   }, []);
 
@@ -78,7 +89,7 @@ export default function About() {
           color: 'var(--neon-pink)',
           fontWeight: 600
         }}>
-          Ведущий преподаватель веб-разработки и AI-технологий
+          Преподаватель вайб-кодинга, Cursor AI и Bolt.ai
         </h2>
 
         <div style={{
@@ -178,7 +189,7 @@ export default function About() {
             </div>
 
             <p style={{ marginBottom: '20px', opacity: 0.95 }}>
-              <strong style={{ color: 'var(--neon-cyan)' }}>Дмитрий Орлов</strong> — практикующий специалист с богатым опытом создания и продвижения веб-проектов. Как основатель веб-студии <strong>"Студия Орлова"</strong> и компании <strong>ООО "Серендип"</strong> (резидент Парка Высоких Технологий), он реализовал десятки успешных проектов — от корпоративных сайтов до сложных веб-приложений с интеграцией искусственного интеллекта.
+              <strong style={{ color: 'var(--neon-cyan)' }}>Дмитрий Орлов</strong> — практикующий специалист с богатым опытом <strong>создания веб-приложений</strong> и продвижения онлайн-проектов. Как основатель веб-студии <strong>"Студия Орлова"</strong> и компании <strong>ООО "Серендип"</strong> (резидент Парка Высоких Технологий), он реализовал десятки успешных проектов — от корпоративных сайтов до сложных веб-приложений с интеграцией <strong>Cursor AI</strong> и <strong>Bolt.ai</strong>.
             </p>
           </div>
         </div>
@@ -204,7 +215,7 @@ export default function About() {
             marginBottom: '15px',
             color: 'var(--neon-green)'
           }}>
-            Основные направления:
+            Основные направления обучения:
           </h4>
           <ul style={{
             fontSize: '18px',
@@ -212,11 +223,11 @@ export default function About() {
             paddingLeft: '25px',
             opacity: 0.95
           }}>
-            <li>Информационные сайты и корпоративные порталы</li>
-            <li>Интернет-магазины с полным функционалом</li>
-            <li>Веб-приложения с AI-ассистентами</li>
-            <li>SEO-продвижение и привлечение первых клиентов с использованием контекстной рекламы</li>
-            <li>Современные инструменты разработки с использованием ИИ</li>
+            <li><strong>Обучение Cursor AI</strong> — профессиональная AI-разработка</li>
+            <li><strong>Курсы Bolt.ai</strong> — быстрое создание веб-приложений</li>
+            <li>Вайб-кодинг и программирование с искусственным интеллектом</li>
+            <li>SEO-продвижение и привлечение первых клиентов</li>
+            <li>Деплой и размещение проектов онлайн</li>
           </ul>
         </div>
 

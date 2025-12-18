@@ -3,11 +3,22 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Course } from '../types';
 
+const SEO = {
+  title: 'Онлайн курсы вайб-кодинга | Обучение Cursor AI и Bolt.ai | Создание веб-приложений',
+  description: 'Курсы vibe coding онлайн. Обучение Cursor AI для профессиональной разработки и Bolt.ai для создания веб-приложений. Школа программирования вайб кодинга для начинающих.',
+  keywords: 'курсы vibe coding, обучение Cursor AI, Bolt.ai курсы, онлайн курсы программирования, создание веб приложений, школа вайб кодинга'
+};
+
 export default function Courses() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = SEO.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', SEO.description);
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
     loadCourses();
   }, []);
 
@@ -60,7 +71,7 @@ export default function Courses() {
           maxWidth: '800px',
           margin: '0 auto 60px'
         }}>
-          Выбери направление, которое тебе интересно, и начни создавать будущее уже сегодня!
+          Выбери направление для <strong>создания веб-приложений</strong>: <strong>Cursor AI</strong> для профессиональной разработки или <strong>Bolt.ai</strong> для быстрого старта!
         </p>
 
         {loading ? (

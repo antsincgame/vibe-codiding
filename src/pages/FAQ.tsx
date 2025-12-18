@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import type { FAQ as FAQType } from '../types';
 
+const SEO = {
+  title: 'FAQ | Вопросы об онлайн курсах вайб-кодинга | Обучение Cursor AI и Bolt.ai',
+  description: 'Ответы на вопросы о курсах vibe coding. Как проходит обучение Cursor AI и Bolt.ai? Стоимость, формат занятий, требования. Онлайн школа программирования вайб кодинга.',
+  keywords: 'FAQ вайб кодинг, вопросы курсы Cursor AI, Bolt.ai обучение, онлайн школа программирования, создание веб приложений курсы'
+};
+
 interface FAQSection {
   category: string;
   questions: { q: string; a: string }[];
@@ -126,6 +132,11 @@ export default function FAQ() {
   const [useDatabase, setUseDatabase] = useState(true);
 
   useEffect(() => {
+    document.title = SEO.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', SEO.description);
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
     loadFAQs();
   }, []);
 
@@ -245,7 +256,7 @@ export default function FAQ() {
           opacity: 0.8,
           marginBottom: '60px'
         }}>
-          Ответы на популярные вопросы о курсах Vibecoding
+          Ответы на популярные вопросы об <strong>онлайн курсах вайб-кодинга</strong>, <strong>обучении Cursor AI</strong> и <strong>Bolt.ai</strong>
         </p>
 
         {loading ? (

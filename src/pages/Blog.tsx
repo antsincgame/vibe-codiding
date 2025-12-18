@@ -8,10 +8,14 @@ export default function Blog() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'Блог о программировании | Vibecoding';
+    document.title = 'Блог о вайб-кодинге | Cursor AI и Bolt.ai статьи | Создание веб-приложений';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute('content', 'Статьи о программировании, вайб-кодинге и современных технологиях. Узнайте как создавать сайты и приложения с помощью AI.');
+      metaDesc.setAttribute('content', 'Статьи о вайб-кодинге, обучении Cursor AI и Bolt.ai. Узнайте как создавать веб-приложения с помощью искусственного интеллекта. Блог онлайн школы программирования.');
+    }
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+      metaKeywords.setAttribute('content', 'блог вайб кодинг, статьи Cursor AI, Bolt.ai туториалы, создание веб приложений, обучение программированию с AI');
     }
     loadPosts();
   }, []);
@@ -73,7 +77,7 @@ export default function Blog() {
           margin: '0 auto 50px',
           lineHeight: '1.7'
         }}>
-          Статьи о программировании, вайб-кодинге и современных технологиях
+          Статьи о вайб-кодинге, <strong>Cursor AI</strong>, <strong>Bolt.ai</strong> и <strong>создании веб-приложений</strong> с помощью искусственного интеллекта
         </p>
 
         {loading ? (

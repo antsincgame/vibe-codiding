@@ -7,7 +7,11 @@ export default function StudentWorks() {
   const [apps, setApps] = useState<StudentWork[]>([]);
 
   useEffect(() => {
-    document.title = 'Программирование в Гродно, работы учеников | Vibecoding';
+    document.title = 'Портфолио учеников | Проекты Cursor AI и Bolt.ai | Онлайн школа вайб-кодинга';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', 'Работы учеников онлайн школы вайб-кодинга. Реальные проекты, созданные с помощью Cursor AI и Bolt.ai. Примеры создания веб-приложений.');
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) metaKeywords.setAttribute('content', 'работы учеников вайб кодинг, проекты Cursor AI, Bolt.ai примеры, создание веб приложений портфолио');
     loadWorks();
   }, []);
 
@@ -158,8 +162,8 @@ export default function StudentWorks() {
           margin: '0 auto 50px',
           lineHeight: '1.7'
         }}>
-          Здесь собраны проекты, которые наши ученики создали во время обучения.
-          Каждая работа - это реальный результат, достигнутый с помощью вайб-кодинга!
+          Здесь собраны проекты, созданные учениками <strong>онлайн школы вайб-кодинга</strong>.
+          Каждая работа - реальный результат <strong>обучения Cursor AI</strong> и <strong>Bolt.ai</strong>!
         </p>
 
         <div style={{

@@ -3,6 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Course } from '../types';
 
+const setSEO = (course: Course) => {
+  document.title = `${course.title} | Онлайн курс вайб-кодинга | Vibecoding`;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', `${course.description} Обучение Cursor AI и Bolt.ai онлайн.`);
+  const metaKeywords = document.querySelector('meta[name="keywords"]');
+  if (metaKeywords) metaKeywords.setAttribute('content', 'курсы vibe coding, обучение Cursor AI, Bolt.ai курсы, создание веб приложений, онлайн школа программирования');
+};
+
 export default function CourseDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
@@ -27,12 +35,7 @@ export default function CourseDetail() {
 
     if (data) {
       setCourse(data);
-      document.title = `${data.title} | Vibecoding`;
-
-      const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) {
-        metaDesc.setAttribute('content', data.description || '');
-      }
+      setSEO(data);
     }
     setLoading(false);
   };
