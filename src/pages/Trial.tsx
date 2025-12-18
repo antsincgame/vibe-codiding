@@ -13,7 +13,6 @@ export default function Trial() {
     child_name: '',
     child_age: '',
     phone: '',
-    email: '',
     message: ''
   });
 
@@ -26,7 +25,6 @@ export default function Trial() {
       age_group: formData.age_group,
       parent_name: formData.parent_name,
       phone: formData.phone,
-      email: formData.email,
       message: formData.message || ''
     };
 
@@ -282,27 +280,6 @@ export default function Trial() {
                 onChange={handleChange}
                 required
                 placeholder="+375 (XX) XXX-XX-XX"
-              />
-            </div>
-
-            <div style={{ marginBottom: '25px' }}>
-              <label style={{
-                display: 'block',
-                marginBottom: '10px',
-                fontSize: '16px',
-                color: 'var(--neon-cyan)',
-                textTransform: 'uppercase',
-                letterSpacing: '1px'
-              }}>
-                Email *
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="example@email.com"
               />
             </div>
 

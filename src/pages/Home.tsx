@@ -342,31 +342,14 @@ export default function Home() {
             }}>
               Свяжитесь с нами, чтобы узнать больше о курсах
             </p>
-            <div style={{
-              display: 'flex',
-              gap: '20px',
-              justifyContent: 'center',
-              flexWrap: 'wrap'
-            }}>
-              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer">
-                <button className="cyber-button" style={{
-                  fontSize: '18px',
-                  padding: '15px 35px'
-                }}>
-                  WhatsApp
-                </button>
-              </a>
-              <a href="https://t.me/vibecoding" target="_blank" rel="noopener noreferrer">
-                <button className="cyber-button" style={{
-                  fontSize: '18px',
-                  padding: '15px 35px',
-                  borderColor: 'var(--neon-cyan)',
-                  color: 'var(--neon-cyan)'
-                }}>
-                  Telegram
-                </button>
-              </a>
-            </div>
+            <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
+              <button className="cyber-button" style={{
+                fontSize: '18px',
+                padding: '15px 35px'
+              }}>
+                WhatsApp
+              </button>
+            </a>
           </div>
         </div>
       </section>

@@ -183,26 +183,11 @@ export default function FAQ() {
           }}>
             Свяжитесь с нами, и мы ответим на все ваши вопросы!
           </p>
-          <div style={{
-            display: 'flex',
-            gap: '20px',
-            justifyContent: 'center',
-            flexWrap: 'wrap'
-          }}>
-            <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer">
-              <button className="cyber-button">
-                Написать в WhatsApp
-              </button>
-            </a>
-            <a href="mailto:info@vibecoding.by">
-              <button className="cyber-button" style={{
-                borderColor: 'var(--neon-green)',
-                color: 'var(--neon-green)'
-              }}>
-                Написать Email
-              </button>
-            </a>
-          </div>
+          <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
+            <button className="cyber-button">
+              Написать в WhatsApp
+            </button>
+          </a>
         </div>
       </div>
     </div>
