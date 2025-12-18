@@ -266,6 +266,111 @@ export default function Home() {
         </div>
       </section>
 
+      <section style={{
+        padding: '80px 20px',
+        maxWidth: '1200px',
+        margin: '0 auto'
+      }}>
+        <h2 style={{
+          fontSize: 'clamp(32px, 5vw, 48px)',
+          textAlign: 'center',
+          marginBottom: '50px',
+          color: 'var(--neon-cyan)'
+        }}>
+          Присоединяйтесь к курсу и откройте для себя мир современной веб-разработки!
+        </h2>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+          gap: '40px'
+        }}>
+          <div className="cyber-card" style={{
+            background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 255, 249, 0.1))',
+            textAlign: 'center',
+            padding: '40px'
+          }}>
+            <h3 style={{
+              fontSize: 'clamp(24px, 4vw, 32px)',
+              marginBottom: '20px',
+              color: 'var(--neon-pink)'
+            }}>
+              Ознакомиться с Vibe-Coding
+            </h3>
+            <p style={{
+              fontSize: '18px',
+              opacity: 0.9,
+              marginBottom: '30px',
+              lineHeight: '1.7'
+            }}>
+              Посмотрите видео о том, что такое Vibe-Coding и как мы обучаем программированию
+            </p>
+            <a
+              href="https://www.youtube.com/watch?v=w3K1EguBrTc"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+            >
+              <button className="cyber-button" style={{
+                fontSize: '18px',
+                padding: '15px 35px',
+                borderColor: 'var(--neon-pink)',
+                color: 'var(--neon-pink)'
+              }}>
+                Смотреть видео
+              </button>
+            </a>
+          </div>
+
+          <div className="cyber-card" style={{
+            background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(0, 255, 65, 0.1))',
+            textAlign: 'center',
+            padding: '40px'
+          }}>
+            <h3 style={{
+              fontSize: 'clamp(24px, 4vw, 32px)',
+              marginBottom: '20px',
+              color: 'var(--neon-cyan)'
+            }}>
+              Готовы начать обучение?
+            </h3>
+            <p style={{
+              fontSize: '18px',
+              opacity: 0.9,
+              marginBottom: '30px',
+              lineHeight: '1.7'
+            }}>
+              Свяжитесь с нами, чтобы узнать больше о курсах
+            </p>
+            <div style={{
+              display: 'flex',
+              gap: '20px',
+              justifyContent: 'center',
+              flexWrap: 'wrap'
+            }}>
+              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer">
+                <button className="cyber-button" style={{
+                  fontSize: '18px',
+                  padding: '15px 35px'
+                }}>
+                  WhatsApp
+                </button>
+              </a>
+              <a href="https://t.me/vibecoding" target="_blank" rel="noopener noreferrer">
+                <button className="cyber-button" style={{
+                  fontSize: '18px',
+                  padding: '15px 35px',
+                  borderColor: 'var(--neon-cyan)',
+                  color: 'var(--neon-cyan)'
+                }}>
+                  Telegram
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <StudentWorksSection />
     </div>
   );
