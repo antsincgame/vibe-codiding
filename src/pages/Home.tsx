@@ -6,7 +6,7 @@ import StudentWorksSection from '../components/StudentWorksSection';
 
 const defaultSettings: HomePageSettings = {
   title: 'VIBECODING',
-  subtitle: 'Лучшая онлайн школа вайб-кодинга',
+  subtitle: 'Vibecoding - лучшая школа программирования с помощью ИИ (вайб-кодинг)',
   description: 'Забудьте о сложных языках программирования! В Vibecoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб-кодинг с Cursor AI и Bolt.ai.',
   meta_title: 'Лучшая онлайн школа вайб-кодинга | Обучение Cursor AI и Bolt.ai | Создание веб-приложений',
   meta_description: 'Онлайн школа программирования вайб кодинга. Обучение Cursor AI и Bolt.ai с нуля. Создание веб-приложений без сложного кода. Курсы vibe coding для начинающих и продвинутых.',
