@@ -94,19 +94,25 @@ export default function Admin() {
   const saveHomeSettings = async (settings: HomePageSettings) => {
     try {
       const updates = [
-        { key: 'home_title', value: settings.title },
-        { key: 'home_subtitle', value: settings.subtitle },
-        { key: 'home_description', value: settings.description },
-        { key: 'home_meta_title', value: settings.meta_title },
-        { key: 'home_meta_description', value: settings.meta_description },
-        { key: 'home_meta_keywords', value: settings.meta_keywords },
+        { key: 'home_title', value: settings.title, description: 'Title on home page' },
+        { key: 'home_subtitle', value: settings.subtitle, description: 'Subtitle on home page' },
+        { key: 'home_description', value: settings.description, description: 'Description on home page' },
+        { key: 'home_meta_title', value: settings.meta_title, description: 'SEO meta title for home page' },
+        { key: 'home_meta_description', value: settings.meta_description, description: 'SEO meta description for home page' },
+        { key: 'home_meta_keywords', value: settings.meta_keywords, description: 'SEO keywords for home page' },
       ];
 
       for (const update of updates) {
         const { error } = await supabase
           .from('system_settings')
-          .update({ value: update.value, updated_at: new Date().toISOString() })
-          .eq('key', update.key);
+          .upsert({
+            key: update.key,
+            value: update.value,
+            description: update.description,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'key'
+          });
 
         if (error) {
           console.error('Error updating setting:', update.key, error);
@@ -115,7 +121,7 @@ export default function Admin() {
       }
 
       setHomeSettings(settings);
-      alert('Настройки успешно сохранены');
+      alert('Настройки успешно сохранены! Обновите главную страницу для просмотра изменений.');
     } catch (error) {
       console.error('Error saving settings:', error);
       alert('Ошибка при сохранении настроек');
