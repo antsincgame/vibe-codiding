@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import LoginModal from '../components/LoginModal';
 
 interface LessonFile {
   id: string;
@@ -29,7 +28,6 @@ export default function Lessons() {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
-  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -130,12 +128,6 @@ export default function Lessons() {
 
   return (
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
-      <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        redirectAfterLogin={false}
-      />
-
       <h1
         className="neon-text"
         style={{
@@ -191,23 +183,12 @@ export default function Lessons() {
               style={{
                 fontSize: '16px',
                 color: 'var(--text-secondary)',
-                marginBottom: '30px',
                 fontFamily: 'Rajdhani, sans-serif',
                 lineHeight: '1.6',
               }}
             >
               Для просмотра учебных материалов необходимо войти в систему
             </p>
-            <button
-              onClick={() => setShowLoginModal(true)}
-              className="cyber-button"
-              style={{
-                padding: '12px 40px',
-                fontSize: '18px',
-              }}
-            >
-              Войти
-            </button>
           </div>
         </div>
       ) : loading ? (

@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../lib/storageService';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
-import EmailSettingsForm from '../components/EmailSettingsForm';
 import LessonsManager from '../components/LessonsManager';
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'email' | 'works' | 'blog' | 'home' | 'lessons'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'blog' | 'home' | 'lessons'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -262,15 +261,6 @@ export default function Admin() {
             }}
           >
             Заявки
-          </button>
-          <button
-            onClick={() => setActiveTab('email')}
-            className="cyber-button"
-            style={{
-              opacity: activeTab === 'email' ? 1 : 0.5
-            }}
-          >
-            Email
           </button>
           <button
             onClick={() => setActiveTab('works')}
@@ -551,10 +541,6 @@ export default function Admin() {
               </div>
             ))}
           </div>
-        )}
-
-        {activeTab === 'email' && (
-          <EmailSettingsForm />
         )}
 
         {activeTab === 'works' && (

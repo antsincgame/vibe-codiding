@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { sendTrialRegistrationEmails } from '../lib/emailService';
 import SuccessModal from '../components/SuccessModal';
 
 export default function Trial() {
@@ -50,20 +49,6 @@ export default function Trial() {
       alert('Ошибка при отправке заявки. Попробуйте еще раз.');
       setLoading(false);
       return;
-    }
-
-    try {
-      await sendTrialRegistrationEmails({
-        age_group: formData.age_group,
-        parent_name: formData.parent_name,
-        child_name: formData.child_name || formData.parent_name,
-        child_age: parseInt(formData.child_age) || 18,
-        phone: formData.phone,
-        email: formData.email,
-        message: formData.message
-      });
-    } catch (emailError) {
-      console.error('Error sending emails:', emailError);
     }
 
     setLoading(false);

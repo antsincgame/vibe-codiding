@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import LoginModal from './LoginModal';
 
 export default function Header() {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -31,10 +29,6 @@ export default function Header() {
 
   return (
     <>
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
       <header className="site-header">
         <nav className="header-nav">
           <Link to="/" className="header-logo">
@@ -59,12 +53,6 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <button
-              onClick={() => setIsLoginModalOpen(true)}
-              className="cyber-button header-login-btn"
-            >
-              Вход
-            </button>
           </div>
         </nav>
 
@@ -82,15 +70,6 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
-          <button
-            onClick={() => {
-              setIsLoginModalOpen(true);
-              closeMenu();
-            }}
-            className="cyber-button mobile-menu-btn"
-          >
-            Вход
-          </button>
         </div>
       </header>
     </>
