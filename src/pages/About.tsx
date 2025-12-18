@@ -220,41 +220,6 @@ export default function About() {
           </ul>
         </div>
 
-        <div className="cyber-card" style={{ marginBottom: '40px' }}>
-          <h3 style={{
-            fontSize: 'clamp(24px, 4vw, 32px)',
-            marginBottom: '20px',
-            color: 'var(--neon-pink)'
-          }}>
-            Что вы освоите на курсе
-          </h3>
-          <p style={{ fontSize: '18px', lineHeight: '1.9', marginBottom: '20px', opacity: 0.95 }}>
-            Дмитрий проведет вас через весь путь создания веб-проекта — от первоначальной идеи до запуска готового сайта и привлечения клиентов. Сложные технические темы он объясняет простым и понятным языком, делая обучение доступным для каждого.
-          </p>
-
-          <h4 style={{
-            fontSize: '22px',
-            marginTop: '30px',
-            marginBottom: '15px',
-            color: 'var(--neon-green)'
-          }}>
-            На занятиях вы научитесь:
-          </h4>
-          <ul style={{
-            fontSize: '18px',
-            lineHeight: '2',
-            paddingLeft: '25px',
-            opacity: 0.95
-          }}>
-            <li>Превращать идеи в работающие веб-проекты</li>
-            <li>Создавать современные адаптивные сайты</li>
-            <li>Размещать проекты на хостинге и настраивать домены</li>
-            <li>Находить и исправлять ошибки в коде</li>
-            <li>Составлять эффективные промпты для AI-инструментов</li>
-            <li>Использовать искусственный интеллект для ускорения разработки</li>
-            <li>Применять базовые SEO-техники для привлечения трафика</li>
-          </ul>
-        </div>
       </section>
 
       <section style={{
@@ -340,94 +305,6 @@ export default function About() {
             <p>
               Дмитрий постоянно исследует новые технологии и инструменты разработки, интегрируя в учебную программу только проверенные и актуальные решения. Его страсть к инновациям и искусственному интеллекту делает занятия не только полезными, но и вдохновляющими.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <section style={{
-        padding: '80px 20px',
-        maxWidth: '1200px',
-        margin: '0 auto'
-      }}>
-        <h2 style={{
-          fontSize: 'clamp(32px, 5vw, 48px)',
-          textAlign: 'center',
-          marginBottom: '50px',
-          color: 'var(--neon-cyan)'
-        }}>
-          Присоединяйтесь к курсу и откройте для себя мир современной веб-разработки!
-        </h2>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-          gap: '40px'
-        }}>
-          <div className="cyber-card" style={{
-            background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 255, 249, 0.1))',
-            textAlign: 'center',
-            padding: '40px'
-          }}>
-            <h3 style={{
-              fontSize: 'clamp(24px, 4vw, 32px)',
-              marginBottom: '20px',
-              color: 'var(--neon-pink)'
-            }}>
-              Ознакомиться с Vibe-Coding
-            </h3>
-            <p style={{
-              fontSize: '18px',
-              opacity: 0.9,
-              marginBottom: '30px',
-              lineHeight: '1.7'
-            }}>
-              Посмотрите видео о том, что такое Vibe-Coding и как мы обучаем программированию
-            </p>
-            <a
-              href="https://www.youtube.com/watch?v=w3K1EguBrTc"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ textDecoration: 'none' }}
-            >
-              <button className="cyber-button" style={{
-                fontSize: '18px',
-                padding: '15px 35px',
-                borderColor: 'var(--neon-pink)',
-                color: 'var(--neon-pink)'
-              }}>
-                Смотреть видео
-              </button>
-            </a>
-          </div>
-
-          <div className="cyber-card" style={{
-            background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(0, 255, 65, 0.1))',
-            textAlign: 'center',
-            padding: '40px'
-          }}>
-            <h3 style={{
-              fontSize: 'clamp(24px, 4vw, 32px)',
-              marginBottom: '20px',
-              color: 'var(--neon-cyan)'
-            }}>
-              Готовы начать обучение?
-            </h3>
-            <p style={{
-              fontSize: '18px',
-              opacity: 0.9,
-              marginBottom: '30px',
-              lineHeight: '1.7'
-            }}>
-              Свяжитесь с нами, чтобы узнать больше о курсах
-            </p>
-            <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
-              <button className="cyber-button" style={{
-                fontSize: '18px',
-                padding: '15px 35px'
-              }}>
-                WhatsApp
-              </button>
-            </a>
           </div>
         </div>
       </section>

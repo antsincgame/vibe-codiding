@@ -271,6 +271,46 @@ export default function Home() {
         maxWidth: '1200px',
         margin: '0 auto'
       }}>
+        <div className="cyber-card" style={{ marginBottom: '60px' }}>
+          <h2 style={{
+            fontSize: 'clamp(32px, 5vw, 48px)',
+            marginBottom: '20px',
+            color: 'var(--neon-pink)',
+            textAlign: 'center'
+          }}>
+            Что вы освоите на курсе
+          </h2>
+          <p style={{ fontSize: '18px', lineHeight: '1.9', marginBottom: '20px', opacity: 0.95, textAlign: 'center' }}>
+            Мы проведем вас через весь путь создания веб-проекта — от первоначальной идеи до запуска готового сайта и привлечения клиентов. Сложные технические темы объясняются простым и понятным языком, делая обучение доступным для каждого.
+          </p>
+
+          <h3 style={{
+            fontSize: '22px',
+            marginTop: '30px',
+            marginBottom: '15px',
+            color: 'var(--neon-green)',
+            textAlign: 'center'
+          }}>
+            На занятиях вы научитесь:
+          </h3>
+          <ul style={{
+            fontSize: '18px',
+            lineHeight: '2',
+            paddingLeft: '25px',
+            opacity: 0.95,
+            maxWidth: '800px',
+            margin: '0 auto'
+          }}>
+            <li>Превращать идеи в работающие веб-проекты</li>
+            <li>Создавать современные адаптивные сайты</li>
+            <li>Размещать проекты на хостинге и настраивать домены</li>
+            <li>Находить и исправлять ошибки в коде</li>
+            <li>Составлять эффективные промпты для AI-инструментов</li>
+            <li>Использовать искусственный интеллект для ускорения разработки</li>
+            <li>Применять базовые SEO-техники для привлечения трафика</li>
+          </ul>
+        </div>
+
         <h2 style={{
           fontSize: 'clamp(32px, 5vw, 48px)',
           textAlign: 'center',
