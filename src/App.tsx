@@ -6,7 +6,6 @@ import Courses from './pages/Courses';
 import About from './pages/About';
 import Trial from './pages/Trial';
 import FAQ from './pages/FAQ';
-import Parents from './pages/Parents';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import CourseDetail from './pages/CourseDetail';
@@ -38,7 +37,6 @@ function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/trial" element={<Trial />} />
                   <Route path="/faq" element={<FAQ />} />
-                  <Route path="/parents" element={<Parents />} />
                   <Route path="/works" element={<StudentWorks />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogPostPage />} />

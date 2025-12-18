@@ -21,8 +21,7 @@ export default function Header() {
     { to: '/', label: 'Главная' },
     { to: '/lessons', label: 'Уроки' },
     { to: '/about', label: 'О преподавателе' },
-    { to: '/parents', label: 'Родителям' },
-    { to: '/faq', label: 'Вопросы' },
+    { to: '/faq', label: 'FAQ' },
     { to: '/works', label: 'Работы' },
     { to: '/blog', label: 'Блог' },
   ];
