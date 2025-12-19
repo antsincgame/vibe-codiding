@@ -5,9 +5,18 @@ import { supabase } from '../lib/supabase';
 export default function Footer() {
   const navigate = useNavigate();
   const [settings, setSettings] = useState<Record<string, string>>({});
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     loadSettings();
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const loadSettings = async () => {
@@ -32,40 +41,51 @@ export default function Footer() {
     <footer style={{
       background: 'rgba(19, 19, 26, 0.9)',
       borderTop: '1px solid var(--neon-cyan)',
-      marginTop: '80px',
-      padding: '40px 20px'
+      marginTop: isMobile ? '40px' : '80px',
+      padding: isMobile ? '30px 15px' : '40px 20px'
     }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '40px'
+        gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: isMobile ? '30px' : '40px'
       }}>
         <div>
           <h3 style={{
-            fontSize: '24px',
-            marginBottom: '20px',
+            fontSize: isMobile ? '20px' : '24px',
+            marginBottom: '15px',
             color: 'var(--neon-cyan)'
           }}>
             {settings.school_name || 'Vibecoding'}
           </h3>
-          <p style={{ opacity: 0.8, lineHeight: '1.8' }}>
+          <p style={{
+            opacity: 0.8,
+            lineHeight: '1.8',
+            fontSize: isMobile ? '14px' : '16px'
+          }}>
             {settings.about_text || 'Школа программирования для подростков и взрослых, обучение веб разработки, веб приложений'}
           </p>
         </div>
-        
+
         <div>
           <h4 style={{
-            fontSize: '18px',
-            marginBottom: '20px',
+            fontSize: isMobile ? '16px' : '18px',
+            marginBottom: '15px',
             color: 'var(--neon-pink)'
           }}>
             Контакты
           </h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', opacity: 0.8 }}>
-            <div>
-              📍 <a
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            opacity: 0.8,
+            fontSize: isMobile ? '14px' : '16px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+              <span style={{ flexShrink: 0 }}>📍</span>
+              <a
                 href="https://yandex.by/maps/-/CLDYuCZU"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -80,8 +100,9 @@ export default function Footer() {
                 {settings.address || 'ул. Краснопартизанская 55-2, каб.29'}
               </a>
             </div>
-            <div>
-              📞 <a
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ flexShrink: 0 }}>📞</span>
+              <a
                 href="https://wa.me/375292828878"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -96,7 +117,7 @@ export default function Footer() {
                 {settings.phone || '+375 (29) 282-88-78'}
               </a>
             </div>
-            <div style={{ display: 'flex', gap: '15px', marginTop: '10px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '15px', marginTop: '5px', alignItems: 'center' }}>
               <a
                 href="https://t.me/dzmitryarlou"
                 target="_blank"
@@ -122,8 +143,8 @@ export default function Footer() {
                 }}
               >
                 <svg
-                  width="24"
-                  height="24"
+                  width={isMobile ? "20" : "24"}
+                  height={isMobile ? "20" : "24"}
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   style={{ flexShrink: 0 }}
@@ -135,22 +156,25 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        
+
       </div>
-      
+
       <div style={{
         maxWidth: '1200px',
-        margin: '40px auto 0',
+        margin: isMobile ? '30px auto 0' : '40px auto 0',
         paddingTop: '20px',
+        paddingLeft: isMobile ? '15px' : '0',
+        paddingRight: isMobile ? '15px' : '0',
         borderTop: '1px solid rgba(0, 255, 249, 0.2)',
         textAlign: 'center'
       }}>
-        <div style={{ opacity: 0.6 }}>
+        <div style={{ opacity: 0.6, marginBottom: '12px' }}>
           <span
             onClick={handleCopyrightClick}
             style={{
               cursor: 'pointer',
-              transition: 'opacity 0.3s'
+              transition: 'opacity 0.3s',
+              fontSize: isMobile ? '13px' : '14px'
             }}
             onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
             onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
@@ -159,10 +183,10 @@ export default function Footer() {
           </span>
         </div>
         <div style={{
-          marginTop: '10px',
-          fontSize: '13px',
+          fontSize: isMobile ? '11px' : '13px',
           opacity: 0.7,
-          lineHeight: '1.6'
+          lineHeight: '1.6',
+          padding: isMobile ? '0 10px' : '0'
         }}>
           Деятельность ведет Орлов Дмитрий Дмитриевич, УНП: НА8252796
         </div>
