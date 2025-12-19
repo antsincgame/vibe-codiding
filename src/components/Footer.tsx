@@ -64,7 +64,22 @@ export default function Footer() {
             Контакты
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', opacity: 0.8 }}>
-            <div>📍 {settings.address || 'г. Гродно'}</div>
+            <div>
+              📍 <a
+                href="https://yandex.by/maps/-/CLDYuCZU"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: 'inherit',
+                  textDecoration: 'none',
+                  transition: 'color 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--neon-cyan)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
+              >
+                {settings.address || 'ул. Краснопартизанская 55-2, каб.29'}
+              </a>
+            </div>
             <div>
               📞 <a
                 href="https://wa.me/375292828878"
@@ -83,7 +98,7 @@ export default function Footer() {
             </div>
             <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
               <a
-                href="https://wa.me/375292828878"
+                href="https://t.me/dzmitryarlou"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -101,7 +116,7 @@ export default function Footer() {
                   e.currentTarget.style.opacity = '0.8';
                 }}
               >
-                💬
+                ✈️
               </a>
             </div>
           </div>
@@ -128,6 +143,9 @@ export default function Footer() {
         >
           © 2025 Vibecoding. Все права защищены.
         </span>
+        <div style={{ marginTop: '10px', fontSize: '12px', opacity: 0.5 }}>
+          Деятельность ведет Орлов Дмитрий Дмитриевич, УНП: НА8252796
+        </div>
       </div>
     </footer>
   );
