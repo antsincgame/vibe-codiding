@@ -96,27 +96,41 @@ export default function Footer() {
                 {settings.phone || '+375 (29) 282-88-78'}
               </a>
             </div>
-            <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+            <div style={{ display: 'flex', gap: '15px', marginTop: '10px', alignItems: 'center' }}>
               <a
                 href="https://t.me/dzmitryarlou"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  fontSize: '28px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: 'inherit',
                   textDecoration: 'none',
-                  transition: 'transform 0.3s, opacity 0.3s',
+                  transition: 'transform 0.3s, opacity 0.3s, color 0.3s',
                   opacity: 0.8
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.2)';
+                  e.currentTarget.style.transform = 'scale(1.05)';
                   e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.color = 'var(--neon-cyan)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'scale(1)';
                   e.currentTarget.style.opacity = '0.8';
+                  e.currentTarget.style.color = 'inherit';
                 }}
               >
-                ✈️
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  style={{ flexShrink: 0 }}
+                >
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.693-1.653-1.124-2.678-1.8-1.185-.781-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.008-1.252-.242-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.14.121.099.155.232.171.325.016.093.036.305.02.47z"/>
+                </svg>
+                <span>Telegram</span>
               </a>
             </div>
           </div>
@@ -129,21 +143,27 @@ export default function Footer() {
         margin: '40px auto 0',
         paddingTop: '20px',
         borderTop: '1px solid rgba(0, 255, 249, 0.2)',
-        textAlign: 'center',
-        opacity: 0.6
+        textAlign: 'center'
       }}>
-        <span
-          onClick={handleCopyrightClick}
-          style={{
-            cursor: 'pointer',
-            transition: 'opacity 0.3s'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-          onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
-        >
-          © 2025 Vibecoding. Все права защищены.
-        </span>
-        <div style={{ marginTop: '10px', fontSize: '12px', opacity: 0.5 }}>
+        <div style={{ opacity: 0.6 }}>
+          <span
+            onClick={handleCopyrightClick}
+            style={{
+              cursor: 'pointer',
+              transition: 'opacity 0.3s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
+          >
+            © 2025 Vibecoding. Все права защищены.
+          </span>
+        </div>
+        <div style={{
+          marginTop: '10px',
+          fontSize: '13px',
+          opacity: 0.7,
+          lineHeight: '1.6'
+        }}>
           Деятельность ведет Орлов Дмитрий Дмитриевич, УНП: НА8252796
         </div>
       </div>
