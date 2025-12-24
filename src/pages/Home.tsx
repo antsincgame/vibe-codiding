@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { stripMarkdown } from '../lib/markdown';
 import type { Course, HomePageSettings } from '../types';
 import StudentWorksSection from '../components/StudentWorksSection';
 
@@ -246,7 +247,7 @@ export default function Home() {
                 lineHeight: '1.7',
                 flex: 1
               }}>
-                {course.description}
+                {stripMarkdown(course.description).substring(0, 200)}{stripMarkdown(course.description).length > 200 ? '...' : ''}
               </p>
               {Array.isArray(course.features) && course.features.length > 0 && (
                 <div style={{

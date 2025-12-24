@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { renderMarkdown } from '../lib/markdown';
 import type { Course } from '../types';
 
 const setSEO = (course: Course) => {
@@ -192,14 +193,15 @@ export default function CourseDetail() {
             }}>
               О курсе
             </h2>
-            <p style={{
-              fontSize: '20px',
-              lineHeight: '1.8',
-              opacity: 0.9,
-              marginBottom: '40px'
-            }}>
-              {course.description}
-            </p>
+            <div
+              style={{
+                fontSize: '20px',
+                lineHeight: '1.8',
+                opacity: 0.9,
+                marginBottom: '40px'
+              }}
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(course.description) }}
+            />
 
             <div style={{
               padding: '40px',

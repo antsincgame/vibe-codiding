@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { stripMarkdown } from '../lib/markdown';
 import type { Course } from '../types';
 
 const SEO = {
@@ -147,7 +148,7 @@ export default function Courses() {
                   lineHeight: '1.7',
                   flex: 1
                 }}>
-                  {course.description}
+                  {stripMarkdown(course.description).substring(0, 200)}{stripMarkdown(course.description).length > 200 ? '...' : ''}
                 </p>
                 
                 <div style={{

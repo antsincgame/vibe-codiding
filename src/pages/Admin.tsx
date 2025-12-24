@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../lib/storageService';
+import { renderMarkdown, stripMarkdown } from '../lib/markdown';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 
 export default function Admin() {
@@ -447,7 +448,7 @@ export default function Admin() {
                         {course.age_group} | {course.duration} | {course.price}
                       </div>
                       <p style={{ opacity: 0.8, marginBottom: '15px', fontSize: '14px' }}>
-                        {course.description.length > 150 ? course.description.substring(0, 150) + '...' : course.description}
+                        {stripMarkdown(course.description).substring(0, 150)}{stripMarkdown(course.description).length > 150 ? '...' : ''}
                       </p>
                       {Array.isArray(course.features) && course.features.length > 0 && (
                         <div style={{ fontSize: '12px', opacity: 0.6, marginBottom: '15px' }}>
@@ -915,6 +916,7 @@ function CourseModal({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [newFeature, setNewFeature] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
 
   const generateSlug = (title: string) => {
     return title
@@ -1032,15 +1034,68 @@ function CourseModal({
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Описание *
-          </label>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+            <label style={{ color: 'var(--neon-cyan)', fontWeight: 600 }}>
+              Описание * (Markdown)
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowPreview(!showPreview)}
+              style={{
+                background: 'transparent',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '4px 12px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                borderRadius: '4px'
+              }}
+            >
+              {showPreview ? 'Скрыть предпросмотр' : 'Показать предпросмотр'}
+            </button>
+          </div>
+          <div style={{
+            fontSize: '12px',
+            opacity: 0.7,
+            marginBottom: '8px',
+            padding: '8px 12px',
+            background: 'rgba(0, 255, 249, 0.05)',
+            border: '1px solid rgba(0, 255, 249, 0.2)',
+            borderRadius: '4px'
+          }}>
+            Поддерживается Markdown: **жирный**, *курсив*, # Заголовок, ## Подзаголовок, - списки, [ссылка](url)
+          </div>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            rows={4}
-            placeholder="Подробное описание курса"
+            rows={8}
+            placeholder="Подробное описание курса с поддержкой Markdown"
+            style={{ fontFamily: 'monospace', fontSize: '14px' }}
           />
+          {showPreview && formData.description && (
+            <div style={{
+              marginTop: '15px',
+              padding: '20px',
+              background: 'rgba(0, 0, 0, 0.3)',
+              border: '1px solid rgba(0, 255, 249, 0.3)',
+              borderRadius: '6px'
+            }}>
+              <div style={{
+                fontSize: '12px',
+                color: 'var(--neon-green)',
+                marginBottom: '10px',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
+              }}>
+                Предпросмотр:
+              </div>
+              <div
+                style={{ fontSize: '16px', lineHeight: '1.8' }}
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(formData.description) }}
+              />
+            </div>
+          )}
         </div>
 
         <div style={{ marginBottom: '20px' }}>
