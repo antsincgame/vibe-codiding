@@ -103,6 +103,26 @@ export default function CourseDetail() {
       paddingRight: '20px'
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {course.image_url && (
+          <div style={{
+            width: '100%',
+            height: '350px',
+            marginBottom: '60px',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            border: '2px solid rgba(0, 255, 249, 0.3)'
+          }}>
+            <img
+              src={course.image_url}
+              alt={course.title}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          </div>
+        )}
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr',
@@ -185,40 +205,51 @@ export default function CourseDetail() {
               padding: '40px',
               background: 'rgba(0, 255, 249, 0.05)',
               border: '1px solid rgba(0, 255, 249, 0.3)',
-              marginBottom: '40px'
+              marginBottom: '40px',
+              borderRadius: '8px'
             }}>
               <h3 style={{
                 fontSize: '24px',
-                marginBottom: '25px',
+                marginBottom: '30px',
                 color: 'var(--neon-green)',
                 textTransform: 'uppercase',
                 letterSpacing: '2px'
               }}>
                 Чему вы научитесь:
               </h3>
-              <ul style={{
-                listStyle: 'none',
-                padding: 0,
+              <div style={{
                 display: 'grid',
-                gap: '15px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '16px'
               }}>
                 {(course.features as string[]).map((feature, idx) => (
-                  <li key={idx} style={{
-                    fontSize: '18px',
-                    paddingLeft: '35px',
-                    position: 'relative',
-                    lineHeight: '1.6'
+                  <div key={idx} style={{
+                    padding: '16px 20px',
+                    background: 'rgba(0, 255, 249, 0.08)',
+                    border: '1px solid rgba(0, 255, 249, 0.25)',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    transition: 'all 0.2s ease'
                   }}>
                     <span style={{
-                      position: 'absolute',
-                      left: 0,
-                      fontSize: '24px',
-                      color: 'var(--neon-cyan)'
-                    }}>▸</span>
-                    {feature}
-                  </li>
+                      fontSize: '20px',
+                      color: 'var(--neon-cyan)',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                      fontWeight: 700
+                    }}>✓</span>
+                    <span style={{
+                      fontSize: '16px',
+                      lineHeight: '1.5',
+                      opacity: 0.95
+                    }}>
+                      {feature}
+                    </span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div style={{

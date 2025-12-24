@@ -205,22 +205,33 @@ export default function Home() {
           marginBottom: '40px'
         }}>
           {courses.map((course, index) => (
-            <div key={course.id} className="cyber-card">
+            <div key={course.id} className="cyber-card" style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{
                 height: '200px',
-                background: course.image_url
-                  ? `url(${course.image_url}) center/cover no-repeat`
-                  : index % 2 === 0
-                    ? 'linear-gradient(135deg, var(--neon-cyan), var(--neon-pink))'
-                    : 'linear-gradient(135deg, var(--neon-green), var(--neon-cyan))',
+                background: course.image_url ? 'transparent' : (index % 2 === 0
+                  ? 'linear-gradient(135deg, var(--neon-cyan), var(--neon-pink))'
+                  : 'linear-gradient(135deg, var(--neon-green), var(--neon-cyan))'),
                 marginBottom: '20px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '60px',
-                borderRadius: '4px'
+                borderRadius: '4px',
+                overflow: 'hidden'
               }}>
-                {!course.image_url && '💻'}
+                {course.image_url ? (
+                  <img
+                    src={course.image_url}
+                    alt={course.title}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                ) : (
+                  '💻'
+                )}
               </div>
               <h3 style={{
                 fontSize: '24px',
@@ -232,36 +243,50 @@ export default function Home() {
               <p style={{
                 opacity: 0.8,
                 marginBottom: '20px',
-                lineHeight: '1.7'
+                lineHeight: '1.7',
+                flex: 1
               }}>
                 {course.description}
               </p>
               {Array.isArray(course.features) && course.features.length > 0 && (
                 <div style={{
                   marginBottom: '20px',
-                  padding: '15px',
-                  background: 'rgba(0, 255, 249, 0.05)',
-                  border: '1px solid rgba(0, 255, 249, 0.2)',
-                  borderRadius: '4px'
+                  padding: '20px',
+                  background: 'rgba(0, 255, 249, 0.08)',
+                  border: '1px solid rgba(0, 255, 249, 0.3)',
+                  borderRadius: '6px'
                 }}>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {(course.features as string[]).slice(0, 3).map((feature, idx) => (
-                      <li key={idx} style={{
-                        marginBottom: idx < 2 ? '8px' : 0,
-                        paddingLeft: '16px',
-                        position: 'relative',
-                        fontSize: '14px',
-                        opacity: 0.9
+                  <h4 style={{
+                    fontSize: '13px',
+                    color: 'var(--neon-green)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    marginBottom: '12px',
+                    fontWeight: 600
+                  }}>
+                    Основные особенности:
+                  </h4>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '10px'
+                  }}>
+                    {(course.features as string[]).map((feature, idx) => (
+                      <div key={idx} style={{
+                        fontSize: '13px',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 255, 249, 0.1)',
+                        border: '1px solid rgba(0, 255, 249, 0.2)',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
                       }}>
-                        <span style={{
-                          position: 'absolute',
-                          left: 0,
-                          color: 'var(--neon-cyan)'
-                        }}>▸</span>
-                        {feature}
-                      </li>
+                        <span style={{ color: 'var(--neon-cyan)', fontWeight: 700 }}>✓</span>
+                        <span>{feature}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
               <div style={{
