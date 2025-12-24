@@ -21,19 +21,35 @@ export default function Admin() {
   const [editingBlogPost, setEditingBlogPost] = useState<BlogPost | null>(null);
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-    loadData();
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        localStorage.removeItem('isAdminAuthenticated');
+        navigate('/login');
+        return;
+      }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      if (!profile || profile.role !== 'admin') {
+        await supabase.auth.signOut();
+        localStorage.removeItem('isAdminAuthenticated');
+        navigate('/login');
+        return;
+      }
+      loadData();
+    };
+    checkAuth();
   }, []);
 
   useEffect(() => {
     loadData();
   }, [activeTab]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     localStorage.removeItem('isAdminAuthenticated');
     navigate('/');
   };
@@ -142,23 +158,52 @@ export default function Admin() {
   };
 
   const saveCourse = async (course: Partial<Course>) => {
-    if (course.id) {
-      await supabase.from('courses').update(course).eq('id', course.id);
-    } else {
-      await supabase.from('courses').insert([course]);
+    try {
+      if (course.id) {
+        const { error } = await supabase.from('courses').update(course).eq('id', course.id);
+        if (error) {
+          alert(`Ошибка сохранения: ${error.message}`);
+          console.error('Error saving course:', error);
+          return;
+        }
+      } else {
+        const { id, ...courseWithoutId } = course;
+        const { error } = await supabase.from('courses').insert([courseWithoutId]);
+        if (error) {
+          alert(`Ошибка создания курса: ${error.message}`);
+          console.error('Error creating course:', error);
+          return;
+        }
+      }
+      setEditingCourse(null);
+      loadData();
+    } catch (err) {
+      alert('Произошла ошибка при сохранении');
+      console.error('Error:', err);
     }
-    setEditingCourse(null);
-    loadData();
   };
 
   const saveFaq = async (faq: Partial<FAQ>) => {
-    if (faq.id) {
-      await supabase.from('faqs').update(faq).eq('id', faq.id);
-    } else {
-      await supabase.from('faqs').insert([faq]);
+    try {
+      if (faq.id) {
+        const { error } = await supabase.from('faqs').update(faq).eq('id', faq.id);
+        if (error) {
+          alert(`Ошибка сохранения: ${error.message}`);
+          return;
+        }
+      } else {
+        const { id, ...faqWithoutId } = faq;
+        const { error } = await supabase.from('faqs').insert([faqWithoutId]);
+        if (error) {
+          alert(`Ошибка создания: ${error.message}`);
+          return;
+        }
+      }
+      setEditingFaq(null);
+      loadData();
+    } catch (err) {
+      alert('Произошла ошибка при сохранении');
     }
-    setEditingFaq(null);
-    loadData();
   };
 
   const deleteWork = async (id: string) => {
@@ -168,14 +213,26 @@ export default function Admin() {
   };
 
   const saveWork = async (work: Partial<StudentWork>) => {
-    if (work.id) {
-      await supabase.from('student_works').update(work).eq('id', work.id);
-    } else {
-      const { id, ...workWithoutId } = work;
-      await supabase.from('student_works').insert([workWithoutId]);
+    try {
+      if (work.id) {
+        const { error } = await supabase.from('student_works').update(work).eq('id', work.id);
+        if (error) {
+          alert(`Ошибка сохранения: ${error.message}`);
+          return;
+        }
+      } else {
+        const { id, ...workWithoutId } = work;
+        const { error } = await supabase.from('student_works').insert([workWithoutId]);
+        if (error) {
+          alert(`Ошибка создания: ${error.message}`);
+          return;
+        }
+      }
+      setEditingWork(null);
+      loadData();
+    } catch (err) {
+      alert('Произошла ошибка при сохранении');
     }
-    setEditingWork(null);
-    loadData();
   };
 
   const deleteBlogPost = async (id: string) => {
@@ -185,17 +242,29 @@ export default function Admin() {
   };
 
   const saveBlogPost = async (post: Partial<BlogPost>) => {
-    if (post.id) {
-      await supabase.from('blog_posts').update({
-        ...post,
-        updated_at: new Date().toISOString()
-      }).eq('id', post.id);
-    } else {
-      const { id, ...postWithoutId } = post;
-      await supabase.from('blog_posts').insert([postWithoutId]);
+    try {
+      if (post.id) {
+        const { error } = await supabase.from('blog_posts').update({
+          ...post,
+          updated_at: new Date().toISOString()
+        }).eq('id', post.id);
+        if (error) {
+          alert(`Ошибка сохранения: ${error.message}`);
+          return;
+        }
+      } else {
+        const { id, ...postWithoutId } = post;
+        const { error } = await supabase.from('blog_posts').insert([postWithoutId]);
+        if (error) {
+          alert(`Ошибка создания: ${error.message}`);
+          return;
+        }
+      }
+      setEditingBlogPost(null);
+      loadData();
+    } catch (err) {
+      alert('Произошла ошибка при сохранении');
     }
-    setEditingBlogPost(null);
-    loadData();
   };
 
   const updateRegistrationStatus = async (id: string, status: string) => {

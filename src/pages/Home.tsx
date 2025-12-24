@@ -204,18 +204,23 @@ export default function Home() {
           gap: '30px',
           marginBottom: '40px'
         }}>
-          {courses.map((course) => (
+          {courses.map((course, index) => (
             <div key={course.id} className="cyber-card">
               <div style={{
                 height: '200px',
-                background: 'linear-gradient(135deg, var(--neon-cyan), var(--neon-pink))',
+                background: course.image_url
+                  ? `url(${course.image_url}) center/cover no-repeat`
+                  : index % 2 === 0
+                    ? 'linear-gradient(135deg, var(--neon-cyan), var(--neon-pink))'
+                    : 'linear-gradient(135deg, var(--neon-green), var(--neon-cyan))',
                 marginBottom: '20px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '60px'
+                fontSize: '60px',
+                borderRadius: '4px'
               }}>
-                💻
+                {!course.image_url && '💻'}
               </div>
               <h3 style={{
                 fontSize: '24px',
@@ -231,6 +236,34 @@ export default function Home() {
               }}>
                 {course.description}
               </p>
+              {Array.isArray(course.features) && course.features.length > 0 && (
+                <div style={{
+                  marginBottom: '20px',
+                  padding: '15px',
+                  background: 'rgba(0, 255, 249, 0.05)',
+                  border: '1px solid rgba(0, 255, 249, 0.2)',
+                  borderRadius: '4px'
+                }}>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {(course.features as string[]).slice(0, 3).map((feature, idx) => (
+                      <li key={idx} style={{
+                        marginBottom: idx < 2 ? '8px' : 0,
+                        paddingLeft: '16px',
+                        position: 'relative',
+                        fontSize: '14px',
+                        opacity: 0.9
+                      }}>
+                        <span style={{
+                          position: 'absolute',
+                          left: 0,
+                          color: 'var(--neon-cyan)'
+                        }}>▸</span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
