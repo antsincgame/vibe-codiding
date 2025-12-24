@@ -402,10 +402,20 @@ export default function Admin() {
                       <div style={{
                         width: '180px',
                         height: '120px',
-                        background: `url(${course.image_url}) center/cover no-repeat`,
                         borderRadius: '6px',
-                        flexShrink: 0
-                      }} />
+                        flexShrink: 0,
+                        overflow: 'hidden'
+                      }}>
+                        <img
+                          src={course.image_url}
+                          alt={course.title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
                     )}
                     <div style={{ flex: 1, minWidth: '250px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
@@ -637,10 +647,20 @@ export default function Admin() {
                       <div style={{
                         width: '150px',
                         height: '100px',
-                        background: `url(${work.image_url}) center/cover no-repeat`,
                         borderRadius: '4px',
-                        flexShrink: 0
-                      }} />
+                        flexShrink: 0,
+                        overflow: 'hidden'
+                      }}>
+                        <img
+                          src={work.image_url}
+                          alt={work.project_title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
                     )}
                     <div style={{ flex: 1, minWidth: '200px' }}>
                       <div style={{
@@ -740,10 +760,20 @@ export default function Admin() {
                       <div style={{
                         width: '200px',
                         height: '120px',
-                        background: `url(${post.image_url}) center/cover no-repeat`,
                         borderRadius: '4px',
-                        flexShrink: 0
-                      }} />
+                        flexShrink: 0,
+                        overflow: 'hidden'
+                      }}>
+                        <img
+                          src={post.image_url}
+                          alt={post.title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
                     )}
                     <div style={{ flex: 1, minWidth: '200px' }}>
                       <div style={{
@@ -1039,11 +1069,21 @@ function CourseModal({
               <div style={{
                 width: '100%',
                 height: '200px',
-                background: `url(${formData.image_url}) center/cover no-repeat`,
                 borderRadius: '8px',
                 border: '1px solid var(--neon-cyan)',
-                marginBottom: '10px'
-              }} />
+                marginBottom: '10px',
+                overflow: 'hidden'
+              }}>
+                <img
+                  src={formData.image_url}
+                  alt="Preview"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                />
+              </div>
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, image_url: '' })}
@@ -1495,10 +1535,20 @@ function StudentWorkModal({
               marginTop: '10px',
               width: '100%',
               height: '150px',
-              background: `url(${formData.image_url}) center/cover no-repeat`,
               borderRadius: '4px',
-              border: '1px solid var(--neon-cyan)'
-            }} />
+              border: '1px solid var(--neon-cyan)',
+              overflow: 'hidden'
+            }}>
+              <img
+                src={formData.image_url}
+                alt="Preview"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
           )}
         </div>
 
@@ -1714,10 +1764,20 @@ function BlogPostModal({
               marginTop: '10px',
               width: '100%',
               height: '200px',
-              background: `url(${formData.image_url}) center/cover no-repeat`,
               borderRadius: '4px',
-              border: '1px solid var(--neon-cyan)'
-            }} />
+              border: '1px solid var(--neon-cyan)',
+              overflow: 'hidden'
+            }}>
+              <img
+                src={formData.image_url}
+                alt="Preview"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
           )}
         </div>
 

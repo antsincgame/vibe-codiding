@@ -137,10 +137,20 @@ export default function BlogPostPage() {
           <div style={{
             width: '100%',
             height: '400px',
-            background: `url(${post.image_url}) center/cover no-repeat`,
             borderRadius: '8px',
-            marginBottom: '30px'
-          }} />
+            marginBottom: '30px',
+            overflow: 'hidden'
+          }}>
+            <img
+              src={post.image_url}
+              alt={post.title}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          </div>
         )}
 
         <div style={{

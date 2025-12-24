@@ -97,7 +97,7 @@ export default function Courses() {
               }}>
                 <div style={{
                   height: '250px',
-                  background: getGradient(index),
+                  background: course.image_url ? 'transparent' : getGradient(index),
                   marginBottom: '25px',
                   display: 'flex',
                   alignItems: 'center',
@@ -106,6 +106,19 @@ export default function Courses() {
                   position: 'relative',
                   overflow: 'hidden'
                 }}>
+                  {course.image_url ? (
+                    <img
+                      src={course.image_url}
+                      alt={course.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                  ) : (
+                    '💻'
+                  )}
                   <div style={{
                     position: 'absolute',
                     top: '10px',
@@ -118,7 +131,6 @@ export default function Courses() {
                   }}>
                     {course.age_group}
                   </div>
-                  💻
                 </div>
                 
                 <h2 style={{
