@@ -81,11 +81,13 @@ export default function Login() {
         </h1>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '25px' }}>
             <label style={{
               display: 'block',
-              marginBottom: '10px',
-              color: 'var(--neon-cyan)'
+              marginBottom: '12px',
+              color: 'var(--neon-cyan)',
+              fontSize: '16px',
+              fontWeight: 600
             }}>
               Email
             </label>
@@ -100,14 +102,17 @@ export default function Login() {
               placeholder="admin@example.com"
               disabled={loading}
               required
+              autoComplete="email"
             />
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '25px' }}>
             <label style={{
               display: 'block',
-              marginBottom: '10px',
-              color: 'var(--neon-pink)'
+              marginBottom: '12px',
+              color: 'var(--neon-pink)',
+              fontSize: '16px',
+              fontWeight: 600
             }}>
               Пароль
             </label>
@@ -122,6 +127,7 @@ export default function Login() {
               placeholder="Введите пароль"
               disabled={loading}
               required
+              autoComplete="current-password"
             />
           </div>
 
