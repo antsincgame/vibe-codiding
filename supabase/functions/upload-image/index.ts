@@ -93,26 +93,30 @@ Deno.serve(async (req: Request) => {
 
     await ensureBucketExists(supabaseUrl, supabaseServiceKey, config.bucket);
 
-    const contentType = file.type || 'application/octet-stream';
-    
+    const contentType = file.type || 'image/jpeg';
+
     const uploadResponse = await fetch(
       `${supabaseUrl}/storage/v1/object/${config.bucket}/${filePath}`,
       {
         method: "POST",
         headers: {
           authorization: `Bearer ${supabaseServiceKey}`,
-          "Content-Type": contentType,
-          "x-upsert": "true",
+          "content-type": contentType,
+          "cache-control": "3600",
         },
-        body: buffer,
+        body: new Uint8Array(buffer),
       }
     );
 
     if (!uploadResponse.ok) {
-      const error = await uploadResponse.text();
-      console.error("Upload failed:", error);
+      const errorText = await uploadResponse.text();
+      console.error("Upload failed:", errorText, "Status:", uploadResponse.status);
       return new Response(
-        JSON.stringify({ error: "Failed to upload image" }),
+        JSON.stringify({
+          error: "Failed to upload image",
+          details: errorText,
+          status: uploadResponse.status
+        }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

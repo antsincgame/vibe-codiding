@@ -21,15 +21,25 @@ export async function uploadImage(file: File, type: ImageType = 'general'): Prom
     );
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to upload image');
+      let errorMessage = 'Failed to upload image';
+      try {
+        const error = await response.json();
+        errorMessage = error.details || error.error || errorMessage;
+      } catch {
+        errorMessage = await response.text() || errorMessage;
+      }
+      console.error('Upload error:', errorMessage);
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
+    if (!data.url) {
+      throw new Error('No URL returned from upload');
+    }
     return data.url;
   } catch (error) {
     console.error('Error uploading file:', error);
-    throw error;
+    throw error instanceof Error ? error : new Error('Unknown upload error');
   }
 }
 
