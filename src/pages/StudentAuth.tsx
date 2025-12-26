@@ -1,0 +1,316 @@
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+
+export default function StudentAuth() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, signUp, signIn, signInWithGoogle, loading: authLoading } = useAuth();
+  const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    fullName: ''
+  });
+
+  useEffect(() => {
+    if (user && !authLoading) {
+      const from = (location.state as any)?.from?.pathname || '/student/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [user, authLoading, navigate, location]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      let result;
+      if (isLogin) {
+        result = await signIn(formData.email, formData.password);
+      } else {
+        if (!formData.fullName) {
+          setError('Пожалуйста, введите имя');
+          setLoading(false);
+          return;
+        }
+        result = await signUp(formData.email, formData.password, formData.fullName);
+      }
+
+      if (result.error) {
+        if (result.error.message.includes('Invalid login credentials')) {
+          setError('Неверный email или пароль');
+        } else if (result.error.message.includes('already registered')) {
+          setError('Этот email уже зарегистрирован');
+        } else {
+          setError(result.error.message);
+        }
+      } else if (!isLogin) {
+        setError('');
+        alert('Регистрация успешна! Теперь можете войти.');
+        setIsLogin(true);
+      }
+    } catch (err) {
+      setError('Произошла ошибка. Попробуйте еще раз.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    const { error } = await signInWithGoogle();
+    if (error) {
+      setError('Ошибка входа через Google');
+    }
+  };
+
+  if (authLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ fontSize: '24px', color: 'var(--neon-cyan)' }}>Загрузка...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      minHeight: '100vh',
+      paddingTop: '120px',
+      paddingBottom: '60px',
+      paddingLeft: '20px',
+      paddingRight: '20px'
+    }}>
+      <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+        <h1 style={{
+          fontSize: 'clamp(36px, 6vw, 48px)',
+          textAlign: 'center',
+          marginBottom: '20px'
+        }} className="glitch" data-text={isLogin ? 'ВХОД' : 'РЕГИСТРАЦИЯ'}>
+          <span className="neon-text">{isLogin ? 'ВХОД' : 'РЕГИСТРАЦИЯ'}</span>
+        </h1>
+
+        <p style={{
+          textAlign: 'center',
+          fontSize: '18px',
+          opacity: 0.8,
+          marginBottom: '40px'
+        }}>
+          {isLogin ? 'Войдите в свой аккаунт' : 'Создайте аккаунт ученика'}
+        </p>
+
+        <div className="cyber-card" style={{ padding: '40px' }}>
+          <form onSubmit={handleSubmit}>
+            {!isLogin && (
+              <div style={{ marginBottom: '25px' }}>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '10px',
+                  fontSize: '16px',
+                  color: 'var(--neon-cyan)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  fontWeight: 600
+                }}>
+                  Имя *
+                </label>
+                <input
+                  type="text"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  required={!isLogin}
+                  className="cyber-input"
+                  placeholder="Введите ваше имя"
+                />
+              </div>
+            )}
+
+            <div style={{ marginBottom: '25px' }}>
+              <label style={{
+                display: 'block',
+                marginBottom: '10px',
+                fontSize: '16px',
+                color: 'var(--neon-cyan)',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                fontWeight: 600
+              }}>
+                Email *
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                className="cyber-input"
+                placeholder="email@example.com"
+              />
+            </div>
+
+            <div style={{ marginBottom: '30px' }}>
+              <label style={{
+                display: 'block',
+                marginBottom: '10px',
+                fontSize: '16px',
+                color: 'var(--neon-cyan)',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                fontWeight: 600
+              }}>
+                Пароль *
+              </label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+                className="cyber-input"
+                placeholder={isLogin ? 'Введите пароль' : 'Минимум 6 символов'}
+                minLength={6}
+              />
+            </div>
+
+            {error && (
+              <div style={{
+                marginBottom: '20px',
+                padding: '15px',
+                background: 'rgba(255, 0, 110, 0.1)',
+                border: '1px solid var(--neon-pink)',
+                borderRadius: '4px',
+                color: 'var(--neon-pink)',
+                fontSize: '14px',
+                textAlign: 'center'
+              }}>
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="cyber-button"
+              style={{
+                width: '100%',
+                fontSize: '18px',
+                marginBottom: '20px',
+                opacity: loading ? 0.5 : 1,
+                cursor: loading ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {loading ? 'ЗАГРУЗКА...' : (isLogin ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ')}
+            </button>
+          </form>
+
+          <div style={{
+            position: 'relative',
+            textAlign: 'center',
+            margin: '30px 0',
+            opacity: 0.6
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: 0,
+              right: 0,
+              height: '1px',
+              background: 'rgba(0, 255, 249, 0.3)'
+            }} />
+            <span style={{
+              position: 'relative',
+              background: 'var(--dark-bg)',
+              padding: '0 20px',
+              fontSize: '14px',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}>
+              или
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="cyber-button"
+            style={{
+              width: '100%',
+              fontSize: '16px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px'
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Войти через Google
+          </button>
+
+          <div style={{
+            marginTop: '30px',
+            textAlign: 'center',
+            fontSize: '14px',
+            opacity: 0.8
+          }}>
+            {isLogin ? (
+              <>
+                Нет аккаунта?{' '}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLogin(false);
+                    setError('');
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--neon-cyan)',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    fontSize: '14px'
+                  }}
+                >
+                  Зарегистрируйтесь
+                </button>
+              </>
+            ) : (
+              <>
+                Уже есть аккаунт?{' '}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLogin(true);
+                    setError('');
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--neon-cyan)',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    fontSize: '14px'
+                  }}
+                >
+                  Войдите
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

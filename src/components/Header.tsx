@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, profile } = useAuth();
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -51,6 +53,25 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {user ? (
+              <Link to="/student/dashboard" className="nav-link" style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                border: '1px solid var(--neon-cyan)'
+              }}>
+                {profile?.full_name || 'Профиль'}
+              </Link>
+            ) : (
+              <Link to="/student/login" className="nav-link" style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                border: '1px solid var(--neon-cyan)'
+              }}>
+                Вход
+              </Link>
+            )}
           </div>
         </nav>
 
@@ -68,6 +89,33 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          {user ? (
+            <Link
+              to="/student/dashboard"
+              className="mobile-menu-link"
+              onClick={closeMenu}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                marginTop: '10px'
+              }}
+            >
+              {profile?.full_name || 'Профиль'}
+            </Link>
+          ) : (
+            <Link
+              to="/student/login"
+              className="mobile-menu-link"
+              onClick={closeMenu}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                marginTop: '10px'
+              }}
+            >
+              Вход
+            </Link>
+          )}
         </div>
       </header>
     </>

@@ -1,8 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
 import TestBlock from './components/TestBlock';
+import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import About from './pages/About';
@@ -15,42 +17,64 @@ import StudentWorks from './pages/StudentWorks';
 import Blog from './pages/Blog';
 import BlogPostPage from './pages/BlogPostPage';
 import Privacy from './pages/Privacy';
+import StudentAuth from './pages/StudentAuth';
+import StudentDashboard from './pages/StudentDashboard';
 
 function App() {
   return (
     <Router>
-      <div className="cyber-grid" />
-      <div className="scan-line" />
+      <AuthProvider>
+        <div className="cyber-grid" />
+        <div className="scan-line" />
 
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route
-          path="/*"
-          element={
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/student/login" element={
             <div className="app-layout">
               <Header />
               <main className="app-content">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/course/:slug" element={<CourseDetail />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/trial" element={<Trial />} />
-                  <Route path="/q-a" element={<FAQ />} />
-                  <Route path="/works" element={<StudentWorks />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:slug" element={<BlogPostPage />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                </Routes>
-                <TestBlock />
-                <Footer />
+                <StudentAuth />
               </main>
             </div>
-          }
-        />
-      </Routes>
-      <CookieConsent />
+          } />
+          <Route path="/student/dashboard" element={
+            <div className="app-layout">
+              <Header />
+              <main className="app-content">
+                <ProtectedRoute>
+                  <StudentDashboard />
+                </ProtectedRoute>
+              </main>
+            </div>
+          } />
+          <Route
+            path="/*"
+            element={
+              <div className="app-layout">
+                <Header />
+                <main className="app-content">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/courses" element={<Courses />} />
+                    <Route path="/course/:slug" element={<CourseDetail />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/trial" element={<Trial />} />
+                    <Route path="/q-a" element={<FAQ />} />
+                    <Route path="/works" element={<StudentWorks />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/blog/:slug" element={<BlogPostPage />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                  </Routes>
+                  <TestBlock />
+                  <Footer />
+                </main>
+              </div>
+            }
+          />
+        </Routes>
+        <CookieConsent />
+      </AuthProvider>
     </Router>
   );
 }
