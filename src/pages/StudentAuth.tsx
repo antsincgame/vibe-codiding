@@ -111,7 +111,7 @@ export default function StudentAuth() {
           <form onSubmit={handleSubmit}>
             {!isLogin && (
               <div style={{ marginBottom: '25px' }}>
-                <label style={{
+                <label htmlFor="fullName" style={{
                   display: 'block',
                   marginBottom: '10px',
                   fontSize: '16px',
@@ -123,6 +123,8 @@ export default function StudentAuth() {
                   Имя *
                 </label>
                 <input
+                  id="fullName"
+                  name="fullName"
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
@@ -134,7 +136,7 @@ export default function StudentAuth() {
             )}
 
             <div style={{ marginBottom: '25px' }}>
-              <label style={{
+              <label htmlFor="email" style={{
                 display: 'block',
                 marginBottom: '10px',
                 fontSize: '16px',
@@ -146,17 +148,20 @@ export default function StudentAuth() {
                 Email *
               </label>
               <input
+                id="email"
+                name="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
                 className="cyber-input"
                 placeholder="email@example.com"
+                autoComplete="email"
               />
             </div>
 
             <div style={{ marginBottom: '30px' }}>
-              <label style={{
+              <label htmlFor="password" style={{
                 display: 'block',
                 marginBottom: '10px',
                 fontSize: '16px',
@@ -168,6 +173,8 @@ export default function StudentAuth() {
                 Пароль *
               </label>
               <input
+                id="password"
+                name="password"
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -175,6 +182,7 @@ export default function StudentAuth() {
                 className="cyber-input"
                 placeholder={isLogin ? 'Введите пароль' : 'Минимум 6 символов'}
                 minLength={6}
+                autoComplete="current-password"
               />
             </div>
 

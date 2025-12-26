@@ -12,6 +12,8 @@ export default function AuthCallback() {
     const urlParams = new URLSearchParams(window.location.search);
     const errorParam = urlParams.get('error');
     const errorDesc = urlParams.get('error_description');
+    const accessToken = urlParams.get('access_token');
+    const refreshToken = urlParams.get('refresh_token');
 
     if (errorParam) {
       setStatus(`Ошибка: ${errorDesc || errorParam}`);
@@ -19,28 +21,55 @@ export default function AuthCallback() {
       return;
     }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth event:', event, session?.user?.email);
-
-      if (event === 'SIGNED_IN' && session && !processedRef.current) {
-        processedRef.current = true;
-        window.history.replaceState(null, '', '/auth/callback');
-        setStatus('Успешно! Перенаправление...');
-        timeoutRef.current = setTimeout(() => {
-          window.location.href = '/student/dashboard';
-        }, 300);
+    const handleTokens = async () => {
+      if (accessToken && refreshToken && !processedRef.current) {
+        try {
+          processedRef.current = true;
+          await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          window.history.replaceState(null, '', '/auth/callback');
+          setStatus('Успешно! Перенаправление...');
+          timeoutRef.current = setTimeout(() => {
+            window.location.href = '/student/dashboard';
+          }, 300);
+        } catch (err) {
+          console.error('Error setting session:', err);
+          setStatus('Ошибка авторизации');
+          timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+        }
+        return;
       }
-    });
 
-    timeoutRef.current = setTimeout(() => {
-      if (!processedRef.current) {
-        setStatus('Сессия не найдена');
-        timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
-      }
-    }, 5000);
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        console.log('Auth event:', event, session?.user?.email);
+
+        if (event === 'SIGNED_IN' && session && !processedRef.current) {
+          processedRef.current = true;
+          window.history.replaceState(null, '', '/auth/callback');
+          setStatus('Успешно! Перенаправление...');
+          timeoutRef.current = setTimeout(() => {
+            window.location.href = '/student/dashboard';
+          }, 300);
+        }
+      });
+
+      timeoutRef.current = setTimeout(() => {
+        if (!processedRef.current) {
+          setStatus('Сессия не найдена');
+          timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+        }
+      }, 5000);
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    };
+
+    handleTokens();
 
     return () => {
-      subscription.unsubscribe();
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [navigate]);
