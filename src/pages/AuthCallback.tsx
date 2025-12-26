@@ -28,16 +28,24 @@ export default function AuthCallback() {
         try {
           processedRef.current = true;
           console.log('Setting session with tokens from URL');
-          await supabase.auth.setSession({
+          const { error: setSessionError } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
           });
-          console.log('Session set successfully');
+
+          if (setSessionError) {
+            throw setSessionError;
+          }
+
+          console.log('Session set successfully, verifying...');
+          const { data: { session: verifySession } } = await supabase.auth.getSession();
+          console.log('Session verified:', verifySession?.user?.email);
+
           window.history.replaceState(null, '', '/auth/callback');
           setStatus('Успешно! Перенаправление...');
           timeoutRef.current = setTimeout(() => {
             window.location.href = '/student/dashboard';
-          }, 300);
+          }, 500);
         } catch (err) {
           console.error('Error setting session:', err);
           setStatus('Ошибка авторизации');

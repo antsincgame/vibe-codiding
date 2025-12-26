@@ -34,13 +34,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true;
 
     const initAuth = async () => {
+      console.log('AuthContext: initAuth started');
       const { data: { session } } = await supabase.auth.getSession();
+      console.log('AuthContext: getSession result:', session?.user?.email);
 
       if (mounted) {
         if (session?.user) {
+          console.log('AuthContext: Found session, setting user and loading profile');
           setUser(session.user);
           await loadProfile(session.user.id);
         } else {
+          console.log('AuthContext: No session found');
           setUser(null);
           setLoading(false);
         }
@@ -52,11 +56,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!mounted) return;
 
+      console.log('AuthContext: onAuthStateChange event:', event, 'user:', session?.user?.email);
+
       (async () => {
         setUser(session?.user ?? null);
         if (session?.user) {
+          console.log('AuthContext: User signed in, loading profile');
           await loadProfile(session.user.id);
         } else {
+          console.log('AuthContext: User signed out');
           setProfile(null);
           setLoading(false);
         }
@@ -121,21 +129,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      console.log('signInWithGoogle: supabaseUrl:', supabaseUrl);
 
       const edgeFunctionUrl = `${supabaseUrl}/functions/v1/auth-exchange`;
+      const redirectUrl = `${edgeFunctionUrl}?origin=${encodeURIComponent(window.location.origin)}`;
+      console.log('signInWithGoogle: redirectTo:', redirectUrl);
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${edgeFunctionUrl}?origin=${encodeURIComponent(window.location.origin)}`,
+          redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account'
           }
         }
       });
+      console.log('signInWithGoogle: error:', error);
       return { error };
     } catch (error) {
+      console.error('signInWithGoogle: caught error:', error);
       return { error: error as AuthError };
     }
   };

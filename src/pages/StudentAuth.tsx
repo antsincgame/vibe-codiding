@@ -61,8 +61,10 @@ export default function StudentAuth() {
   };
 
   const handleGoogleSignIn = async () => {
+    console.log('handleGoogleSignIn clicked');
     setError('');
     const { error } = await signInWithGoogle();
+    console.log('handleGoogleSignIn result:', error);
     if (error) {
       setError('Ошибка входа через Google');
     }
