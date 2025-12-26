@@ -31,27 +31,67 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        loadProfile(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
+    let mounted = true;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const initAuth = async () => {
+      const hashParams = window.location.hash;
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+
+      if (code) {
+        try {
+          const { data } = await supabase.auth.exchangeCodeForSession(code);
+          if (mounted && data.session) {
+            setUser(data.session.user);
+            await loadProfile(data.session.user.id);
+            window.history.replaceState(null, '', window.location.pathname);
+            return;
+          }
+        } catch (err) {
+          console.error('OAuth code exchange error:', err);
+        }
+      }
+
+      if (hashParams.includes('access_token')) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (mounted) {
+        if (session?.user) {
+          setUser(session.user);
+          await loadProfile(session.user.id);
+          if (hashParams.includes('access_token')) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        } else {
+          setUser(null);
+          setLoading(false);
+        }
+      }
+    };
+
+    initAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+
       (async () => {
         setUser(session?.user ?? null);
         if (session?.user) {
           await loadProfile(session.user.id);
         } else {
           setProfile(null);
+          setLoading(false);
         }
       })();
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const loadProfile = async (userId: string) => {
