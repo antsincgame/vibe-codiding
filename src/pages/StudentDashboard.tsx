@@ -9,6 +9,8 @@ export default function StudentDashboard() {
   const [fullName, setFullName] = useState(profile?.full_name || '');
   const [saving, setSaving] = useState(false);
 
+  console.log('StudentDashboard rendered - user:', user?.email, 'profile:', profile?.email);
+
   const handleSignOut = async () => {
     await signOut();
     navigate('/');

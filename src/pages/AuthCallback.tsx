@@ -21,14 +21,18 @@ export default function AuthCallback() {
       return;
     }
 
+    let cleanup: (() => void) | null = null;
+
     const handleTokens = async () => {
       if (accessToken && refreshToken && !processedRef.current) {
         try {
           processedRef.current = true;
+          console.log('Setting session with tokens from URL');
           await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
           });
+          console.log('Session set successfully');
           window.history.replaceState(null, '', '/auth/callback');
           setStatus('Успешно! Перенаправление...');
           timeoutRef.current = setTimeout(() => {
@@ -39,37 +43,37 @@ export default function AuthCallback() {
           setStatus('Ошибка авторизации');
           timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
         }
-        return;
+      } else {
+        console.log('No tokens in URL, waiting for auth state change');
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+          console.log('Auth event:', event, session?.user?.email);
+
+          if (event === 'SIGNED_IN' && session && !processedRef.current) {
+            processedRef.current = true;
+            window.history.replaceState(null, '', '/auth/callback');
+            setStatus('Успешно! Перенаправление...');
+            timeoutRef.current = setTimeout(() => {
+              window.location.href = '/student/dashboard';
+            }, 300);
+          }
+        });
+
+        cleanup = () => subscription.unsubscribe();
+
+        timeoutRef.current = setTimeout(() => {
+          if (!processedRef.current) {
+            console.log('Timeout: session not found');
+            setStatus('Сессия не найдена');
+            timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+          }
+        }, 5000);
       }
-
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-        console.log('Auth event:', event, session?.user?.email);
-
-        if (event === 'SIGNED_IN' && session && !processedRef.current) {
-          processedRef.current = true;
-          window.history.replaceState(null, '', '/auth/callback');
-          setStatus('Успешно! Перенаправление...');
-          timeoutRef.current = setTimeout(() => {
-            window.location.href = '/student/dashboard';
-          }, 300);
-        }
-      });
-
-      timeoutRef.current = setTimeout(() => {
-        if (!processedRef.current) {
-          setStatus('Сессия не найдена');
-          timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
-        }
-      }, 5000);
-
-      return () => {
-        subscription.unsubscribe();
-      };
     };
 
     handleTokens();
 
     return () => {
+      if (cleanup) cleanup();
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [navigate]);

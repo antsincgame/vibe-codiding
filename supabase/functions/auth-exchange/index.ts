@@ -59,6 +59,7 @@ Deno.serve(async (req: Request) => {
       },
       body: JSON.stringify({
         code: code,
+        grant_type: 'authorization_code',
       }),
     });
 
