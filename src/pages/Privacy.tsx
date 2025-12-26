@@ -1,15 +1,11 @@
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 export default function Privacy() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0a0a1e 0%, #1a0a2e 50%, #0a0a1e 100%)',
       color: '#ffffff'
     }}>
-      <Header />
 
       <div style={{
         maxWidth: '900px',
@@ -240,8 +236,6 @@ export default function Privacy() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }
