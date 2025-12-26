@@ -19,6 +19,7 @@ import BlogPostPage from './pages/BlogPostPage';
 import Privacy from './pages/Privacy';
 import StudentAuth from './pages/StudentAuth';
 import StudentDashboard from './pages/StudentDashboard';
+import EmailConfirmation from './pages/EmailConfirmation';
 
 function App() {
   return (
@@ -35,6 +36,14 @@ function App() {
               <Header />
               <main className="app-content">
                 <StudentAuth />
+              </main>
+            </div>
+          } />
+          <Route path="/student/confirm" element={
+            <div className="app-layout">
+              <Header />
+              <main className="app-content">
+                <EmailConfirmation />
               </main>
             </div>
           } />

@@ -50,7 +50,7 @@ export default function StudentAuth() {
         }
       } else if (!isLogin) {
         setError('');
-        alert('Регистрация успешна! Теперь можете войти.');
+        alert('Регистрация успешна! Проверьте свою почту для подтверждения email. После подтверждения вы сможете войти в систему.');
         setIsLogin(true);
       }
     } catch (err) {

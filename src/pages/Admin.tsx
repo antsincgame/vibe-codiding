@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../lib/storageService';
 import { renderMarkdown, stripMarkdown } from '../lib/markdown';
+import EmailSettingsManager from '../components/EmailSettingsManager';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'blog' | 'home'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'blog' | 'home' | 'email'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -369,6 +370,17 @@ export default function Admin() {
             }}
           >
             Главная страница
+          </button>
+          <button
+            onClick={() => setActiveTab('email')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'email' ? 1 : 0.5,
+              borderColor: 'var(--neon-pink)',
+              color: 'var(--neon-pink)'
+            }}
+          >
+            Email настройки
           </button>
         </div>
 
@@ -865,6 +877,10 @@ export default function Admin() {
             settings={homeSettings}
             onSave={saveHomeSettings}
           />
+        )}
+
+        {activeTab === 'email' && (
+          <EmailSettingsManager />
         )}
       </div>
 
