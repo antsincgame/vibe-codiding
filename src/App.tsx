@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import CookieConsent from './components/CookieConsent';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import About from './pages/About';
@@ -12,6 +13,7 @@ import CourseDetail from './pages/CourseDetail';
 import StudentWorks from './pages/StudentWorks';
 import Blog from './pages/Blog';
 import BlogPostPage from './pages/BlogPostPage';
+import Privacy from './pages/Privacy';
 
 function App() {
   return (
@@ -38,6 +40,7 @@ function App() {
                   <Route path="/works" element={<StudentWorks />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogPostPage />} />
+                  <Route path="/privacy" element={<Privacy />} />
                 </Routes>
                 <Footer />
               </main>
@@ -45,6 +48,7 @@ function App() {
           }
         />
       </Routes>
+      <CookieConsent />
     </Router>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 export default function Footer() {
@@ -181,6 +181,26 @@ export default function Footer() {
           >
             © 2025 Vibecoding. Все права защищены.
           </span>
+          <span style={{ margin: '0 8px' }}>|</span>
+          <Link
+            to="/privacy"
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              transition: 'opacity 0.3s, color 0.3s',
+              fontSize: isMobile ? '13px' : '14px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = '1';
+              e.currentTarget.style.color = 'var(--neon-cyan)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = '0.6';
+              e.currentTarget.style.color = 'inherit';
+            }}
+          >
+            Политика конфиденциальности
+          </Link>
         </div>
         <div style={{
           fontSize: isMobile ? '11px' : '13px',
