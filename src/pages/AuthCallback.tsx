@@ -12,10 +12,14 @@ export default function AuthCallback() {
       const code = urlParams.get('code');
       const hashParams = window.location.hash;
 
+      console.log('AuthCallback - code:', code);
+      console.log('AuthCallback - hash:', hashParams);
+
       if (code) {
         setStatus('Обработка авторизации...');
         try {
           const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          console.log('Exchange result:', { data, error });
           if (error) {
             console.error('Code exchange error:', error);
             setStatus('Ошибка авторизации');
@@ -38,10 +42,11 @@ export default function AuthCallback() {
         }
       }
 
-      if (hashParams.includes('access_token')) {
-        setStatus('Проверка сессии...');
+      if (hashParams && hashParams.length > 1) {
+        setStatus('Обработка токена...');
         await new Promise(resolve => setTimeout(resolve, 500));
         const { data: { session } } = await supabase.auth.getSession();
+        console.log('Hash session check:', session);
         if (session) {
           setStatus('Успешно! Перенаправление...');
           setTimeout(() => {
@@ -51,8 +56,21 @@ export default function AuthCallback() {
         }
       }
 
+      setStatus('Проверка сессии...');
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log('Final session check:', session);
+
+      if (session) {
+        setStatus('Сессия найдена! Перенаправление...');
+        setTimeout(() => {
+          window.location.href = '/student/dashboard';
+        }, 500);
+        return;
+      }
+
       setStatus('Сессия не найдена');
-      setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+      setTimeout(() => navigate('/student/login', { replace: true }), 2000);
     };
 
     handleCallback();
