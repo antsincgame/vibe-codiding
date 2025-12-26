@@ -9,9 +9,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    flowType: 'implicit',
     detectSessionInUrl: true,
     autoRefreshToken: true,
-    persistSession: true
+    persistSession: true,
+    storage: sessionStorage
   }
 })

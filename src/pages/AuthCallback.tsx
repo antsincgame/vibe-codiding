@@ -6,67 +6,42 @@ export default function AuthCallback() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('Авторизация...');
   const processedRef = useRef(false);
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    if (processedRef.current) return;
-
-    const hashParams = window.location.hash;
     const urlParams = new URLSearchParams(window.location.search);
-    const errorParam = urlParams.get('error') || new URLSearchParams(hashParams.substring(1)).get('error');
-    const errorDesc = urlParams.get('error_description') || new URLSearchParams(hashParams.substring(1)).get('error_description');
-
-    console.log('AuthCallback - hash:', hashParams);
-    console.log('AuthCallback - error:', errorParam, errorDesc);
+    const errorParam = urlParams.get('error');
+    const errorDesc = urlParams.get('error_description');
 
     if (errorParam) {
       setStatus(`Ошибка: ${errorDesc || errorParam}`);
-      setTimeout(() => navigate('/student/login', { replace: true }), 2000);
+      timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 2000);
       return;
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('AuthCallback - auth event:', event, session?.user?.email);
+      console.log('Auth event:', event, session?.user?.email);
 
-      if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
-        if (processedRef.current) return;
+      if (event === 'SIGNED_IN' && session && !processedRef.current) {
         processedRef.current = true;
-        setStatus('Успешно! Перенаправление...');
         window.history.replaceState(null, '', '/auth/callback');
-        setTimeout(() => {
+        setStatus('Успешно! Перенаправление...');
+        timeoutRef.current = setTimeout(() => {
           window.location.href = '/student/dashboard';
         }, 300);
       }
     });
 
-    const checkSession = async () => {
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log('Session check:', session?.user?.email);
-
-      if (session) {
-        if (processedRef.current) return;
-        processedRef.current = true;
-        setStatus('Сессия найдена! Перенаправление...');
-        window.history.replaceState(null, '', '/auth/callback');
-        setTimeout(() => {
-          window.location.href = '/student/dashboard';
-        }, 300);
-        return;
+    timeoutRef.current = setTimeout(() => {
+      if (!processedRef.current) {
+        setStatus('Сессия не найдена');
+        timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
       }
-
-      setTimeout(() => {
-        if (!processedRef.current) {
-          setStatus('Сессия не найдена. Попробуйте снова.');
-          setTimeout(() => navigate('/student/login', { replace: true }), 1500);
-        }
-      }, 3000);
-    };
-
-    checkSession();
+    }, 5000);
 
     return () => {
       subscription.unsubscribe();
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [navigate]);
 
