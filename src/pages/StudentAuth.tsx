@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 export default function StudentAuth() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ export default function StudentAuth() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [checkingOAuth, setCheckingOAuth] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -16,11 +18,29 @@ export default function StudentAuth() {
   });
 
   useEffect(() => {
-    if (user && !authLoading) {
+    const handleOAuthCallback = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+
+      if (accessToken) {
+        const { data, error } = await supabase.auth.getSession();
+        if (data.session) {
+          navigate('/student/dashboard', { replace: true });
+          return;
+        }
+      }
+      setCheckingOAuth(false);
+    };
+
+    handleOAuthCallback();
+  }, [navigate]);
+
+  useEffect(() => {
+    if (user && !authLoading && !checkingOAuth) {
       const from = (location.state as any)?.from?.pathname || '/student/dashboard';
       navigate(from, { replace: true });
     }
-  }, [user, authLoading, navigate, location]);
+  }, [user, authLoading, checkingOAuth, navigate, location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +88,7 @@ export default function StudentAuth() {
     }
   };
 
-  if (authLoading) {
+  if (authLoading || checkingOAuth) {
     return (
       <div style={{
         minHeight: '100vh',
