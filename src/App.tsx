@@ -20,6 +20,7 @@ import Privacy from './pages/Privacy';
 import StudentAuth from './pages/StudentAuth';
 import StudentDashboard from './pages/StudentDashboard';
 import EmailConfirmation from './pages/EmailConfirmation';
+import AuthCallback from './pages/AuthCallback';
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               </main>
             </div>
           } />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/student/dashboard" element={
             <div className="app-layout">
               <Header />
