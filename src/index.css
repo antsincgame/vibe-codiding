@@ -168,22 +168,51 @@ body {
   width: 100%;
   transition: all 0.3s;
   display: block;
+  position: relative;
 }
 
 .cyber-input:focus {
   outline: none;
   border-color: var(--neon-cyan);
-  box-shadow: 0 0 15px rgba(0, 255, 249, 0.5);
+  box-shadow: 0 0 15px rgba(0, 255, 249, 0.5), inset 0 0 10px rgba(0, 255, 249, 0.1);
   background: rgba(19, 19, 26, 0.95);
 }
 
+.cyber-input:hover:not(:focus) {
+  border-color: rgba(0, 255, 249, 0.7);
+  background: rgba(19, 19, 26, 0.9);
+}
+
 .cyber-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
 }
 
 textarea.cyber-input {
   resize: vertical;
   min-height: 120px;
+  line-height: 1.5;
+}
+
+select.cyber-input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2300fff9' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  padding-right: 45px;
+}
+
+select.cyber-input option {
+  background: rgba(19, 19, 26, 0.98);
+  color: white;
+  padding: 10px;
+}
+
+input[type="number"].cyber-input::-webkit-inner-spin-button,
+input[type="number"].cyber-input::-webkit-outer-spin-button {
+  opacity: 1;
+  filter: invert(1) hue-rotate(180deg);
 }
 
 .app-layout {

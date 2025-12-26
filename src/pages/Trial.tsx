@@ -182,7 +182,8 @@ export default function Trial() {
                 fontSize: '16px',
                 color: 'var(--neon-cyan)',
                 textTransform: 'uppercase',
-                letterSpacing: '1px'
+                letterSpacing: '1px',
+                fontWeight: 600
               }}>
                 Возрастная группа *
               </label>
@@ -191,14 +192,8 @@ export default function Trial() {
                 value={formData.age_group}
                 onChange={handleChange}
                 required
+                className="cyber-input"
                 style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: 'rgba(19, 19, 26, 0.8)',
-                  border: '1px solid var(--neon-cyan)',
-                  color: '#fff',
-                  fontSize: '16px',
-                  borderRadius: '0',
                   cursor: 'pointer'
                 }}
               >
@@ -214,7 +209,8 @@ export default function Trial() {
                 fontSize: '16px',
                 color: 'var(--neon-cyan)',
                 textTransform: 'uppercase',
-                letterSpacing: '1px'
+                letterSpacing: '1px',
+                fontWeight: 600
               }}>
                 {formData.age_group === 'child' ? 'Контактное имя *' : 'Ваше имя *'}
               </label>
@@ -224,6 +220,7 @@ export default function Trial() {
                 value={formData.parent_name}
                 onChange={handleChange}
                 required
+                className="cyber-input"
                 placeholder={formData.age_group === 'child' ? 'Введите контактное имя' : 'Введите ваше имя'}
               />
             </div>
@@ -237,7 +234,8 @@ export default function Trial() {
                     fontSize: '16px',
                     color: 'var(--neon-cyan)',
                     textTransform: 'uppercase',
-                    letterSpacing: '1px'
+                    letterSpacing: '1px',
+                    fontWeight: 600
                   }}>
                     Имя подростка *
                   </label>
@@ -247,6 +245,7 @@ export default function Trial() {
                     value={formData.child_name}
                     onChange={handleChange}
                     required={formData.age_group === 'child'}
+                    className="cyber-input"
                     placeholder="Введите имя подростка"
                   />
                 </div>
@@ -258,7 +257,8 @@ export default function Trial() {
                     fontSize: '16px',
                     color: 'var(--neon-cyan)',
                     textTransform: 'uppercase',
-                    letterSpacing: '1px'
+                    letterSpacing: '1px',
+                    fontWeight: 600
                   }}>
                     Возраст *
                   </label>
@@ -268,9 +268,10 @@ export default function Trial() {
                     value={formData.child_age}
                     onChange={handleChange}
                     required={formData.age_group === 'child'}
+                    className="cyber-input"
                     min="16"
                     max="18"
-                    placeholder="Введите возраст (16-18)"
+                    placeholder="16"
                   />
                 </div>
               </>
@@ -283,7 +284,8 @@ export default function Trial() {
                 fontSize: '16px',
                 color: 'var(--neon-cyan)',
                 textTransform: 'uppercase',
-                letterSpacing: '1px'
+                letterSpacing: '1px',
+                fontWeight: 600
               }}>
                 Телефон *
               </label>
@@ -293,6 +295,7 @@ export default function Trial() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
+                className="cyber-input"
                 placeholder="+375 (XX) XXX-XX-XX"
               />
             </div>
@@ -304,7 +307,8 @@ export default function Trial() {
                 fontSize: '16px',
                 color: 'var(--neon-cyan)',
                 textTransform: 'uppercase',
-                letterSpacing: '1px'
+                letterSpacing: '1px',
+                fontWeight: 600
               }}>
                 Дополнительная информация
               </label>
@@ -313,6 +317,7 @@ export default function Trial() {
                 value={formData.message}
                 onChange={handleChange}
                 rows={4}
+                className="cyber-input"
                 placeholder={formData.age_group === 'child' ? 'Расскажите об интересах, предпочитаемом времени занятий или задайте вопрос' : 'Расскажите о своих интересах, предпочитаемом времени занятий или задайте вопрос'}
                 style={{ resize: 'vertical' }}
               />
