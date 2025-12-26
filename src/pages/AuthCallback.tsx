@@ -1,19 +1,44 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('Авторизация...');
+  const processedRef = useRef(false);
 
   useEffect(() => {
+    if (processedRef.current) return;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('AuthCallback - auth event:', event, session?.user?.email);
+
+      if (event === 'SIGNED_IN' && session) {
+        processedRef.current = true;
+        setStatus('Успешно! Перенаправление...');
+        window.history.replaceState(null, '', '/auth/callback');
+        setTimeout(() => {
+          window.location.href = '/student/dashboard';
+        }, 300);
+      }
+    });
+
     const handleCallback = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
       const hashParams = window.location.hash;
+      const errorParam = urlParams.get('error');
+      const errorDesc = urlParams.get('error_description');
 
       console.log('AuthCallback - code:', code);
       console.log('AuthCallback - hash:', hashParams);
+      console.log('AuthCallback - error:', errorParam, errorDesc);
+
+      if (errorParam) {
+        setStatus(`Ошибка: ${errorDesc || errorParam}`);
+        setTimeout(() => navigate('/student/login', { replace: true }), 2000);
+        return;
+      }
 
       if (code) {
         setStatus('Обработка авторизации...');
@@ -27,11 +52,12 @@ export default function AuthCallback() {
             return;
           }
           if (data.session) {
+            processedRef.current = true;
             setStatus('Успешно! Перенаправление...');
             window.history.replaceState(null, '', '/auth/callback');
             setTimeout(() => {
               window.location.href = '/student/dashboard';
-            }, 500);
+            }, 300);
             return;
           }
         } catch (err) {
@@ -42,38 +68,31 @@ export default function AuthCallback() {
         }
       }
 
-      if (hashParams && hashParams.length > 1) {
-        setStatus('Обработка токена...');
-        await new Promise(resolve => setTimeout(resolve, 500));
-        const { data: { session } } = await supabase.auth.getSession();
-        console.log('Hash session check:', session);
-        if (session) {
-          setStatus('Успешно! Перенаправление...');
-          setTimeout(() => {
-            window.location.href = '/student/dashboard';
-          }, 500);
-          return;
-        }
-      }
-
-      setStatus('Проверка сессии...');
-      await new Promise(resolve => setTimeout(resolve, 500));
       const { data: { session } } = await supabase.auth.getSession();
-      console.log('Final session check:', session);
+      console.log('Initial session check:', session);
 
       if (session) {
+        processedRef.current = true;
         setStatus('Сессия найдена! Перенаправление...');
         setTimeout(() => {
           window.location.href = '/student/dashboard';
-        }, 500);
+        }, 300);
         return;
       }
 
-      setStatus('Сессия не найдена');
-      setTimeout(() => navigate('/student/login', { replace: true }), 2000);
+      setTimeout(() => {
+        if (!processedRef.current) {
+          setStatus('Сессия не найдена');
+          setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+        }
+      }, 3000);
     };
 
     handleCallback();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   return (
