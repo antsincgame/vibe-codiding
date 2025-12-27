@@ -241,19 +241,20 @@ export default function Home() {
               }}>
                 {course.title}
               </h3>
-              <div style={{
+              <p style={{
                 opacity: 0.9,
                 marginBottom: '20px',
                 lineHeight: '1.8',
                 flex: 1,
                 fontSize: '15px'
               }}>
-                {stripMarkdown(course.description).split('\n').filter(p => p.trim()).map((paragraph, idx) => (
-                  <p key={idx} style={{ marginBottom: idx < stripMarkdown(course.description).split('\n').filter(p => p.trim()).length - 1 ? '12px' : 0 }}>
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+                {(() => {
+                  const firstSection = course.description.split('---')[0];
+                  const cleaned = stripMarkdown(firstSection).replace(/\n+/g, ' ').trim();
+                  const words = cleaned.split(/\s+/).slice(0, 35).join(' ');
+                  return words.length < cleaned.length ? words + '...' : words;
+                })()}
+              </p>
               {Array.isArray(course.features) && course.features.length > 0 && (
                 <div style={{
                   marginBottom: '20px',
