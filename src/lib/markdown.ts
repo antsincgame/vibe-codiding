@@ -8,60 +8,132 @@ export function stripMarkdown(text: string): string {
     .replace(/\[(.+?)\]\((.+?)\)/g, '$1')
     .replace(/^[\-\*]\s+(.+)$/gm, '$1')
     .replace(/^\d+\.\s+(.+)$/gm, '$1')
+    .replace(/^>\s*(.+)$/gm, '$1')
+    .replace(/`{3}[\s\S]*?`{3}/g, '')
+    .replace(/`(.+?)`/g, '$1')
+    .replace(/^---$/gm, '')
     .trim();
+}
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 export function renderMarkdown(text: string): string {
   if (!text) return '';
 
-  let html = text;
+  const codeBlocks: string[] = [];
+  let html = text.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    const idx = codeBlocks.length;
+    codeBlocks.push(`<pre class="code-block" data-lang="${lang || 'text'}"><code>${escapeHtml(code.trim())}</code></pre>`);
+    return `__CODE_BLOCK_${idx}__`;
+  });
 
-  html = html.replace(/^### (.+)$/gm, '<h3 style="font-size: 24px; color: var(--neon-green); margin: 25px 0 15px 0;">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 style="font-size: 28px; color: var(--neon-cyan); margin: 30px 0 20px 0;">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 style="font-size: 32px; color: var(--neon-pink); margin: 35px 0 20px 0;">$1</h1>');
+  const inlineCode: string[] = [];
+  html = html.replace(/`([^`]+)`/g, (_, code) => {
+    const idx = inlineCode.length;
+    inlineCode.push(`<code class="inline-code">${escapeHtml(code)}</code>`);
+    return `__INLINE_CODE_${idx}__`;
+  });
 
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong style="font-weight: 700; color: var(--neon-cyan);">$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em style="font-style: italic; opacity: 0.9;">$1</em>');
+  html = html.replace(/^#### (.+)$/gm, '<h4 class="md-h4">$1</h4>');
+  html = html.replace(/^### (.+)$/gm, '<h3 class="md-h3">$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2 class="md-h2">$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1 class="md-h1">$1</h1>');
 
-  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" style="color: var(--neon-cyan); text-decoration: underline;" target="_blank" rel="noopener noreferrer">$1</a>');
+  html = html.replace(/^---$/gm, '<hr class="md-hr">');
+
+  html = html.replace(/^>\s*(.+)$/gm, '<blockquote class="md-blockquote">$1</blockquote>');
+  html = html.replace(/<\/blockquote>\n<blockquote class="md-blockquote">/g, '\n');
+
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="md-strong">$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em class="md-em">$1</em>');
+
+  html = html.replace(/\[(.+?)\]\(\/([^)]+)\)/g, '<a href="/$2" class="md-link md-internal-link">$1</a>');
+  html = html.replace(/\[(.+?)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" class="md-link md-external-link" target="_blank" rel="noopener noreferrer">$1</a>');
+  html = html.replace(/\[(.+?)\]\(([^)]+)\)/g, '<a href="$2" class="md-link">$1</a>');
+
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<figure class="md-figure"><img src="$2" alt="$1" class="md-image" loading="lazy"><figcaption class="md-figcaption">$1</figcaption></figure>');
 
   const lines = html.split('\n');
-  let inList = false;
-  let result: string[] = [];
+  const result: string[] = [];
+  let inList: 'ul' | 'ol' | null = null;
+  let listItems: string[] = [];
+
+  const flushList = () => {
+    if (inList && listItems.length > 0) {
+      result.push(`<${inList} class="md-list md-${inList}">`);
+      listItems.forEach(item => result.push(item));
+      result.push(`</${inList}>`);
+      listItems = [];
+      inList = null;
+    }
+  };
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const trimmed = line.trim();
 
-    if (line.match(/^[\-\*] (.+)/)) {
-      if (!inList) {
-        result.push('<ul style="margin: 15px 0; padding-left: 25px; list-style: none;">');
-        inList = true;
+    if (trimmed.match(/^[\-\*]\s+(.+)/)) {
+      if (inList !== 'ul') {
+        flushList();
+        inList = 'ul';
       }
-      const content = line.replace(/^[\-\*] (.+)/, '$1');
-      result.push(`<li style="margin: 8px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--neon-green);">•</span>${content}</li>`);
-    } else if (line.match(/^\d+\. (.+)/)) {
-      if (!inList) {
-        result.push('<ol style="margin: 15px 0; padding-left: 25px;">');
-        inList = true;
+      const content = trimmed.replace(/^[\-\*]\s+(.+)/, '$1');
+      listItems.push(`<li class="md-li">${content}</li>`);
+    } else if (trimmed.match(/^\d+\.\s+(.+)/)) {
+      if (inList !== 'ol') {
+        flushList();
+        inList = 'ol';
       }
-      const content = line.replace(/^\d+\. (.+)/, '$1');
-      result.push(`<li style="margin: 8px 0;">${content}</li>`);
+      const content = trimmed.replace(/^\d+\.\s+(.+)/, '$1');
+      listItems.push(`<li class="md-li">${content}</li>`);
     } else {
-      if (inList) {
-        result.push(line.includes('ol') ? '</ol>' : '</ul>');
-        inList = false;
-      }
-      if (line.trim() === '') {
-        result.push('<br>');
+      flushList();
+
+      if (trimmed === '') {
+        if (result.length > 0 && !result[result.length - 1].match(/<\/(h[1-4]|ul|ol|pre|blockquote|hr|figure)>/)) {
+          result.push('<div class="md-spacer"></div>');
+        }
+      } else if (!trimmed.startsWith('<h') && !trimmed.startsWith('<blockquote') && !trimmed.startsWith('<hr') && !trimmed.startsWith('<figure') && !trimmed.startsWith('__CODE_BLOCK')) {
+        result.push(`<p class="md-p">${trimmed}</p>`);
       } else {
         result.push(line);
       }
     }
   }
 
-  if (inList) {
-    result.push('</ul>');
-  }
+  flushList();
 
-  return result.join('\n');
+  html = result.join('\n');
+
+  codeBlocks.forEach((block, idx) => {
+    html = html.replace(`__CODE_BLOCK_${idx}__`, block);
+  });
+
+  inlineCode.forEach((code, idx) => {
+    html = html.replace(`__INLINE_CODE_${idx}__`, code);
+  });
+
+  html = html.replace(/<p class="md-p">(<pre|<h[1-4]|<ul|<ol|<blockquote|<hr|<figure)/g, '$1');
+  html = html.replace(/(<\/pre>|<\/h[1-4]>|<\/ul>|<\/ol>|<\/blockquote>|<\/figure>)<\/p>/g, '$1');
+
+  return html;
+}
+
+export function getReadingTime(text: string): number {
+  const wordsPerMinute = 200;
+  const words = stripMarkdown(text).split(/\s+/).filter(w => w.length > 0).length;
+  return Math.max(1, Math.ceil(words / wordsPerMinute));
+}
+
+export function generateExcerpt(text: string, maxLength: number = 160): string {
+  const stripped = stripMarkdown(text);
+  if (stripped.length <= maxLength) return stripped;
+  return stripped.substring(0, maxLength).replace(/\s+\S*$/, '') + '...';
 }

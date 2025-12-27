@@ -1,251 +1,273 @@
 import { renderMarkdown } from '../lib/markdown';
 
-interface CourseModule {
-  icon: string;
-  color: string;
-  title: string;
-  content: string;
-  number: string;
-}
-
-const parseDescription = (description: string): { intro: string; modules: CourseModule[]; conclusion: string } => {
-  const sections = description.split('---').map(s => s.trim());
-
-  const intro = sections[0] || '';
-  const conclusion = sections.length > 1 ? sections[sections.length - 1] : '';
-  const moduleSections = sections.slice(1, -1);
-
-  const moduleIcons = ['🎨', '⚡', '🗄️', '📦', '🚀', '🔍', '🤖'];
-  const moduleColors = [
-    'var(--neon-cyan)',
-    'var(--neon-pink)',
-    'var(--neon-green)',
-    'var(--neon-cyan)',
-    'var(--neon-pink)',
-    'var(--neon-green)',
-    'var(--neon-cyan)'
-  ];
-
-  const modules: CourseModule[] = moduleSections.map((section, idx) => {
-    const lines = section.split('\n').filter(l => l.trim());
-    const firstLine = lines[0] || '';
-    const numberMatch = firstLine.match(/^(\d+)\)/);
-    const number = numberMatch ? numberMatch[1] : String(idx + 1);
-    const title = firstLine.replace(/^\d+\)\s*/, '').trim();
-    const content = lines.slice(1).join('\n');
-
-    return {
-      icon: moduleIcons[idx % moduleIcons.length],
-      color: moduleColors[idx % moduleColors.length],
-      title,
-      content,
-      number
-    };
-  });
-
-  return { intro, modules, conclusion };
-};
-
 export default function CourseDescription({ description }: { description: string }) {
-  const { intro, modules, conclusion } = parseDescription(description);
+  const sections = description.split('---').map(s => s.trim()).filter(s => s);
+  const intro = sections[0] || '';
+  const mainContent = sections.slice(1, -1).join('\n\n');
+  const conclusion = sections.length > 2 ? sections[sections.length - 1] : (sections.length === 2 ? sections[1] : '');
 
   return (
-    <div>
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.08) 0%, rgba(255, 0, 110, 0.08) 100%)',
-        padding: '40px',
-        borderRadius: '16px',
-        border: '2px solid rgba(0, 255, 249, 0.2)',
-        marginBottom: '50px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-2px',
-          left: '-2px',
-          right: '-2px',
-          height: '4px',
-          background: 'linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-cyan))',
-          backgroundSize: '200% 100%',
-          animation: 'shimmer 3s linear infinite'
-        }} />
-        <div style={{
-          position: 'absolute',
-          top: '20px',
-          right: '20px',
-          fontSize: '100px',
-          opacity: 0.05,
-          pointerEvents: 'none'
-        }}>
-          📚
-        </div>
-        <div
-          className="course-description"
-          style={{
-            fontSize: '19px',
-            lineHeight: '2',
-            opacity: 0.95,
-            position: 'relative',
-            zIndex: 1
-          }}
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(intro) }}
-        />
-      </div>
+    <div className="course-description-container">
+      {intro && (
+        <section className="course-intro">
+          <div className="intro-glow" />
+          <div
+            className="course-markdown"
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(intro) }}
+          />
+        </section>
+      )}
 
-      {modules.length > 0 && (
-        <div style={{ marginBottom: '50px' }}>
-          <h3 style={{
-            fontSize: '36px',
-            marginBottom: '40px',
-            color: 'var(--neon-green)',
-            textAlign: 'center',
-            textTransform: 'uppercase',
-            letterSpacing: '3px',
-            textShadow: '0 0 20px rgba(57, 255, 20, 0.5)'
-          }}>
-            Программа курса
-          </h3>
-          <div style={{
-            display: 'grid',
-            gap: '30px'
-          }}>
-            {modules.map((module, idx) => (
-              <div
-                key={idx}
-                className="module-card"
-                style={{
-                  background: `linear-gradient(135deg, ${module.color}08 0%, rgba(19, 19, 26, 0.95) 100%)`,
-                  border: `2px solid ${module.color}`,
-                  borderRadius: '16px',
-                  padding: '40px',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  boxShadow: `0 0 20px ${module.color}15`
-                }}
-              >
-                <div style={{
-                  position: 'absolute',
-                  top: '20px',
-                  right: '20px',
-                  fontSize: '120px',
-                  opacity: 0.05,
-                  pointerEvents: 'none'
-                }}>
-                  {module.icon}
-                </div>
-
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '6px',
-                  height: '100%',
-                  background: `linear-gradient(180deg, ${module.color}, transparent)`
-                }} />
-
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', marginBottom: '20px' }}>
-                  <div style={{
-                    minWidth: '70px',
-                    height: '70px',
-                    background: `${module.color}20`,
-                    border: `2px solid ${module.color}`,
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '36px',
-                    flexShrink: 0,
-                    boxShadow: `0 0 20px ${module.color}30`
-                  }}>
-                    {module.icon}
-                  </div>
-
-                  <div style={{ flex: 1 }}>
-                    <div style={{
-                      fontSize: '14px',
-                      color: module.color,
-                      fontWeight: 700,
-                      marginBottom: '8px',
-                      letterSpacing: '2px',
-                      textTransform: 'uppercase',
-                      opacity: 0.8
-                    }}>
-                      Модуль {module.number}
-                    </div>
-                    <h4 style={{
-                      fontSize: '28px',
-                      color: module.color,
-                      fontWeight: 700,
-                      marginBottom: '20px',
-                      textShadow: `0 0 15px ${module.color}50`,
-                      lineHeight: '1.3'
-                    }}>
-                      {module.title}
-                    </h4>
-                  </div>
-                </div>
-
-                <div
-                  className="course-description module-content"
-                  style={{
-                    fontSize: '17px',
-                    lineHeight: '1.9',
-                    opacity: 0.9,
-                    paddingLeft: '90px'
-                  }}
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(module.content) }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+      {mainContent && (
+        <section className="course-main">
+          <div
+            className="course-markdown"
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(mainContent) }}
+          />
+        </section>
       )}
 
       {conclusion && (
-        <div style={{
-          background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.1) 0%, rgba(0, 255, 249, 0.1) 100%)',
-          padding: '50px',
-          borderRadius: '16px',
-          border: '2px solid var(--neon-pink)',
-          position: 'relative',
-          overflow: 'hidden',
-          boxShadow: '0 0 40px rgba(255, 0, 110, 0.15)'
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: '20px',
-            left: '20px',
-            fontSize: '120px',
-            opacity: 0.05,
-            pointerEvents: 'none'
-          }}>
-            🎯
-          </div>
-          <div style={{
-            position: 'absolute',
-            bottom: '20px',
-            right: '20px',
-            fontSize: '100px',
-            opacity: 0.05,
-            pointerEvents: 'none'
-          }}>
-            🚀
-          </div>
+        <section className="course-conclusion">
+          <div className="conclusion-icon">&#8594;</div>
           <div
-            className="course-description"
-            style={{
-              fontSize: '18px',
-              lineHeight: '2',
-              opacity: 0.95,
-              position: 'relative',
-              zIndex: 1
-            }}
+            className="course-markdown"
             dangerouslySetInnerHTML={{ __html: renderMarkdown(conclusion) }}
           />
-        </div>
+        </section>
       )}
+
+      <style>{`
+        .course-description-container {
+          display: flex;
+          flex-direction: column;
+          gap: 40px;
+        }
+
+        .course-intro {
+          background: linear-gradient(135deg, rgba(0, 255, 249, 0.06) 0%, rgba(57, 255, 20, 0.04) 100%);
+          padding: 35px 40px;
+          border-radius: 16px;
+          border: 1px solid rgba(0, 255, 249, 0.2);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .intro-glow {
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          height: 3px;
+          background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green), var(--neon-cyan));
+          background-size: 200% 100%;
+          animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+
+        .course-main {
+          background: rgba(0, 20, 40, 0.4);
+          padding: 35px 40px;
+          border-radius: 16px;
+          border: 1px solid rgba(0, 255, 249, 0.12);
+        }
+
+        .course-conclusion {
+          background: linear-gradient(135deg, rgba(0, 255, 249, 0.08) 0%, rgba(57, 255, 20, 0.06) 100%);
+          padding: 30px 35px 30px 70px;
+          border-radius: 12px;
+          border: 1px solid rgba(57, 255, 20, 0.3);
+          position: relative;
+        }
+
+        .conclusion-icon {
+          position: absolute;
+          left: 25px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 24px;
+          color: var(--neon-green);
+          opacity: 0.7;
+        }
+
+        .course-markdown {
+          font-size: 17px;
+          line-height: 1.8;
+          color: rgba(255, 255, 255, 0.92);
+        }
+
+        .course-markdown .md-h1 {
+          font-size: 32px;
+          color: var(--neon-pink);
+          margin: 40px 0 20px;
+          font-family: 'Orbitron', sans-serif;
+          font-weight: 700;
+        }
+
+        .course-markdown .md-h2 {
+          font-size: 26px;
+          color: var(--neon-cyan);
+          margin: 35px 0 18px;
+          font-family: 'Orbitron', sans-serif;
+          font-weight: 600;
+          padding-bottom: 10px;
+          border-bottom: 1px solid rgba(0, 255, 249, 0.15);
+        }
+
+        .course-markdown .md-h3 {
+          font-size: 20px;
+          color: var(--neon-green);
+          margin: 25px 0 12px;
+          font-weight: 600;
+        }
+
+        .course-markdown .md-p {
+          margin-bottom: 16px;
+        }
+
+        .course-intro .course-markdown .md-p:first-child {
+          font-size: 19px;
+          line-height: 1.7;
+        }
+
+        .course-markdown .md-spacer {
+          height: 8px;
+        }
+
+        .course-markdown .md-strong {
+          color: var(--neon-cyan);
+          font-weight: 600;
+        }
+
+        .course-markdown .md-em {
+          font-style: italic;
+          opacity: 0.9;
+        }
+
+        .course-markdown .md-link {
+          color: var(--neon-cyan);
+          text-decoration: none;
+          border-bottom: 1px dashed rgba(0, 255, 249, 0.4);
+          transition: border-color 0.2s, color 0.2s;
+        }
+
+        .course-markdown .md-link:hover {
+          border-bottom-color: var(--neon-cyan);
+          color: var(--neon-green);
+        }
+
+        .course-markdown .md-list {
+          margin: 18px 0;
+          padding-left: 0;
+          list-style: none;
+        }
+
+        .course-markdown .md-ul .md-li {
+          position: relative;
+          padding-left: 30px;
+          margin-bottom: 14px;
+          line-height: 1.7;
+        }
+
+        .course-markdown .md-ul .md-li::before {
+          content: '';
+          position: absolute;
+          left: 8px;
+          top: 9px;
+          width: 10px;
+          height: 10px;
+          background: var(--neon-green);
+          border-radius: 2px;
+          transform: rotate(45deg);
+          box-shadow: 0 0 8px var(--neon-green);
+        }
+
+        .course-markdown .md-ol {
+          counter-reset: list-counter;
+        }
+
+        .course-markdown .md-ol .md-li {
+          position: relative;
+          padding-left: 45px;
+          margin-bottom: 14px;
+          counter-increment: list-counter;
+        }
+
+        .course-markdown .md-ol .md-li::before {
+          content: counter(list-counter);
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 30px;
+          height: 30px;
+          background: rgba(0, 255, 249, 0.12);
+          border: 1px solid var(--neon-cyan);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--neon-cyan);
+        }
+
+        .course-markdown .md-blockquote {
+          margin: 25px 0;
+          padding: 18px 22px;
+          background: rgba(0, 255, 249, 0.04);
+          border-left: 4px solid var(--neon-cyan);
+          border-radius: 0 8px 8px 0;
+          font-style: italic;
+        }
+
+        .course-markdown .inline-code {
+          background: rgba(0, 255, 249, 0.1);
+          padding: 2px 7px;
+          border-radius: 4px;
+          font-family: 'JetBrains Mono', 'Fira Code', monospace;
+          font-size: 0.9em;
+          color: var(--neon-cyan);
+        }
+
+        .course-markdown .md-hr {
+          border: none;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+          margin: 30px 0;
+        }
+
+        @media (max-width: 768px) {
+          .course-intro,
+          .course-main {
+            padding: 25px 20px;
+          }
+
+          .course-conclusion {
+            padding: 25px 20px 25px 55px;
+          }
+
+          .conclusion-icon {
+            left: 18px;
+          }
+
+          .course-markdown {
+            font-size: 16px;
+          }
+
+          .course-markdown .md-h2 {
+            font-size: 22px;
+          }
+
+          .course-markdown .md-ul .md-li,
+          .course-markdown .md-ol .md-li {
+            padding-left: 25px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
