@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { renderMarkdown } from '../lib/markdown';
 import type { Course } from '../types';
+import CourseDescription from '../components/CourseDescription';
 
 const setSEO = (course: Course) => {
   document.title = `${course.title} | Онлайн курс вайб-кодинга | Vibecoding`;
@@ -248,35 +248,8 @@ export default function CourseDetail() {
             }}>
               О курсе
             </h2>
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.08) 0%, rgba(255, 0, 110, 0.08) 100%)',
-              padding: '40px',
-              borderRadius: '12px',
-              border: '2px solid rgba(0, 255, 249, 0.2)',
-              marginBottom: '40px',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '-2px',
-                left: '-2px',
-                right: '-2px',
-                height: '4px',
-                background: 'linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-cyan))',
-                backgroundSize: '200% 100%',
-                animation: 'shimmer 3s linear infinite'
-              }} />
-              <div
-                className="course-description"
-                style={{
-                  fontSize: '18px',
-                  lineHeight: '2',
-                  opacity: 0.95
-                }}
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(course.description) }}
-              />
-            </div>
+
+            <CourseDescription description={course.description} />
 
             <div style={{
               padding: '50px',
