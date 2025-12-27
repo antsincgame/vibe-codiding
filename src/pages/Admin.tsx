@@ -1868,6 +1868,8 @@ function BlogPostModal({
   const [formData, setFormData] = useState(post);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const contentTextareaRef = useState<HTMLTextAreaElement | null>(null)[0];
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1905,6 +1907,26 @@ function BlogPostModal({
       title,
       slug: formData.slug || generateSlug(title)
     });
+  };
+
+  const insertMarkdown = (before: string, after: string = '', placeholder: string = '') => {
+    const textarea = document.querySelector<HTMLTextAreaElement>('textarea[data-content-editor="true"]');
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    const textToInsert = selectedText || placeholder;
+    const newText = before + textToInsert + after;
+
+    const newValue = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
+    setFormData({ ...formData, content: newValue });
+
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = start + before.length + textToInsert.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
   };
 
   return (
@@ -1972,16 +1994,237 @@ function BlogPostModal({
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Содержимое статьи *
-          </label>
-          <textarea
-            value={formData.content}
-            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            rows={15}
-            placeholder="Текст статьи. Поддерживается **жирный** и *курсив*"
-            style={{ fontFamily: 'monospace', fontSize: '14px' }}
-          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <label style={{ color: 'var(--neon-cyan)', fontWeight: 600 }}>
+              Содержимое статьи *
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowPreview(!showPreview)}
+              style={{
+                background: 'transparent',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              {showPreview ? 'Редактор' : 'Предпросмотр'}
+            </button>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            gap: '6px',
+            flexWrap: 'wrap',
+            marginBottom: '10px',
+            padding: '10px',
+            background: 'rgba(0, 255, 249, 0.05)',
+            borderRadius: '6px',
+            border: '1px solid rgba(0, 255, 249, 0.15)'
+          }}>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('**', '**', 'жирный текст')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}
+              title="Жирный текст"
+            >
+              B
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('*', '*', 'курсив')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontStyle: 'italic'
+              }}
+              title="Курсив"
+            >
+              I
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('# ', '', 'Заголовок 1')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+              title="Заголовок 1"
+            >
+              H1
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('## ', '', 'Заголовок 2')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+              title="Заголовок 2"
+            >
+              H2
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('### ', '', 'Заголовок 3')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+              title="Заголовок 3"
+            >
+              H3
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('[', '](url)', 'текст ссылки')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+              title="Ссылка"
+            >
+              Ссылка
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('- ', '', 'элемент списка')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+              title="Маркированный список"
+            >
+              Список
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('`', '`', 'код')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontFamily: 'monospace'
+              }}
+              title="Код"
+            >
+              &lt;/&gt;
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('```\n', '\n```', 'код')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontFamily: 'monospace'
+              }}
+              title="Блок кода"
+            >
+              Блок кода
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('> ', '', 'цитата')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+              title="Цитата"
+            >
+              Цитата
+            </button>
+          </div>
+
+          {!showPreview ? (
+            <textarea
+              data-content-editor="true"
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              rows={15}
+              placeholder="Текст статьи. Используйте кнопки выше для форматирования или пишите markdown вручную"
+              style={{
+                fontFamily: 'monospace',
+                fontSize: '14px',
+                lineHeight: '1.6',
+                width: '100%',
+                padding: '12px',
+                background: 'rgba(0, 0, 0, 0.5)',
+                border: '2px solid var(--neon-cyan)',
+                borderRadius: '4px',
+                color: 'white',
+                resize: 'vertical'
+              }}
+            />
+          ) : (
+            <div style={{
+              padding: '12px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              border: '2px solid var(--neon-green)',
+              borderRadius: '4px',
+              minHeight: '300px',
+              maxHeight: '500px',
+              overflowY: 'auto'
+            }}>
+              <div dangerouslySetInnerHTML={{ __html: renderMarkdown(formData.content) }} />
+            </div>
+          )}
         </div>
 
         <div style={{ marginBottom: '20px' }}>
@@ -2133,6 +2376,7 @@ function HomePageSettingsModal({
   const [formData, setFormData] = useState(settings);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -2144,6 +2388,26 @@ function HomePageSettingsModal({
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const insertMarkdown = (before: string, after: string = '', placeholder: string = '') => {
+    const textarea = document.querySelector<HTMLTextAreaElement>('textarea[data-home-description-editor="true"]');
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    const textToInsert = selectedText || placeholder;
+    const newText = before + textToInsert + after;
+
+    const newValue = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
+    setFormData({ ...formData, description: newValue });
+
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = start + before.length + textToInsert.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
   };
 
   return (
@@ -2194,16 +2458,154 @@ function HomePageSettingsModal({
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Описание *
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            rows={5}
-            placeholder="Основной текст описания на главной странице"
-            style={{ width: '100%' }}
-          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <label style={{ color: 'var(--neon-cyan)', fontWeight: 600 }}>
+              Описание *
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowPreview(!showPreview)}
+              style={{
+                background: 'transparent',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              {showPreview ? 'Редактор' : 'Предпросмотр'}
+            </button>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            gap: '6px',
+            flexWrap: 'wrap',
+            marginBottom: '10px',
+            padding: '10px',
+            background: 'rgba(0, 255, 249, 0.05)',
+            borderRadius: '6px',
+            border: '1px solid rgba(0, 255, 249, 0.15)'
+          }}>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('**', '**', 'жирный текст')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}
+              title="Жирный текст"
+            >
+              B
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('*', '*', 'курсив')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontStyle: 'italic'
+              }}
+              title="Курсив"
+            >
+              I
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('[', '](url)', 'текст ссылки')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+              title="Ссылка"
+            >
+              Ссылка
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('- ', '', 'элемент списка')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+              title="Маркированный список"
+            >
+              Список
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('`', '`', 'код')}
+              style={{
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontFamily: 'monospace'
+              }}
+              title="Код"
+            >
+              &lt;/&gt;
+            </button>
+          </div>
+
+          {!showPreview ? (
+            <textarea
+              data-home-description-editor="true"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={5}
+              placeholder="Основной текст описания на главной странице. Используйте кнопки для форматирования"
+              style={{
+                width: '100%',
+                fontFamily: 'monospace',
+                fontSize: '14px',
+                lineHeight: '1.6',
+                padding: '12px',
+                background: 'rgba(0, 0, 0, 0.5)',
+                border: '2px solid var(--neon-cyan)',
+                borderRadius: '4px',
+                color: 'white',
+                resize: 'vertical'
+              }}
+            />
+          ) : (
+            <div style={{
+              padding: '12px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              border: '2px solid var(--neon-green)',
+              borderRadius: '4px',
+              minHeight: '120px'
+            }}>
+              <div dangerouslySetInnerHTML={{ __html: renderMarkdown(formData.description) }} />
+            </div>
+          )}
         </div>
 
         <div style={{
