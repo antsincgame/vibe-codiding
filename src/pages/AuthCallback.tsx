@@ -99,6 +99,31 @@ export default function AuthCallback() {
         return;
       }
 
+      const { data: { session: existingSession } } = await supabase.auth.getSession();
+
+      if (existingSession?.user) {
+        debugLog('CALLBACK', 'Session already exists (auto-exchanged by Supabase)', existingSession.user.email, 'success');
+        processedRef.current = true;
+
+        setStatus('Проверка профиля...');
+        const profileExists = await waitForProfile(existingSession.user.id);
+
+        if (!profileExists) {
+          debugLog('CALLBACK', 'Profile creation failed', undefined, 'error');
+          setStatus('Ошибка создания профиля');
+          timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+          return;
+        }
+
+        window.history.replaceState(null, '', '/auth/callback');
+        setStatus('Успешно! Перенаправление...');
+        debugLog('CALLBACK', 'Redirecting to dashboard...', undefined, 'success');
+        timeoutRef.current = setTimeout(() => {
+          navigate('/student/dashboard', { replace: true });
+        }, 300);
+        return;
+      }
+
       if (code) {
         debugLog('CALLBACK', '=== PKCE FLOW: Exchanging code for session ===', undefined, 'info');
         try {
@@ -212,40 +237,7 @@ export default function AuthCallback() {
         return;
       }
 
-      debugLog('CALLBACK', '=== NO TOKENS/CODE IN URL ===', undefined, 'warn');
-      debugLog('CALLBACK', 'Checking for existing session...');
-
-      const { data: { session: existingSession }, error: sessionError } = await supabase.auth.getSession();
-
-      debugLog('CALLBACK', 'Existing session check', {
-        hasSession: !!existingSession,
-        userEmail: existingSession?.user?.email,
-        error: sessionError?.message
-      });
-
-      if (existingSession?.user) {
-        debugLog('CALLBACK', 'Found existing session!', existingSession.user.email, 'success');
-        processedRef.current = true;
-
-        setStatus('Создание профиля...');
-        const profileExists = await waitForProfile(existingSession.user.id);
-
-        if (!profileExists) {
-          debugLog('CALLBACK', 'Profile creation failed', undefined, 'error');
-          setStatus('Ошибка создания профиля');
-          timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
-          return;
-        }
-
-        window.history.replaceState(null, '', '/auth/callback');
-        setStatus('Успешно! Перенаправление...');
-        timeoutRef.current = setTimeout(() => {
-          navigate('/student/dashboard', { replace: true });
-        }, 300);
-        return;
-      }
-
-      debugLog('CALLBACK', 'No existing session, setting up auth state listener...');
+      debugLog('CALLBACK', '=== NO TOKENS/CODE IN URL, waiting for auth state ===', undefined, 'warn');
 
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         debugLog('CALLBACK', `onAuthStateChange in callback: ${event}`, {
