@@ -298,8 +298,7 @@ export default function Admin() {
         .from('profiles')
         .update({
           full_name: user.full_name,
-          role: user.role,
-          avatar_url: user.avatar_url
+          role: user.role
         })
         .eq('id', user.id);
 
@@ -2405,47 +2404,6 @@ function UserModal({
           }}>
             <strong style={{ color: 'var(--neon-pink)' }}>Внимание:</strong> Администраторы имеют полный доступ ко всем функциям системы
           </div>
-        </div>
-
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{
-            display: 'block',
-            marginBottom: '8px',
-            color: 'var(--neon-cyan)',
-            fontWeight: 600
-          }}>
-            URL аватара
-          </label>
-          <input
-            type="url"
-            value={formData.avatar_url || ''}
-            onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
-            className="cyber-input"
-            placeholder="https://example.com/avatar.jpg"
-          />
-          {formData.avatar_url && (
-            <div style={{
-              marginTop: '10px',
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              border: '2px solid var(--neon-cyan)',
-              overflow: 'hidden'
-            }}>
-              <img
-                src={formData.avatar_url}
-                alt="Avatar preview"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover'
-                }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            </div>
-          )}
         </div>
 
         <div style={{
