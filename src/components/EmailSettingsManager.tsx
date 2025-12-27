@@ -7,6 +7,13 @@ interface EmailSettings {
   confirmationTemplate: string;
   welcomeSubject: string;
   welcomeTemplate: string;
+  smtpHost: string;
+  smtpPort: string;
+  smtpUser: string;
+  smtpPassword: string;
+  smtpFromEmail: string;
+  smtpFromName: string;
+  smtpSecure: boolean;
 }
 
 export default function EmailSettingsManager() {
@@ -15,11 +22,18 @@ export default function EmailSettingsManager() {
     confirmationSubject: '',
     confirmationTemplate: '',
     welcomeSubject: '',
-    welcomeTemplate: ''
+    welcomeTemplate: '',
+    smtpHost: '',
+    smtpPort: '587',
+    smtpUser: '',
+    smtpPassword: '',
+    smtpFromEmail: '',
+    smtpFromName: 'VIBECODING',
+    smtpSecure: false
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<'confirmation' | 'welcome'>('confirmation');
+  const [activeTemplate, setActiveTemplate] = useState<'confirmation' | 'welcome' | 'smtp'>('confirmation');
 
   useEffect(() => {
     loadSettings();
@@ -35,7 +49,14 @@ export default function EmailSettingsManager() {
           'email_confirmation_subject',
           'email_confirmation_template',
           'email_welcome_subject',
-          'email_welcome_template'
+          'email_welcome_template',
+          'smtp_host',
+          'smtp_port',
+          'smtp_user',
+          'smtp_password',
+          'smtp_from_email',
+          'smtp_from_name',
+          'smtp_secure'
         ]);
 
       if (data) {
@@ -49,7 +70,14 @@ export default function EmailSettingsManager() {
           confirmationSubject: settingsMap['email_confirmation_subject'] || '',
           confirmationTemplate: settingsMap['email_confirmation_template'] || '',
           welcomeSubject: settingsMap['email_welcome_subject'] || '',
-          welcomeTemplate: settingsMap['email_welcome_template'] || ''
+          welcomeTemplate: settingsMap['email_welcome_template'] || '',
+          smtpHost: settingsMap['smtp_host'] || '',
+          smtpPort: settingsMap['smtp_port'] || '587',
+          smtpUser: settingsMap['smtp_user'] || '',
+          smtpPassword: settingsMap['smtp_password'] || '',
+          smtpFromEmail: settingsMap['smtp_from_email'] || '',
+          smtpFromName: settingsMap['smtp_from_name'] || 'VIBECODING',
+          smtpSecure: settingsMap['smtp_secure'] === 'true'
         });
       }
     } catch (error) {
@@ -87,6 +115,41 @@ export default function EmailSettingsManager() {
           key: 'email_welcome_template',
           value: settings.welcomeTemplate,
           description: 'HTML template for welcome email'
+        },
+        {
+          key: 'smtp_host',
+          value: settings.smtpHost,
+          description: 'SMTP server host'
+        },
+        {
+          key: 'smtp_port',
+          value: settings.smtpPort,
+          description: 'SMTP server port'
+        },
+        {
+          key: 'smtp_user',
+          value: settings.smtpUser,
+          description: 'SMTP username'
+        },
+        {
+          key: 'smtp_password',
+          value: settings.smtpPassword,
+          description: 'SMTP password'
+        },
+        {
+          key: 'smtp_from_email',
+          value: settings.smtpFromEmail,
+          description: 'Email FROM address'
+        },
+        {
+          key: 'smtp_from_name',
+          value: settings.smtpFromName,
+          description: 'Email FROM name'
+        },
+        {
+          key: 'smtp_secure',
+          value: settings.smtpSecure.toString(),
+          description: 'Use TLS/SSL for SMTP'
         }
       ];
 
@@ -172,7 +235,8 @@ export default function EmailSettingsManager() {
         display: 'flex',
         gap: '15px',
         marginBottom: '30px',
-        borderBottom: '2px solid rgba(0, 255, 249, 0.2)'
+        borderBottom: '2px solid rgba(0, 255, 249, 0.2)',
+        flexWrap: 'wrap'
       }}>
         <button
           onClick={() => setActiveTemplate('confirmation')}
@@ -199,6 +263,19 @@ export default function EmailSettingsManager() {
           }}
         >
           Приветственное письмо
+        </button>
+        <button
+          onClick={() => setActiveTemplate('smtp')}
+          className="cyber-button"
+          style={{
+            background: activeTemplate === 'smtp' ? 'rgba(0, 255, 100, 0.2)' : 'transparent',
+            border: 'none',
+            borderBottom: activeTemplate === 'smtp' ? '2px solid var(--neon-green)' : 'none',
+            borderRadius: 0,
+            padding: '15px 30px'
+          }}
+        >
+          SMTP настройки
         </button>
       </div>
 
@@ -306,6 +383,210 @@ export default function EmailSettingsManager() {
               }}
               placeholder="<!DOCTYPE html>..."
             />
+          </div>
+        </div>
+      )}
+
+      {activeTemplate === 'smtp' && (
+        <div>
+          <div style={{
+            marginBottom: '25px',
+            padding: '20px',
+            background: 'rgba(0, 255, 100, 0.05)',
+            border: '1px solid rgba(0, 255, 100, 0.2)',
+            borderRadius: '8px'
+          }}>
+            <h3 style={{
+              fontSize: '16px',
+              marginBottom: '10px',
+              color: 'var(--neon-green)'
+            }}>
+              Информация о SMTP
+            </h3>
+            <p style={{ fontSize: '14px', opacity: 0.9, marginBottom: '10px' }}>
+              Настройки SMTP позволяют отправлять email с собственного почтового сервера.
+            </p>
+            <ul style={{ fontSize: '13px', opacity: 0.8, paddingLeft: '20px', lineHeight: '1.8' }}>
+              <li>Используйте данные вашего SMTP сервера (Gmail, Yandex, Mail.ru и др.)</li>
+              <li>Для Gmail используйте "Пароли приложений" вместо основного пароля</li>
+              <li>Стандартные порты: 587 (TLS), 465 (SSL), 25 (без шифрования)</li>
+            </ul>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '20px',
+            marginBottom: '20px'
+          }}>
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                SMTP Хост *
+              </label>
+              <input
+                type="text"
+                value={settings.smtpHost}
+                onChange={(e) => setSettings({ ...settings, smtpHost: e.target.value })}
+                className="cyber-input"
+                placeholder="smtp.gmail.com"
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                SMTP Порт *
+              </label>
+              <input
+                type="text"
+                value={settings.smtpPort}
+                onChange={(e) => setSettings({ ...settings, smtpPort: e.target.value })}
+                className="cyber-input"
+                placeholder="587"
+              />
+            </div>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '20px',
+            marginBottom: '20px'
+          }}>
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                SMTP Пользователь (email) *
+              </label>
+              <input
+                type="email"
+                value={settings.smtpUser}
+                onChange={(e) => setSettings({ ...settings, smtpUser: e.target.value })}
+                className="cyber-input"
+                placeholder="your-email@gmail.com"
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                SMTP Пароль *
+              </label>
+              <input
+                type="password"
+                value={settings.smtpPassword}
+                onChange={(e) => setSettings({ ...settings, smtpPassword: e.target.value })}
+                className="cyber-input"
+                placeholder="••••••••••••"
+              />
+            </div>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '20px',
+            marginBottom: '20px'
+          }}>
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                Email отправителя *
+              </label>
+              <input
+                type="email"
+                value={settings.smtpFromEmail}
+                onChange={(e) => setSettings({ ...settings, smtpFromEmail: e.target.value })}
+                className="cyber-input"
+                placeholder="noreply@vibecoding.com"
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                Имя отправителя
+              </label>
+              <input
+                type="text"
+                value={settings.smtpFromName}
+                onChange={(e) => setSettings({ ...settings, smtpFromName: e.target.value })}
+                className="cyber-input"
+                placeholder="VIBECODING"
+              />
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              fontSize: '15px',
+              cursor: 'pointer'
+            }}>
+              <input
+                type="checkbox"
+                checked={settings.smtpSecure}
+                onChange={(e) => setSettings({ ...settings, smtpSecure: e.target.checked })}
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{ color: 'var(--neon-green)', fontWeight: 600 }}>
+                Использовать TLS/SSL (рекомендуется для безопасности)
+              </span>
+            </label>
+          </div>
+
+          <div style={{
+            padding: '15px',
+            background: 'rgba(255, 255, 100, 0.05)',
+            border: '1px solid rgba(255, 255, 100, 0.3)',
+            borderRadius: '6px',
+            marginBottom: '20px'
+          }}>
+            <div style={{ fontSize: '13px', opacity: 0.9 }}>
+              <strong style={{ color: 'var(--neon-cyan)' }}>Примеры настроек для популярных провайдеров:</strong>
+              <div style={{ marginTop: '10px', lineHeight: '1.8' }}>
+                <div><strong>Gmail:</strong> smtp.gmail.com, Port: 587, TLS: Да</div>
+                <div><strong>Yandex:</strong> smtp.yandex.ru, Port: 587, TLS: Да</div>
+                <div><strong>Mail.ru:</strong> smtp.mail.ru, Port: 587, TLS: Да</div>
+              </div>
+            </div>
           </div>
         </div>
       )}
