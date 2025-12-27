@@ -3,13 +3,11 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function StudentDashboard() {
-  const { user, profile, signOut, updateProfile } = useAuth();
+  const { profile, signOut, updateProfile } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [fullName, setFullName] = useState(profile?.full_name || '');
   const [saving, setSaving] = useState(false);
-
-  console.log('StudentDashboard rendered - user:', user?.email, 'profile:', profile?.email);
 
   const handleSignOut = async () => {
     await signOut();

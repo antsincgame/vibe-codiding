@@ -10,7 +10,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
-    console.log('=== Google Sign In Started ===');
     setError('');
     setLoading(true);
 
@@ -18,17 +17,10 @@ export default function Login() {
       const origin = window.location.origin;
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
-      console.log('1. Origin:', origin);
-      console.log('2. Supabase URL:', supabaseUrl);
-
       const edgeFunctionUrl = `${supabaseUrl}/functions/v1/auth-exchange`;
       const redirectUrl = `${edgeFunctionUrl}?origin=${encodeURIComponent(origin)}`;
 
-      console.log('3. Edge Function URL:', edgeFunctionUrl);
-      console.log('4. Redirect URL:', redirectUrl);
-      console.log('5. Calling supabase.auth.signInWithOAuth...');
-
-      const { data, error: authError } = await supabase.auth.signInWithOAuth({
+      const { error: authError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
@@ -39,19 +31,12 @@ export default function Login() {
         }
       });
 
-      console.log('6. OAuth Response Data:', data);
-      console.log('7. OAuth Error:', authError);
-
       if (authError) {
-        console.error('8. ERROR during OAuth:', authError);
         setError(`Ошибка Google авторизации: ${authError.message}`);
         setLoading(false);
         return;
       }
-
-      console.log('9. OAuth successful, redirecting to Google...');
     } catch (err) {
-      console.error('10. CAUGHT ERROR:', err);
       setError('Произошла ошибка при входе через Google');
       setLoading(false);
     }

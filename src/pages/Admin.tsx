@@ -1869,7 +1869,6 @@ function BlogPostModal({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
-  const contentTextareaRef = useState<HTMLTextAreaElement | null>(null)[0];
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

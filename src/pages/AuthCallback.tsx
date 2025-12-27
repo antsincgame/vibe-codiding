@@ -108,7 +108,7 @@ export default function AuthCallback() {
         try {
           processedRef.current = true;
 
-          const { data, error: setSessionError } = await supabase.auth.setSession({
+          const { error: setSessionError } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
           });
