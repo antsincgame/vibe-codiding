@@ -169,6 +169,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('signInWithOAuth response error:', error);
       console.log('=== GOOGLE SIGN IN END ===');
 
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+
       return { error };
     } catch (error) {
       console.error('=== GOOGLE SIGN IN EXCEPTION ===');
