@@ -23,6 +23,25 @@ export default function AuthCallback() {
 
     let cleanup: (() => void) | null = null;
 
+    const waitForProfile = async (userId: string, maxAttempts = 10): Promise<boolean> => {
+      for (let i = 0; i < maxAttempts; i++) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', userId)
+          .maybeSingle();
+
+        if (profile) {
+          console.log('Profile found after', i + 1, 'attempts');
+          return true;
+        }
+
+        console.log('Waiting for profile creation, attempt', i + 1);
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+      return false;
+    };
+
     const handleTokens = async () => {
       if (accessToken && refreshToken && !processedRef.current) {
         try {
@@ -41,6 +60,18 @@ export default function AuthCallback() {
           const { data: { session: verifySession } } = await supabase.auth.getSession();
           console.log('Session verified:', verifySession?.user?.email);
 
+          if (verifySession?.user) {
+            setStatus('Создание профиля...');
+            const profileExists = await waitForProfile(verifySession.user.id);
+
+            if (!profileExists) {
+              console.error('Profile was not created in time');
+              setStatus('Ошибка создания профиля');
+              timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+              return;
+            }
+          }
+
           window.history.replaceState(null, '', '/auth/callback');
           setStatus('Успешно! Перенаправление...');
           timeoutRef.current = setTimeout(() => {
@@ -53,11 +84,22 @@ export default function AuthCallback() {
         }
       } else {
         console.log('No tokens in URL, waiting for auth state change');
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           console.log('Auth event:', event, session?.user?.email);
 
           if (event === 'SIGNED_IN' && session && !processedRef.current) {
             processedRef.current = true;
+
+            setStatus('Создание профиля...');
+            const profileExists = await waitForProfile(session.user.id);
+
+            if (!profileExists) {
+              console.error('Profile was not created in time');
+              setStatus('Ошибка создания профиля');
+              timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+              return;
+            }
+
             window.history.replaceState(null, '', '/auth/callback');
             setStatus('Успешно! Перенаправление...');
             timeoutRef.current = setTimeout(() => {
