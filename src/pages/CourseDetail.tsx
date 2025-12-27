@@ -107,20 +107,35 @@ export default function CourseDetail() {
         {course.image_url && (
           <div style={{
             width: '100%',
-            height: '350px',
+            height: '400px',
             marginBottom: '60px',
-            borderRadius: '8px',
+            borderRadius: '16px',
             overflow: 'hidden',
-            border: '2px solid rgba(0, 255, 249, 0.3)'
+            border: '3px solid var(--neon-cyan)',
+            boxShadow: '0 10px 50px rgba(0, 255, 249, 0.3)',
+            position: 'relative'
           }}>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(180deg, transparent 0%, rgba(10, 10, 15, 0.7) 100%)',
+              zIndex: 1,
+              pointerEvents: 'none'
+            }} />
             <img
               src={course.image_url}
               alt={course.title}
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover'
+                objectFit: 'cover',
+                transition: 'transform 0.5s ease'
               }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
             />
           </div>
         )}
@@ -139,113 +154,206 @@ export default function CourseDetail() {
             </h1>
 
             <div style={{
-              display: 'flex',
-              gap: '30px',
-              marginBottom: '40px',
-              flexWrap: 'wrap'
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '20px',
+              marginBottom: '50px'
             }}>
-              <div style={{
-                padding: '15px 25px',
-                background: 'rgba(0, 255, 249, 0.1)',
-                border: '1px solid var(--neon-cyan)'
+              <div className="course-info-card" style={{
+                padding: '25px 30px',
+                background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.15) 0%, rgba(0, 255, 249, 0.05) 100%)',
+                border: '2px solid var(--neon-cyan)',
+                borderRadius: '12px',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                textAlign: 'center'
               }}>
-                <div style={{ fontSize: '14px', opacity: 0.6, marginBottom: '5px' }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  fontSize: '40px',
+                  opacity: 0.1
+                }}>👥</div>
+                <div style={{ fontSize: '13px', opacity: 0.7, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>
                   Возраст
                 </div>
-                <div style={{ fontSize: '20px', fontWeight: 600, color: 'var(--neon-cyan)' }}>
+                <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--neon-cyan)', textShadow: '0 0 10px rgba(0, 255, 249, 0.5)' }}>
                   {course.age_group}
                 </div>
               </div>
 
-              <div style={{
-                padding: '15px 25px',
-                background: 'rgba(0, 255, 249, 0.1)',
-                border: '1px solid var(--neon-green)'
+              <div className="course-info-card" style={{
+                padding: '25px 30px',
+                background: 'linear-gradient(135deg, rgba(57, 255, 20, 0.15) 0%, rgba(57, 255, 20, 0.05) 100%)',
+                border: '2px solid var(--neon-green)',
+                borderRadius: '12px',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                textAlign: 'center'
               }}>
-                <div style={{ fontSize: '14px', opacity: 0.6, marginBottom: '5px' }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  fontSize: '40px',
+                  opacity: 0.1
+                }}>⏱️</div>
+                <div style={{ fontSize: '13px', opacity: 0.7, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>
                   Длительность
                 </div>
-                <div style={{ fontSize: '20px', fontWeight: 600, color: 'var(--neon-green)' }}>
+                <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--neon-green)', textShadow: '0 0 10px rgba(57, 255, 20, 0.5)' }}>
                   {course.duration}
                 </div>
               </div>
 
-              <div style={{
-                padding: '15px 25px',
-                background: 'rgba(255, 0, 128, 0.1)',
-                border: '1px solid var(--neon-pink)'
+              <div className="course-info-card" style={{
+                padding: '25px 30px',
+                background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.15) 0%, rgba(255, 0, 110, 0.05) 100%)',
+                border: '2px solid var(--neon-pink)',
+                borderRadius: '12px',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                textAlign: 'center'
               }}>
-                <div style={{ fontSize: '14px', opacity: 0.6, marginBottom: '5px' }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  fontSize: '40px',
+                  opacity: 0.1
+                }}>💰</div>
+                <div style={{ fontSize: '13px', opacity: 0.7, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>
                   Стоимость
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--neon-pink)' }}>
+                <div style={{ fontSize: '28px', fontWeight: 900, color: 'var(--neon-pink)', textShadow: '0 0 10px rgba(255, 0, 110, 0.5)' }}>
                   {course.price}
                 </div>
               </div>
             </div>
           </div>
 
-          <section className="cyber-card">
+          <section className="cyber-card" style={{ padding: '50px' }}>
             <h2 style={{
-              fontSize: '32px',
-              marginBottom: '20px',
-              color: 'var(--neon-cyan)'
+              fontSize: '40px',
+              marginBottom: '40px',
+              color: 'var(--neon-cyan)',
+              textAlign: 'center',
+              textTransform: 'uppercase',
+              letterSpacing: '3px',
+              textShadow: '0 0 20px rgba(0, 255, 249, 0.5)'
             }}>
               О курсе
             </h2>
-            <div
-              style={{
-                fontSize: '20px',
-                lineHeight: '1.8',
-                opacity: 0.9,
-                marginBottom: '40px'
-              }}
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(course.description) }}
-            />
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.08) 0%, rgba(255, 0, 110, 0.08) 100%)',
+              padding: '40px',
+              borderRadius: '12px',
+              border: '2px solid rgba(0, 255, 249, 0.2)',
+              marginBottom: '40px',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '-2px',
+                left: '-2px',
+                right: '-2px',
+                height: '4px',
+                background: 'linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-cyan))',
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 3s linear infinite'
+              }} />
+              <div
+                className="course-description"
+                style={{
+                  fontSize: '18px',
+                  lineHeight: '2',
+                  opacity: 0.95
+                }}
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(course.description) }}
+              />
+            </div>
 
             <div style={{
-              padding: '40px',
-              background: 'rgba(0, 255, 249, 0.05)',
-              border: '1px solid rgba(0, 255, 249, 0.3)',
+              padding: '50px',
+              background: 'linear-gradient(135deg, rgba(57, 255, 20, 0.05) 0%, rgba(0, 255, 249, 0.05) 100%)',
+              border: '2px solid var(--neon-green)',
               marginBottom: '40px',
-              borderRadius: '8px'
+              borderRadius: '16px',
+              position: 'relative',
+              boxShadow: '0 0 30px rgba(57, 255, 20, 0.1)'
             }}>
+              <div style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                fontSize: '80px',
+                opacity: 0.1,
+                color: 'var(--neon-green)',
+                pointerEvents: 'none'
+              }}>
+                🎯
+              </div>
               <h3 style={{
-                fontSize: '24px',
-                marginBottom: '30px',
+                fontSize: '32px',
+                marginBottom: '40px',
                 color: 'var(--neon-green)',
                 textTransform: 'uppercase',
-                letterSpacing: '2px'
+                letterSpacing: '3px',
+                textAlign: 'center',
+                textShadow: '0 0 20px rgba(57, 255, 20, 0.5)'
               }}>
-                Чему вы научитесь:
+                Чему вы научитесь
               </h3>
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '16px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: '20px'
               }}>
                 {(course.features as string[]).map((feature, idx) => (
-                  <div key={idx} style={{
-                    padding: '16px 20px',
-                    background: 'rgba(0, 255, 249, 0.08)',
-                    border: '1px solid rgba(0, 255, 249, 0.25)',
-                    borderRadius: '6px',
+                  <div key={idx} className="feature-card" style={{
+                    padding: '24px',
+                    background: 'rgba(19, 19, 26, 0.9)',
+                    border: '2px solid rgba(57, 255, 20, 0.3)',
+                    borderRadius: '12px',
                     display: 'flex',
                     alignItems: 'flex-start',
-                    gap: '12px',
-                    transition: 'all 0.2s ease'
+                    gap: '16px',
+                    transition: 'all 0.3s ease',
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '4px',
+                      height: '100%',
+                      background: 'linear-gradient(180deg, var(--neon-green), var(--neon-cyan))'
+                    }} />
                     <span style={{
-                      fontSize: '20px',
-                      color: 'var(--neon-cyan)',
+                      fontSize: '24px',
+                      minWidth: '32px',
+                      height: '32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--neon-green)',
+                      background: 'rgba(57, 255, 20, 0.1)',
+                      borderRadius: '8px',
                       flexShrink: 0,
-                      marginTop: '2px',
-                      fontWeight: 700
+                      fontWeight: 900,
+                      border: '1px solid rgba(57, 255, 20, 0.3)'
                     }}>✓</span>
                     <span style={{
-                      fontSize: '16px',
-                      lineHeight: '1.5',
-                      opacity: 0.95
+                      fontSize: '17px',
+                      lineHeight: '1.6',
+                      opacity: 0.95,
+                      fontWeight: 500
                     }}>
                       {feature}
                     </span>
@@ -255,60 +363,129 @@ export default function CourseDetail() {
             </div>
 
             <div style={{
-              background: 'rgba(19, 19, 26, 0.8)',
-              padding: '40px',
-              border: '1px solid var(--neon-pink)',
-              textAlign: 'center'
+              background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.1) 0%, rgba(0, 255, 249, 0.1) 100%)',
+              padding: '60px 40px',
+              border: '2px solid var(--neon-pink)',
+              textAlign: 'center',
+              borderRadius: '16px',
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 0 40px rgba(255, 0, 110, 0.2)'
             }}>
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: '200px',
+                opacity: 0.05,
+                pointerEvents: 'none'
+              }}>
+                💬
+              </div>
               <h3 style={{
-                fontSize: '28px',
+                fontSize: '36px',
                 marginBottom: '20px',
-                color: 'var(--neon-pink)'
+                color: 'var(--neon-pink)',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                textShadow: '0 0 20px rgba(255, 0, 110, 0.5)',
+                position: 'relative',
+                zIndex: 1
               }}>
                 Заинтересовались курсом?
               </h3>
               <p style={{
-                fontSize: '18px',
-                opacity: 0.8,
-                marginBottom: '30px',
-                lineHeight: '1.7'
+                fontSize: '19px',
+                opacity: 0.9,
+                marginBottom: '40px',
+                lineHeight: '1.8',
+                maxWidth: '700px',
+                margin: '0 auto 40px',
+                position: 'relative',
+                zIndex: 1
               }}>
                 Свяжитесь с нами, чтобы узнать больше о курсе и получить ответы на все ваши вопросы!
               </p>
-              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
+              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                 <button className="cyber-button" style={{
-                  fontSize: '18px',
-                  padding: '15px 35px'
+                  fontSize: '20px',
+                  padding: '18px 50px',
+                  background: 'linear-gradient(135deg, var(--neon-pink), var(--neon-cyan))',
+                  border: 'none',
+                  boxShadow: '0 0 30px rgba(255, 0, 110, 0.4)',
+                  fontWeight: 700,
+                  letterSpacing: '2px'
                 }}>
-                  WhatsApp
+                  📱 НАПИСАТЬ В WHATSAPP
                 </button>
               </a>
             </div>
           </section>
 
           <section style={{
-            padding: '60px 40px',
-            background: 'rgba(0, 255, 249, 0.05)',
-            border: '1px solid var(--neon-cyan)',
-            textAlign: 'center'
+            padding: '70px 50px',
+            background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.1) 0%, rgba(57, 255, 20, 0.1) 100%)',
+            border: '2px solid var(--neon-cyan)',
+            textAlign: 'center',
+            borderRadius: '16px',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 0 40px rgba(0, 255, 249, 0.15)'
           }}>
-            <h3 style={{
-              fontSize: '32px',
-              marginBottom: '20px',
-              color: 'var(--neon-cyan)'
+            <div style={{
+              position: 'absolute',
+              top: '20px',
+              left: '20px',
+              fontSize: '100px',
+              opacity: 0.08,
+              pointerEvents: 'none'
             }}>
-              Есть вопросы?
+              ❓
+            </div>
+            <div style={{
+              position: 'absolute',
+              bottom: '20px',
+              right: '20px',
+              fontSize: '100px',
+              opacity: 0.08,
+              pointerEvents: 'none',
+              transform: 'rotate(180deg)'
+            }}>
+              ❓
+            </div>
+            <h3 style={{
+              fontSize: '38px',
+              marginBottom: '20px',
+              color: 'var(--neon-cyan)',
+              textTransform: 'uppercase',
+              letterSpacing: '3px',
+              textShadow: '0 0 20px rgba(0, 255, 249, 0.5)',
+              position: 'relative',
+              zIndex: 1
+            }}>
+              Остались вопросы?
             </h3>
             <p style={{
-              fontSize: '18px',
-              opacity: 0.8,
-              marginBottom: '30px'
+              fontSize: '20px',
+              opacity: 0.9,
+              marginBottom: '35px',
+              lineHeight: '1.7',
+              maxWidth: '600px',
+              margin: '0 auto 35px',
+              position: 'relative',
+              zIndex: 1
             }}>
               Свяжитесь с нами удобным для вас способом
             </p>
-            <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
-              <button className="cyber-button">
-                WhatsApp
+            <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+              <button className="cyber-button" style={{
+                fontSize: '18px',
+                padding: '16px 40px',
+                fontWeight: 700,
+                letterSpacing: '2px'
+              }}>
+                📱 СВЯЗАТЬСЯ
               </button>
             </a>
           </section>
