@@ -12,6 +12,10 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 body {
   font-family: 'Rajdhani', sans-serif;
   background: var(--dark-bg);
