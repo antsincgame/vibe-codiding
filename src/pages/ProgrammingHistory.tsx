@@ -155,14 +155,10 @@ export default function ProgrammingHistory() {
               color: 'var(--neon-cyan)',
               textDecoration: 'none',
               fontSize: '14px',
-              marginBottom: '40px',
+              marginBottom: '30px',
               opacity: 0.8,
               transition: 'opacity 0.3s',
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.8')}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -170,45 +166,28 @@ export default function ProgrammingHistory() {
             На главную
           </Link>
 
-          <div style={{ position: 'relative', marginBottom: '40px' }}>
-            <h1
-              className="glitch"
-              data-text="ИСТОРИЯ ПРОГРАММИРОВАНИЯ"
-              style={{
-                fontSize: 'clamp(32px, 7vw, 56px)',
-                marginBottom: '0',
-                lineHeight: 1.1,
-                fontWeight: 900,
-                letterSpacing: '-2px',
-              }}
-            >
-              <span
-                className="neon-text"
-                style={{
-                  background: 'linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-green))',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  filter: 'drop-shadow(0 0 20px rgba(0, 255, 249, 0.4))',
-                }}
-              >
-                ИСТОРИЯ ПРОГРАММИРОВАНИЯ
-              </span>
-            </h1>
-          </div>
+          <h1
+            className="glitch"
+            data-text="ИСТОРИЯ ПРОГРАММИРОВАНИЯ"
+            style={{
+              fontSize: 'clamp(28px, 5vw, 48px)',
+              marginBottom: '20px',
+              lineHeight: 1.2,
+            }}
+          >
+            <span className="neon-text">ИСТОРИЯ ПРОГРАММИРОВАНИЯ</span>
+          </h1>
 
           <p
             style={{
-              fontSize: 'clamp(16px, 2.5vw, 20px)',
+              fontSize: 'clamp(18px, 3vw, 24px)',
               color: 'var(--neon-pink)',
               fontStyle: 'italic',
               maxWidth: '700px',
-              margin: '0 auto 35px',
-              letterSpacing: '0.5px',
-              fontWeight: 400,
+              margin: '0 auto 30px',
             }}
           >
-            как история <span style={{ color: 'var(--neon-cyan)', fontWeight: 500 }}>"снятия боли"</span>
+            как история "снятия боли"
           </p>
 
           <div
