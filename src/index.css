@@ -12,10 +12,6 @@
   box-sizing: border-box;
 }
 
-html {
-  overflow-y: scroll;
-}
-
 body {
   font-family: 'Rajdhani', sans-serif;
   background: var(--dark-bg);
@@ -33,8 +29,8 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background-image:
     linear-gradient(rgba(0, 255, 249, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 255, 249, 0.1) 1px, transparent 1px);
@@ -45,7 +41,8 @@ body {
 
 .scan-line {
   position: fixed;
-  width: 100%;
+  left: 0;
+  right: 0;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
   animation: scan 4s linear infinite;
