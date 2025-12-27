@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from 'npm:@supabase/supabase-js@2.39.0';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,10 +49,29 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // For PKCE flow, pass the code to the client
-    // The client will exchange it using exchangeCodeForSession with the stored code_verifier
-    const redirectUrl = `${clientOrigin}/auth/callback?code=${encodeURIComponent(code)}`;
-    console.log('Redirecting with code to client for PKCE exchange:', redirectUrl);
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    console.log('Exchanging code for session on server...');
+    const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (exchangeError || !data.session) {
+      console.error('Failed to exchange code:', exchangeError);
+      const redirectUrl = `${clientOrigin}/auth/callback?error=${encodeURIComponent('exchange_failed')}&error_description=${encodeURIComponent(exchangeError?.message || 'Unknown error')}`;
+      return new Response(null, {
+        status: 302,
+        headers: {
+          'Location': redirectUrl,
+          ...corsHeaders
+        }
+      });
+    }
+
+    console.log('Code exchanged successfully, user:', data.session.user.email);
+
+    const redirectUrl = `${clientOrigin}/auth/callback#access_token=${data.session.access_token}&refresh_token=${data.session.refresh_token}&expires_in=${data.session.expires_in}&token_type=bearer`;
+    console.log('Redirecting with tokens in hash');
 
     return new Response(null, {
       status: 302,
@@ -62,10 +82,12 @@ Deno.serve(async (req: Request) => {
     });
   } catch (error) {
     console.error('Auth exchange error:', error);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
+    const clientOrigin = Deno.env.get('CLIENT_ORIGIN') || 'http://localhost:5173';
+    const redirectUrl = `${clientOrigin}/auth/callback?error=exception&error_description=${encodeURIComponent(String(error))}`;
+    return new Response(null, {
+      status: 302,
       headers: {
-        'Content-Type': 'application/json',
+        'Location': redirectUrl,
         ...corsHeaders
       }
     });
