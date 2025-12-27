@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
   const { user, profile, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  if (loading || (user && !profile)) {
     return (
       <div style={{
         minHeight: '100vh',
@@ -23,11 +23,11 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
     );
   }
 
-  if (!user) {
+  if (!user || !profile) {
     return <Navigate to="/student/login" state={{ from: location }} replace />;
   }
 
-  if (requireAdmin && profile?.role !== 'admin') {
+  if (requireAdmin && profile.role !== 'admin') {
     return <Navigate to="/student/dashboard" replace />;
   }
 

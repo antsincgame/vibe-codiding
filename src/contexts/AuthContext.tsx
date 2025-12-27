@@ -77,21 +77,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const loadProfile = async (userId: string) => {
+  const loadProfile = async (userId: string, retries = 5) => {
     try {
       console.log('Loading profile for user:', userId);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
 
-      if (error) throw error;
-      console.log('Profile loaded:', data);
-      setProfile(data);
+      for (let i = 0; i < retries; i++) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error loading profile:', error);
+          throw error;
+        }
+
+        if (data) {
+          console.log('Profile loaded:', data);
+          setProfile(data);
+          setLoading(false);
+          return;
+        }
+
+        if (i < retries - 1) {
+          console.log(`Profile not found, retry ${i + 1}/${retries - 1}`);
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      console.error('Profile not found after retries');
+      setProfile(null);
+      setLoading(false);
     } catch (error) {
       console.error('Error loading profile:', error);
-    } finally {
+      setProfile(null);
       setLoading(false);
     }
   };

@@ -75,7 +75,7 @@ export default function AuthCallback() {
           window.history.replaceState(null, '', '/auth/callback');
           setStatus('Успешно! Перенаправление...');
           timeoutRef.current = setTimeout(() => {
-            window.location.href = '/student/dashboard';
+            navigate('/student/dashboard', { replace: true });
           }, 500);
         } catch (err) {
           console.error('Error setting session:', err);
@@ -103,7 +103,7 @@ export default function AuthCallback() {
             window.history.replaceState(null, '', '/auth/callback');
             setStatus('Успешно! Перенаправление...');
             timeoutRef.current = setTimeout(() => {
-              window.location.href = '/student/dashboard';
+              navigate('/student/dashboard', { replace: true });
             }, 300);
           }
         });
