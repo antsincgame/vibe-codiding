@@ -148,11 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      console.log('signInWithGoogle: supabaseUrl:', supabaseUrl);
-
-      const edgeFunctionUrl = `${supabaseUrl}/functions/v1/auth-exchange`;
-      const redirectUrl = `${edgeFunctionUrl}?origin=${encodeURIComponent(window.location.origin)}`;
+      const redirectUrl = `${window.location.origin}/auth/callback`;
       console.log('signInWithGoogle: redirectTo:', redirectUrl);
 
       const { error } = await supabase.auth.signInWithOAuth({
