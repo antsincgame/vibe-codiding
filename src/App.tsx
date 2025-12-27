@@ -16,6 +16,7 @@ import StudentWorks from './pages/StudentWorks';
 import Blog from './pages/Blog';
 import BlogPostPage from './pages/BlogPostPage';
 import Privacy from './pages/Privacy';
+import ProgrammingHistory from './pages/ProgrammingHistory';
 import StudentAuth from './pages/StudentAuth';
 import StudentDashboard from './pages/StudentDashboard';
 import EmailConfirmation from './pages/EmailConfirmation';
@@ -75,6 +76,7 @@ function App() {
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/blog/:slug" element={<BlogPostPage />} />
                     <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/history" element={<ProgrammingHistory />} />
                   </Routes>
                   <Footer />
                 </main>
