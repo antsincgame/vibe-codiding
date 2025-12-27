@@ -6,9 +6,19 @@ import { renderMarkdown, stripMarkdown } from '../lib/markdown';
 import EmailSettingsManager from '../components/EmailSettingsManager';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 
+interface UserProfile {
+  id: string;
+  email: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'blog' | 'home' | 'email'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'blog' | 'home' | 'email' | 'users'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -16,11 +26,13 @@ export default function Admin() {
   const [studentWorks, setStudentWorks] = useState<StudentWork[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [homeSettings, setHomeSettings] = useState<HomePageSettings | null>(null);
+  const [users, setUsers] = useState<UserProfile[]>([]);
 
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [editingFaq, setEditingFaq] = useState<FAQ | null>(null);
   const [editingWork, setEditingWork] = useState<StudentWork | null>(null);
   const [editingBlogPost, setEditingBlogPost] = useState<BlogPost | null>(null);
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -83,6 +95,12 @@ export default function Admin() {
       if (data) setBlogPosts(data);
     } else if (activeTab === 'home') {
       await loadHomeSettings();
+    } else if (activeTab === 'users') {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (data) setUsers(data);
     }
   };
 
@@ -269,6 +287,35 @@ export default function Admin() {
     }
   };
 
+  const saveUser = async (user: Partial<UserProfile>) => {
+    try {
+      if (!user.id) {
+        alert('Ошибка: ID пользователя не найден');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: user.full_name,
+          role: user.role,
+          avatar_url: user.avatar_url
+        })
+        .eq('id', user.id);
+
+      if (error) {
+        alert(`Ошибка сохранения: ${error.message}`);
+        return;
+      }
+
+      setEditingUser(null);
+      loadData();
+      alert('Данные пользователя успешно обновлены');
+    } catch (err) {
+      alert('Произошла ошибка при сохранении');
+    }
+  };
+
   const updateRegistrationStatus = async (id: string, status: string) => {
     await supabase
       .from('trial_registrations')
@@ -381,6 +428,17 @@ export default function Admin() {
             }}
           >
             Email настройки
+          </button>
+          <button
+            onClick={() => setActiveTab('users')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'users' ? 1 : 0.5,
+              borderColor: 'var(--neon-cyan)',
+              color: 'var(--neon-cyan)'
+            }}
+          >
+            Пользователи
           </button>
         </div>
 
@@ -882,6 +940,116 @@ export default function Admin() {
         {activeTab === 'email' && (
           <EmailSettingsManager />
         )}
+
+        {activeTab === 'users' && (
+          <div>
+            <div style={{
+              display: 'grid',
+              gap: '20px',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))'
+            }}>
+              {users.map((user) => (
+                <div key={user.id} className="cyber-card">
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '15px',
+                    marginBottom: '15px'
+                  }}>
+                    <div style={{
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '50%',
+                      background: user.avatar_url ? `url(${user.avatar_url})` : 'linear-gradient(135deg, var(--neon-cyan), var(--neon-pink))',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '20px',
+                      fontWeight: 'bold',
+                      color: 'white'
+                    }}>
+                      {!user.avatar_url && (user.full_name?.[0] || user.email[0]).toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h3 style={{
+                        fontSize: '18px',
+                        color: 'var(--neon-cyan)',
+                        marginBottom: '4px',
+                        wordBreak: 'break-word'
+                      }}>
+                        {user.full_name || 'Без имени'}
+                      </h3>
+                      <div style={{
+                        fontSize: '13px',
+                        opacity: 0.8,
+                        wordBreak: 'break-all'
+                      }}>
+                        {user.email}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{
+                    display: 'flex',
+                    gap: '10px',
+                    marginBottom: '10px',
+                    flexWrap: 'wrap'
+                  }}>
+                    <span style={{
+                      background: user.role === 'admin' ? 'var(--neon-pink)' : user.role === 'student' ? 'var(--neon-cyan)' : 'rgba(255, 255, 255, 0.2)',
+                      color: user.role === 'admin' || user.role === 'student' ? 'var(--bg-dark)' : 'white',
+                      padding: '4px 12px',
+                      borderRadius: '12px',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase'
+                    }}>
+                      {user.role === 'admin' ? 'Администратор' : user.role === 'student' ? 'Студент' : user.role}
+                    </span>
+                  </div>
+
+                  <div style={{
+                    fontSize: '12px',
+                    opacity: 0.6,
+                    marginBottom: '15px'
+                  }}>
+                    Регистрация: {new Date(user.created_at).toLocaleDateString('ru-RU', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    })}
+                  </div>
+
+                  <button
+                    onClick={() => setEditingUser(user)}
+                    className="cyber-button"
+                    style={{
+                      width: '100%',
+                      padding: '8px',
+                      fontSize: '14px'
+                    }}
+                  >
+                    Редактировать
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {users.length === 0 && (
+              <div className="cyber-card" style={{
+                textAlign: 'center',
+                padding: '60px 20px'
+              }}>
+                <p style={{ opacity: 0.6, fontSize: '16px' }}>
+                  Пользователи не найдены
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {editingCourse && (
@@ -913,6 +1081,14 @@ export default function Admin() {
           post={editingBlogPost}
           onSave={saveBlogPost}
           onClose={() => setEditingBlogPost(null)}
+        />
+      )}
+
+      {editingUser && (
+        <UserModal
+          user={editingUser}
+          onSave={saveUser}
+          onClose={() => setEditingUser(null)}
         />
       )}
     </div>
@@ -2109,6 +2285,203 @@ function HomePageSettingsModal({
             style={{ flex: 1 }}
           >
             {isSaving ? 'Сохранение...' : 'Сохранить'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UserModal({
+  user,
+  onSave,
+  onClose
+}: {
+  user: UserProfile;
+  onSave: (user: Partial<UserProfile>) => void;
+  onClose: () => void;
+}) {
+  const [formData, setFormData] = useState(user);
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'rgba(0, 0, 0, 0.9)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '20px',
+      overflow: 'auto'
+    }}>
+      <div className="cyber-card" style={{
+        maxWidth: '600px',
+        width: '100%',
+        maxHeight: '90vh',
+        overflow: 'auto'
+      }}>
+        <h2 style={{
+          fontSize: '28px',
+          marginBottom: '20px',
+          color: 'var(--neon-cyan)'
+        }}>
+          Редактировать пользователя
+        </h2>
+
+        <div style={{
+          marginBottom: '20px',
+          padding: '15px',
+          background: 'rgba(0, 255, 249, 0.05)',
+          border: '1px solid rgba(0, 255, 249, 0.2)',
+          borderRadius: '6px'
+        }}>
+          <div style={{ fontSize: '13px', opacity: 0.8 }}>
+            <strong>ID:</strong> {user.id}
+          </div>
+          <div style={{ fontSize: '13px', opacity: 0.8, marginTop: '5px' }}>
+            <strong>Email:</strong> {user.email}
+          </div>
+          <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '8px' }}>
+            Email нельзя изменить через админ-панель
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            color: 'var(--neon-cyan)',
+            fontWeight: 600
+          }}>
+            Полное имя
+          </label>
+          <input
+            type="text"
+            value={formData.full_name || ''}
+            onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+            className="cyber-input"
+            placeholder="Иван Иванов"
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            color: 'var(--neon-cyan)',
+            fontWeight: 600
+          }}>
+            Роль *
+          </label>
+          <select
+            value={formData.role}
+            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              border: '2px solid var(--neon-cyan)',
+              borderRadius: '4px',
+              color: 'white',
+              fontSize: '16px',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="student">Студент</option>
+            <option value="admin">Администратор</option>
+          </select>
+          <div style={{
+            fontSize: '12px',
+            opacity: 0.7,
+            marginTop: '8px',
+            padding: '10px',
+            background: 'rgba(255, 255, 100, 0.05)',
+            border: '1px solid rgba(255, 255, 100, 0.3)',
+            borderRadius: '4px'
+          }}>
+            <strong style={{ color: 'var(--neon-pink)' }}>Внимание:</strong> Администраторы имеют полный доступ ко всем функциям системы
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            color: 'var(--neon-cyan)',
+            fontWeight: 600
+          }}>
+            URL аватара
+          </label>
+          <input
+            type="url"
+            value={formData.avatar_url || ''}
+            onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
+            className="cyber-input"
+            placeholder="https://example.com/avatar.jpg"
+          />
+          {formData.avatar_url && (
+            <div style={{
+              marginTop: '10px',
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              border: '2px solid var(--neon-cyan)',
+              overflow: 'hidden'
+            }}>
+              <img
+                src={formData.avatar_url}
+                alt="Avatar preview"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        <div style={{
+          marginBottom: '20px',
+          padding: '12px',
+          background: 'rgba(0, 0, 0, 0.3)',
+          borderRadius: '6px',
+          fontSize: '13px',
+          opacity: 0.8
+        }}>
+          <div style={{ marginBottom: '5px' }}>
+            <strong>Создан:</strong> {new Date(user.created_at).toLocaleString('ru-RU')}
+          </div>
+          <div>
+            <strong>Обновлен:</strong> {new Date(user.updated_at).toLocaleString('ru-RU')}
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={() => onSave(formData)}
+            className="cyber-button"
+            style={{ flex: 1 }}
+          >
+            Сохранить
+          </button>
+          <button
+            onClick={onClose}
+            className="cyber-button"
+            style={{
+              flex: 1,
+              borderColor: 'var(--neon-pink)',
+              color: 'var(--neon-pink)'
+            }}
+          >
+            Отмена
           </button>
         </div>
       </div>
