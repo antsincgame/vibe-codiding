@@ -9,6 +9,12 @@ export default function AuthCallback() {
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
+    console.log('=== AUTH CALLBACK PAGE LOADED ===');
+    console.log('Full URL:', window.location.href);
+    console.log('Pathname:', window.location.pathname);
+    console.log('Search:', window.location.search);
+    console.log('Hash:', window.location.hash);
+
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const queryParams = new URLSearchParams(window.location.search);
 
@@ -18,11 +24,13 @@ export default function AuthCallback() {
     const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
     const code = queryParams.get('code');
 
-    console.log('AuthCallback: hash params:', Object.fromEntries(hashParams));
-    console.log('AuthCallback: query params:', Object.fromEntries(queryParams));
-    console.log('AuthCallback: accessToken:', accessToken ? 'present' : 'absent');
-    console.log('AuthCallback: refreshToken:', refreshToken ? 'present' : 'absent');
-    console.log('AuthCallback: code:', code ? 'present' : 'absent');
+    console.log('Hash params:', Object.fromEntries(hashParams));
+    console.log('Query params:', Object.fromEntries(queryParams));
+    console.log('Error param:', errorParam);
+    console.log('Error description:', errorDesc);
+    console.log('Access token:', accessToken ? 'present' : 'absent');
+    console.log('Refresh token:', refreshToken ? 'present' : 'absent');
+    console.log('Code:', code ? 'present' : 'absent');
 
     if (errorParam) {
       setStatus(`Ошибка: ${errorDesc || errorParam}`);

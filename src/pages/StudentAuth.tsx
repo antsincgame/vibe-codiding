@@ -61,12 +61,22 @@ export default function StudentAuth() {
   };
 
   const handleGoogleSignIn = async () => {
-    console.log('handleGoogleSignIn clicked');
+    console.log('=== HANDLE GOOGLE SIGN IN BUTTON CLICK ===');
+    console.log('Button clicked at:', new Date().toISOString());
     setError('');
+    setLoading(true);
+
     const { error } = await signInWithGoogle();
-    console.log('handleGoogleSignIn result:', error);
+
+    console.log('handleGoogleSignIn completed');
+    console.log('Error:', error);
+
     if (error) {
-      setError('Ошибка входа через Google');
+      console.error('Google sign in failed:', error);
+      setError(`Ошибка входа через Google: ${error.message}`);
+      setLoading(false);
+    } else {
+      console.log('Google sign in initiated successfully, should redirect to Google...');
     }
   };
 

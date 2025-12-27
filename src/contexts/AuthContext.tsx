@@ -149,9 +149,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     try {
       const redirectUrl = `${window.location.origin}/auth/callback`;
-      console.log('signInWithGoogle: redirectTo:', redirectUrl);
+      console.log('=== GOOGLE SIGN IN START ===');
+      console.log('Current location:', window.location.href);
+      console.log('Redirect URL:', redirectUrl);
+      console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
 
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
@@ -161,10 +164,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
       });
-      console.log('signInWithGoogle: error:', error);
+
+      console.log('signInWithOAuth response data:', data);
+      console.log('signInWithOAuth response error:', error);
+      console.log('=== GOOGLE SIGN IN END ===');
+
       return { error };
     } catch (error) {
-      console.error('signInWithGoogle: caught error:', error);
+      console.error('=== GOOGLE SIGN IN EXCEPTION ===');
+      console.error('Exception:', error);
       return { error: error as AuthError };
     }
   };
