@@ -3,7 +3,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
-import TestBlock from './components/TestBlock';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
@@ -77,7 +76,6 @@ function App() {
                     <Route path="/blog/:slug" element={<BlogPostPage />} />
                     <Route path="/privacy" element={<Privacy />} />
                   </Routes>
-                  <TestBlock />
                   <Footer />
                 </main>
               </div>
