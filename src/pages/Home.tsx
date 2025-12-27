@@ -248,12 +248,21 @@ export default function Home() {
                 flex: 1,
                 fontSize: '15px'
               }}>
-                {(() => {
-                  const firstSection = course.description.split('---')[0];
-                  const cleaned = stripMarkdown(firstSection).replace(/\n+/g, ' ').trim();
-                  const words = cleaned.split(/\s+/).slice(0, 35).join(' ');
-                  return words.length < cleaned.length ? words + '...' : words;
-                })()}
+                {course.slug === 'vibecoding-bolt-new'
+                  ? 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Курс для абсолютных новичков, которые хотят освоить современные инструменты разработки.'
+                  : course.slug === 'curdor-ai'
+                  ? 'Ускорьте разработку с помощью ИИ-ассистента. Для тех, кто готов выйти на новый уровень и создавать продукты профессионального качества.'
+                  : (() => {
+                      const firstSection = course.description.split('---')[0];
+                      const cleaned = stripMarkdown(firstSection).replace(/\n+/g, ' ').trim();
+                      const words = cleaned.split(/\s+/).slice(0, 25).join(' ');
+                      return words.length < cleaned.length ? words + '...' : words;
+                    })()
+                }
+                {' '}
+                <span style={{ color: 'var(--neon-cyan)' }}>
+                  Узнать больше про вайбкодинг сайтов и приложений
+                </span>
               </p>
               {Array.isArray(course.features) && course.features.length > 0 && (
                 <div style={{
