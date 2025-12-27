@@ -260,9 +260,9 @@ export default function Home() {
                     })()
                 }
                 {' '}
-                <span style={{ color: 'var(--neon-cyan)' }}>
+                <Link to={`/course/${course.slug}`} style={{ color: 'var(--neon-cyan)', textDecoration: 'underline' }}>
                   Узнать больше про вайбкодинг сайтов и приложений
-                </span>
+                </Link>
               </p>
               {Array.isArray(course.features) && course.features.length > 0 && (
                 <div style={{
