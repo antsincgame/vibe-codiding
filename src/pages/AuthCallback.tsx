@@ -9,11 +9,20 @@ export default function AuthCallback() {
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const errorParam = urlParams.get('error');
-    const errorDesc = urlParams.get('error_description');
-    const accessToken = urlParams.get('access_token');
-    const refreshToken = urlParams.get('refresh_token');
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const queryParams = new URLSearchParams(window.location.search);
+
+    const errorParam = hashParams.get('error') || queryParams.get('error');
+    const errorDesc = hashParams.get('error_description') || queryParams.get('error_description');
+    const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
+    const code = queryParams.get('code');
+
+    console.log('AuthCallback: hash params:', Object.fromEntries(hashParams));
+    console.log('AuthCallback: query params:', Object.fromEntries(queryParams));
+    console.log('AuthCallback: accessToken:', accessToken ? 'present' : 'absent');
+    console.log('AuthCallback: refreshToken:', refreshToken ? 'present' : 'absent');
+    console.log('AuthCallback: code:', code ? 'present' : 'absent');
 
     if (errorParam) {
       setStatus(`Ошибка: ${errorDesc || errorParam}`);
@@ -42,11 +51,53 @@ export default function AuthCallback() {
       return false;
     };
 
-    const handleTokens = async () => {
-      if (accessToken && refreshToken && !processedRef.current) {
+    const handleAuth = async () => {
+      if (processedRef.current) return;
+
+      if (code) {
         try {
           processedRef.current = true;
-          console.log('Setting session with tokens from URL');
+          console.log('AuthCallback: Exchanging code for session (PKCE flow)');
+          setStatus('Обмен кода на сессию...');
+
+          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+          if (exchangeError) {
+            console.error('AuthCallback: Exchange error:', exchangeError);
+            throw exchangeError;
+          }
+
+          console.log('AuthCallback: Session obtained:', data.session?.user?.email);
+
+          if (data.session?.user) {
+            setStatus('Создание профиля...');
+            const profileExists = await waitForProfile(data.session.user.id);
+
+            if (!profileExists) {
+              console.error('Profile was not created in time');
+              setStatus('Ошибка создания профиля');
+              timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+              return;
+            }
+
+            window.history.replaceState(null, '', '/auth/callback');
+            setStatus('Успешно! Перенаправление...');
+            timeoutRef.current = setTimeout(() => {
+              navigate('/student/dashboard', { replace: true });
+            }, 500);
+          }
+        } catch (err) {
+          console.error('Error exchanging code:', err);
+          setStatus('Ошибка авторизации');
+          timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+        }
+        return;
+      }
+
+      if (accessToken && refreshToken) {
+        try {
+          processedRef.current = true;
+          console.log('AuthCallback: Setting session with tokens from URL');
           const { error: setSessionError } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
@@ -56,9 +107,9 @@ export default function AuthCallback() {
             throw setSessionError;
           }
 
-          console.log('Session set successfully, verifying...');
+          console.log('AuthCallback: Session set successfully, verifying...');
           const { data: { session: verifySession } } = await supabase.auth.getSession();
-          console.log('Session verified:', verifySession?.user?.email);
+          console.log('AuthCallback: Session verified:', verifySession?.user?.email);
 
           if (verifySession?.user) {
             setStatus('Создание профиля...');
@@ -82,45 +133,70 @@ export default function AuthCallback() {
           setStatus('Ошибка авторизации');
           timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
         }
-      } else {
-        console.log('No tokens in URL, waiting for auth state change');
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-          console.log('Auth event:', event, session?.user?.email);
-
-          if (event === 'SIGNED_IN' && session && !processedRef.current) {
-            processedRef.current = true;
-
-            setStatus('Создание профиля...');
-            const profileExists = await waitForProfile(session.user.id);
-
-            if (!profileExists) {
-              console.error('Profile was not created in time');
-              setStatus('Ошибка создания профиля');
-              timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
-              return;
-            }
-
-            window.history.replaceState(null, '', '/auth/callback');
-            setStatus('Успешно! Перенаправление...');
-            timeoutRef.current = setTimeout(() => {
-              navigate('/student/dashboard', { replace: true });
-            }, 300);
-          }
-        });
-
-        cleanup = () => subscription.unsubscribe();
-
-        timeoutRef.current = setTimeout(() => {
-          if (!processedRef.current) {
-            console.log('Timeout: session not found');
-            setStatus('Сессия не найдена');
-            timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
-          }
-        }, 5000);
+        return;
       }
+
+      console.log('AuthCallback: No tokens/code in URL, checking existing session and waiting...');
+
+      const { data: { session: existingSession } } = await supabase.auth.getSession();
+      console.log('AuthCallback: Existing session:', existingSession?.user?.email);
+
+      if (existingSession?.user) {
+        processedRef.current = true;
+        setStatus('Создание профиля...');
+        const profileExists = await waitForProfile(existingSession.user.id);
+
+        if (!profileExists) {
+          console.error('Profile was not created in time');
+          setStatus('Ошибка создания профиля');
+          timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+          return;
+        }
+
+        window.history.replaceState(null, '', '/auth/callback');
+        setStatus('Успешно! Перенаправление...');
+        timeoutRef.current = setTimeout(() => {
+          navigate('/student/dashboard', { replace: true });
+        }, 300);
+        return;
+      }
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('AuthCallback: Auth event:', event, 'user:', session?.user?.email);
+
+        if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session && !processedRef.current) {
+          processedRef.current = true;
+
+          setStatus('Создание профиля...');
+          const profileExists = await waitForProfile(session.user.id);
+
+          if (!profileExists) {
+            console.error('Profile was not created in time');
+            setStatus('Ошибка создания профиля');
+            timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+            return;
+          }
+
+          window.history.replaceState(null, '', '/auth/callback');
+          setStatus('Успешно! Перенаправление...');
+          timeoutRef.current = setTimeout(() => {
+            navigate('/student/dashboard', { replace: true });
+          }, 300);
+        }
+      });
+
+      cleanup = () => subscription.unsubscribe();
+
+      timeoutRef.current = setTimeout(() => {
+        if (!processedRef.current) {
+          console.log('AuthCallback: Timeout - session not found');
+          setStatus('Сессия не найдена');
+          timeoutRef.current = setTimeout(() => navigate('/student/login', { replace: true }), 1500);
+        }
+      }, 8000);
     };
 
-    handleTokens();
+    handleAuth();
 
     return () => {
       if (cleanup) cleanup();

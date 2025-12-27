@@ -22,8 +22,11 @@ Deno.serve(async (req: Request) => {
 
     const clientOrigin = url.searchParams.get('origin') || Deno.env.get('CLIENT_ORIGIN') || 'http://localhost:5173';
 
+    console.log('Auth exchange called with code:', code ? 'present' : 'absent', 'origin:', clientOrigin);
+
     if (error) {
       const redirectUrl = `${clientOrigin}/auth/callback?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(errorDescription || '')}`;
+      console.log('Redirecting with error:', redirectUrl);
       return new Response(null, {
         status: 302,
         headers: {
@@ -35,6 +38,7 @@ Deno.serve(async (req: Request) => {
 
     if (!code) {
       const redirectUrl = `${clientOrigin}/auth/callback?error=no_code`;
+      console.log('Redirecting - no code:', redirectUrl);
       return new Response(null, {
         status: 302,
         headers: {
@@ -44,44 +48,10 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw new Error('Missing Supabase configuration');
-    }
-
-    const exchangeResponse = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=authorization_code`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': supabaseServiceKey,
-      },
-      body: JSON.stringify({
-        code: code,
-        grant_type: 'authorization_code',
-      }),
-    });
-
-    if (!exchangeResponse.ok) {
-      const errorData = await exchangeResponse.json();
-      console.error('Token exchange failed:', errorData);
-      const redirectUrl = `${clientOrigin}/auth/callback?error=exchange_failed&error_description=${encodeURIComponent(JSON.stringify(errorData))}`;
-      return new Response(null, {
-        status: 302,
-        headers: {
-          'Location': redirectUrl,
-          ...corsHeaders
-        }
-      });
-    }
-
-    const tokenData = await exchangeResponse.json();
-
-    const accessToken = tokenData.access_token;
-    const refreshToken = tokenData.refresh_token;
-
-    const redirectUrl = `${clientOrigin}/auth/callback?access_token=${encodeURIComponent(accessToken)}&refresh_token=${encodeURIComponent(refreshToken)}&token_type=Bearer&expires_in=${tokenData.expires_in || 3600}`;
+    // For PKCE flow, pass the code to the client
+    // The client will exchange it using exchangeCodeForSession with the stored code_verifier
+    const redirectUrl = `${clientOrigin}/auth/callback?code=${encodeURIComponent(code)}`;
+    console.log('Redirecting with code to client for PKCE exchange:', redirectUrl);
 
     return new Response(null, {
       status: 302,
