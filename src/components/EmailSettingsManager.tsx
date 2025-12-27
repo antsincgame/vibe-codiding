@@ -14,6 +14,11 @@ interface EmailSettings {
   smtpFromEmail: string;
   smtpFromName: string;
   smtpSecure: boolean;
+  imapHost: string;
+  imapPort: string;
+  imapUser: string;
+  imapPassword: string;
+  imapSecure: boolean;
 }
 
 export default function EmailSettingsManager() {
@@ -29,11 +34,16 @@ export default function EmailSettingsManager() {
     smtpPassword: '',
     smtpFromEmail: '',
     smtpFromName: 'VIBECODING',
-    smtpSecure: false
+    smtpSecure: false,
+    imapHost: '',
+    imapPort: '993',
+    imapUser: '',
+    imapPassword: '',
+    imapSecure: true
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<'confirmation' | 'welcome' | 'smtp'>('confirmation');
+  const [activeTemplate, setActiveTemplate] = useState<'confirmation' | 'welcome' | 'smtp' | 'imap'>('confirmation');
 
   useEffect(() => {
     loadSettings();
@@ -56,7 +66,12 @@ export default function EmailSettingsManager() {
           'smtp_password',
           'smtp_from_email',
           'smtp_from_name',
-          'smtp_secure'
+          'smtp_secure',
+          'imap_host',
+          'imap_port',
+          'imap_user',
+          'imap_password',
+          'imap_secure'
         ]);
 
       if (data) {
@@ -77,7 +92,12 @@ export default function EmailSettingsManager() {
           smtpPassword: settingsMap['smtp_password'] || '',
           smtpFromEmail: settingsMap['smtp_from_email'] || '',
           smtpFromName: settingsMap['smtp_from_name'] || 'VIBECODING',
-          smtpSecure: settingsMap['smtp_secure'] === 'true'
+          smtpSecure: settingsMap['smtp_secure'] === 'true',
+          imapHost: settingsMap['imap_host'] || '',
+          imapPort: settingsMap['imap_port'] || '993',
+          imapUser: settingsMap['imap_user'] || '',
+          imapPassword: settingsMap['imap_password'] || '',
+          imapSecure: settingsMap['imap_secure'] === 'true'
         });
       }
     } catch (error) {
@@ -150,6 +170,31 @@ export default function EmailSettingsManager() {
           key: 'smtp_secure',
           value: settings.smtpSecure.toString(),
           description: 'Use TLS/SSL for SMTP'
+        },
+        {
+          key: 'imap_host',
+          value: settings.imapHost,
+          description: 'IMAP server host'
+        },
+        {
+          key: 'imap_port',
+          value: settings.imapPort,
+          description: 'IMAP server port'
+        },
+        {
+          key: 'imap_user',
+          value: settings.imapUser,
+          description: 'IMAP username'
+        },
+        {
+          key: 'imap_password',
+          value: settings.imapPassword,
+          description: 'IMAP password'
+        },
+        {
+          key: 'imap_secure',
+          value: settings.imapSecure.toString(),
+          description: 'Use TLS/SSL for IMAP'
         }
       ];
 
@@ -275,7 +320,20 @@ export default function EmailSettingsManager() {
             padding: '15px 30px'
           }}
         >
-          SMTP настройки
+          SMTP (Исходящая)
+        </button>
+        <button
+          onClick={() => setActiveTemplate('imap')}
+          className="cyber-button"
+          style={{
+            background: activeTemplate === 'imap' ? 'rgba(255, 200, 0, 0.2)' : 'transparent',
+            border: 'none',
+            borderBottom: activeTemplate === 'imap' ? '2px solid #ffc800' : 'none',
+            borderRadius: 0,
+            padding: '15px 30px'
+          }}
+        >
+          IMAP (Входящая)
         </button>
       </div>
 
@@ -585,6 +643,166 @@ export default function EmailSettingsManager() {
                 <div><strong>Gmail:</strong> smtp.gmail.com, Port: 587, TLS: Да</div>
                 <div><strong>Yandex:</strong> smtp.yandex.ru, Port: 587, TLS: Да</div>
                 <div><strong>Mail.ru:</strong> smtp.mail.ru, Port: 587, TLS: Да</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTemplate === 'imap' && (
+        <div>
+          <div style={{
+            marginBottom: '25px',
+            padding: '20px',
+            background: 'rgba(255, 200, 0, 0.05)',
+            border: '1px solid rgba(255, 200, 0, 0.2)',
+            borderRadius: '8px'
+          }}>
+            <h3 style={{
+              fontSize: '16px',
+              marginBottom: '10px',
+              color: '#ffc800'
+            }}>
+              Информация о IMAP
+            </h3>
+            <p style={{ fontSize: '14px', opacity: 0.9, marginBottom: '10px' }}>
+              Настройки IMAP позволяют получать входящие email с вашего почтового сервера.
+            </p>
+            <ul style={{ fontSize: '13px', opacity: 0.8, paddingLeft: '20px', lineHeight: '1.8' }}>
+              <li>Используйте данные вашего IMAP сервера (Gmail, Yandex, Mail.ru и др.)</li>
+              <li>Для Gmail используйте "Пароли приложений" вместо основного пароля</li>
+              <li>Стандартные порты: 993 (SSL/TLS), 143 (без шифрования)</li>
+              <li>Рекомендуется использовать SSL/TLS для безопасности</li>
+            </ul>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '20px',
+            marginBottom: '20px'
+          }}>
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                IMAP Хост *
+              </label>
+              <input
+                type="text"
+                value={settings.imapHost}
+                onChange={(e) => setSettings({ ...settings, imapHost: e.target.value })}
+                className="cyber-input"
+                placeholder="imap.gmail.com"
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                IMAP Порт *
+              </label>
+              <input
+                type="text"
+                value={settings.imapPort}
+                onChange={(e) => setSettings({ ...settings, imapPort: e.target.value })}
+                className="cyber-input"
+                placeholder="993"
+              />
+            </div>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '20px',
+            marginBottom: '20px'
+          }}>
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                IMAP Пользователь (email) *
+              </label>
+              <input
+                type="email"
+                value={settings.imapUser}
+                onChange={(e) => setSettings({ ...settings, imapUser: e.target.value })}
+                className="cyber-input"
+                placeholder="your-email@gmail.com"
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                IMAP Пароль *
+              </label>
+              <input
+                type="password"
+                value={settings.imapPassword}
+                onChange={(e) => setSettings({ ...settings, imapPassword: e.target.value })}
+                className="cyber-input"
+                placeholder="••••••••••••"
+              />
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              fontSize: '15px',
+              cursor: 'pointer'
+            }}>
+              <input
+                type="checkbox"
+                checked={settings.imapSecure}
+                onChange={(e) => setSettings({ ...settings, imapSecure: e.target.checked })}
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{ color: '#ffc800', fontWeight: 600 }}>
+                Использовать SSL/TLS (рекомендуется для безопасности)
+              </span>
+            </label>
+          </div>
+
+          <div style={{
+            padding: '15px',
+            background: 'rgba(255, 255, 100, 0.05)',
+            border: '1px solid rgba(255, 255, 100, 0.3)',
+            borderRadius: '6px',
+            marginBottom: '20px'
+          }}>
+            <div style={{ fontSize: '13px', opacity: 0.9 }}>
+              <strong style={{ color: 'var(--neon-cyan)' }}>Примеры настроек для популярных провайдеров:</strong>
+              <div style={{ marginTop: '10px', lineHeight: '1.8' }}>
+                <div><strong>Gmail:</strong> imap.gmail.com, Port: 993, SSL: Да</div>
+                <div><strong>Yandex:</strong> imap.yandex.ru, Port: 993, SSL: Да</div>
+                <div><strong>Mail.ru:</strong> imap.mail.ru, Port: 993, SSL: Да</div>
               </div>
             </div>
           </div>
