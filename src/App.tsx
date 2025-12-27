@@ -6,6 +6,7 @@ import CookieConsent from './components/CookieConsent';
 import TestBlock from './components/TestBlock';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorLogger from './components/ErrorLogger';
+import { DebugPanel } from './components/DebugPanel';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import About from './pages/About';
@@ -87,6 +88,7 @@ function App() {
         </Routes>
         <CookieConsent />
         <ErrorLogger />
+        <DebugPanel />
       </AuthProvider>
     </Router>
   );
