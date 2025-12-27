@@ -61,22 +61,32 @@ export default function StudentAuth() {
   };
 
   const handleGoogleSignIn = async () => {
+    alert('КНОПКА НАЖАТА!');
     console.log('=== HANDLE GOOGLE SIGN IN BUTTON CLICK ===');
     console.log('Button clicked at:', new Date().toISOString());
     setError('');
     setLoading(true);
 
-    const { error } = await signInWithGoogle();
+    try {
+      const { error } = await signInWithGoogle();
 
-    console.log('handleGoogleSignIn completed');
-    console.log('Error:', error);
+      console.log('handleGoogleSignIn completed');
+      console.log('Error:', error);
 
-    if (error) {
-      console.error('Google sign in failed:', error);
-      setError(`Ошибка входа через Google: ${error.message}`);
+      if (error) {
+        console.error('Google sign in failed:', error);
+        alert(`ОШИБКА: ${error.message}`);
+        setError(`Ошибка входа через Google: ${error.message}`);
+        setLoading(false);
+      } else {
+        console.log('Google sign in initiated successfully, should redirect to Google...');
+        alert('Инициирован редирект на Google...');
+      }
+    } catch (err) {
+      console.error('Exception in handleGoogleSignIn:', err);
+      alert(`EXCEPTION: ${err}`);
+      setError('Произошла критическая ошибка');
       setLoading(false);
-    } else {
-      console.log('Google sign in initiated successfully, should redirect to Google...');
     }
   };
 
