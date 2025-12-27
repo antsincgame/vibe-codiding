@@ -27,6 +27,8 @@ export default function Header() {
     { to: '/blog', label: 'Блог' },
   ];
 
+  const isAdmin = profile?.role === 'admin';
+
   return (
     <>
       <header className="site-header">
@@ -53,6 +55,16 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {isAdmin && (
+              <Link to="/admin" className="nav-link" style={{
+                background: 'rgba(255, 87, 51, 0.1)',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                border: '1px solid #ff5733'
+              }}>
+                Админка
+              </Link>
+            )}
             {user ? (
               <Link to="/student/dashboard" className="nav-link" style={{
                 background: 'rgba(0, 255, 249, 0.1)',
@@ -89,6 +101,20 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="mobile-menu-link"
+              onClick={closeMenu}
+              style={{
+                background: 'rgba(255, 87, 51, 0.1)',
+                border: '1px solid #ff5733',
+                marginTop: '10px'
+              }}
+            >
+              Админка
+            </Link>
+          )}
           {user ? (
             <Link
               to="/student/dashboard"
