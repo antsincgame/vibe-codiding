@@ -9,7 +9,7 @@ const corsHeaders = {
 async function ensureBucketExists(supabaseUrl: string, serviceKey: string): Promise<void> {
   try {
     const response = await fetch(
-      `${supabaseUrl}/storage/v1/bucket/student-works-images`,
+      `${supabaseUrl}/storage/v1/bucket/images`,
       {
         method: "HEAD",
         headers: {
@@ -28,7 +28,7 @@ async function ensureBucketExists(supabaseUrl: string, serviceKey: string): Prom
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: "student-works-images",
+            name: "images",
             public: true,
           }),
         }
@@ -37,12 +37,10 @@ async function ensureBucketExists(supabaseUrl: string, serviceKey: string): Prom
       if (!createResponse.ok) {
         const error = await createResponse.text();
         console.error("Failed to create bucket:", error);
-        throw new Error("Failed to create bucket");
       }
     }
   } catch (error) {
     console.error("Error checking/creating bucket:", error);
-    throw error;
   }
 }
 
@@ -83,7 +81,7 @@ Deno.serve(async (req: Request) => {
     await ensureBucketExists(supabaseUrl, supabaseServiceKey);
 
     const uploadResponse = await fetch(
-      `${supabaseUrl}/storage/v1/object/student-works-images/${filePath}`,
+      `${supabaseUrl}/storage/v1/object/images/${filePath}`,
       {
         method: "POST",
         headers: {
@@ -103,7 +101,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const imageUrl = `${supabaseUrl}/storage/v1/object/public/student-works-images/${filePath}`;
+    const imageUrl = `${supabaseUrl}/storage/v1/object/public/images/${filePath}`;
 
     return new Response(JSON.stringify({ url: imageUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
