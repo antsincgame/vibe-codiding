@@ -1,0 +1,10 @@
+const react = require('@vitejs/plugin-react');
+
+module.exports = {
+  plugins: [react()],
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'esbuild'
+  }
+};
