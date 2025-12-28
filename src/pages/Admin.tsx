@@ -182,16 +182,31 @@ export default function Admin() {
 
   const saveCourse = async (course: Partial<Course>) => {
     try {
+      console.log('Saving course with features:', course.features);
+
       if (course.id) {
-        const { error } = await supabase.from('courses').update(course).eq('id', course.id);
+        const { created_at, updated_at, ...courseData } = course;
+        const updateData = {
+          ...courseData,
+          features: Array.isArray(course.features) ? course.features : [],
+          updated_at: new Date().toISOString()
+        };
+
+        console.log('Update data:', updateData);
+        const { error } = await supabase.from('courses').update(updateData).eq('id', course.id);
         if (error) {
           alert(`Ошибка сохранения: ${error.message}`);
           console.error('Error saving course:', error);
           return;
         }
       } else {
-        const { id, ...courseWithoutId } = course;
-        const { error } = await supabase.from('courses').insert([courseWithoutId]);
+        const { id, created_at, updated_at, ...courseWithoutId } = course;
+        const insertData = {
+          ...courseWithoutId,
+          features: Array.isArray(course.features) ? course.features : []
+        };
+
+        const { error } = await supabase.from('courses').insert([insertData]);
         if (error) {
           alert(`Ошибка создания курса: ${error.message}`);
           console.error('Error creating course:', error);
