@@ -24,7 +24,6 @@ export default function Header() {
     { to: '/history', label: 'История программирования' },
     { to: '/about', label: 'Преподаватели' },
     { to: '/q-a', label: 'Вопросы и ответы' },
-    { to: '/works', label: 'Работы' },
     { to: '/blog', label: 'Блог' },
   ];
 

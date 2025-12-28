@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
 import type { Course, HomePageSettings, VideoTestimonial } from '../types';
-import StudentWorksSection from '../components/StudentWorksSection';
 import CourseProgram from '../components/CourseProgram';
 
 const defaultSettings: HomePageSettings = {
@@ -488,8 +487,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <StudentWorksSection />
 
       {videoTestimonials.length > 0 && (
         <section style={{
