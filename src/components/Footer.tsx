@@ -2,13 +2,21 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+}
+
 export default function Footer() {
   const navigate = useNavigate();
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [isMobile, setIsMobile] = useState(false);
+  const [articles, setArticles] = useState<BlogPost[]>([]);
 
   useEffect(() => {
     loadSettings();
+    loadArticles();
 
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -30,6 +38,19 @@ export default function Footer() {
         return acc;
       }, {} as Record<string, string>);
       setSettings(settingsMap);
+    }
+  };
+
+  const loadArticles = async () => {
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('id, title, slug')
+      .eq('is_published', true)
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    if (data) {
+      setArticles(data);
     }
   };
 
@@ -67,6 +88,53 @@ export default function Footer() {
             {settings.about_text || 'Школа программирования для подростков и взрослых, обучение веб разработки, веб приложений'}
           </p>
         </div>
+
+        {articles.length > 0 && (
+          <div>
+            <h4 style={{
+              fontSize: isMobile ? '16px' : '18px',
+              marginBottom: '15px',
+              color: 'var(--neon-green)'
+            }}>
+              Полезные статьи
+            </h4>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              fontSize: isMobile ? '14px' : '15px'
+            }}>
+              {articles.map((article) => (
+                <Link
+                  key={article.id}
+                  to={`/blog/${article.slug}`}
+                  style={{
+                    color: 'inherit',
+                    textDecoration: 'none',
+                    opacity: 0.8,
+                    transition: 'all 0.3s',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.color = 'var(--neon-cyan)';
+                    e.currentTarget.style.paddingLeft = '8px';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '0.8';
+                    e.currentTarget.style.color = 'inherit';
+                    e.currentTarget.style.paddingLeft = '0';
+                  }}
+                >
+                  <span style={{ flexShrink: 0, opacity: 0.6 }}>→</span>
+                  <span>{article.title}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div>
           <h4 style={{
