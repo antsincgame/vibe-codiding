@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { SMTPClient } from "npm:emailjs@4.0.3";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import nodemailer from "npm:nodemailer@6.9.8";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -101,66 +101,68 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const client = new SMTPClient({
-      user: smtpUser,
-      password: smtpPassword,
+    const transporter = nodemailer.createTransport({
       host: smtpHost,
       port: smtpPort,
-      tls: smtpSecure,
-      timeout: 10000,
+      secure: smtpPort === 465,
+      auth: {
+        user: smtpUser,
+        pass: smtpPassword,
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
     });
 
-    const message = await client.sendAsync({
-      from: `${smtpFromName} <${smtpFromEmail}>`,
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; background: #0a0a0f; color: #fff; padding: 40px; margin: 0; }
+          .container { max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, rgba(0,255,249,0.1), rgba(255,0,110,0.1)); border: 1px solid rgba(0,255,249,0.3); border-radius: 12px; padding: 40px; }
+          h1 { color: #00fff9; margin-bottom: 20px; }
+          p { line-height: 1.6; color: #ccc; }
+          .success { background: rgba(0,255,100,0.2); border: 1px solid rgba(0,255,100,0.5); padding: 20px; border-radius: 8px; margin-top: 20px; }
+          .success-text { color: #00ff64; font-weight: bold; margin: 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>VIBECODING</h1>
+          <p>Это тестовое письмо из админ-панели VIBECODING.</p>
+          <div class="success">
+            <p class="success-text">Ваши SMTP настройки работают корректно!</p>
+          </div>
+          <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">Отправлено: ${new Date().toLocaleString('ru-RU')}</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    await transporter.sendMail({
+      from: `"${smtpFromName}" <${smtpFromEmail}>`,
       to: testEmail,
-      subject: 'VIBECODING - Test Email',
-      text: 'This is a test email from VIBECODING admin panel. If you received this message, your SMTP settings are configured correctly!',
-      attachment: [
-        {
-          data: `
-            <!DOCTYPE html>
-            <html>
-            <head>
-              <meta charset="utf-8">
-              <style>
-                body { font-family: Arial, sans-serif; background: #0a0a0f; color: #fff; padding: 40px; }
-                .container { max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, rgba(0,255,249,0.1), rgba(255,0,110,0.1)); border: 1px solid rgba(0,255,249,0.3); border-radius: 12px; padding: 40px; }
-                h1 { color: #00fff9; margin-bottom: 20px; }
-                p { line-height: 1.6; color: #ccc; }
-                .success { background: rgba(0,255,100,0.2); border: 1px solid rgba(0,255,100,0.5); padding: 20px; border-radius: 8px; margin-top: 20px; }
-                .success-text { color: #00ff64; font-weight: bold; }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <h1>VIBECODING</h1>
-                <p>This is a test email from the VIBECODING admin panel.</p>
-                <div class="success">
-                  <p class="success-text">Your SMTP settings are configured correctly!</p>
-                </div>
-                <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">Sent at: ${new Date().toISOString()}</p>
-              </div>
-            </body>
-            </html>
-          `,
-          alternative: true,
-        },
-      ],
+      subject: 'VIBECODING - Тестовое письмо',
+      text: 'Это тестовое письмо из админ-панели VIBECODING. Ваши SMTP настройки работают корректно!',
+      html: htmlContent,
     });
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Test email sent successfully to ${testEmail}` 
+        message: `Тестовое письмо успешно отправлено на ${testEmail}` 
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('Error sending test email:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : 'Failed to send test email. Check your SMTP settings.' 
+        error: `Ошибка отправки: ${errorMessage}. Проверьте настройки SMTP.` 
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
