@@ -9,10 +9,10 @@ const corsHeaders = {
 type BucketType = 'courses' | 'blog' | 'student-works' | 'general';
 
 const BUCKET_CONFIG: Record<BucketType, { bucket: string; folder: string }> = {
-  'courses': { bucket: 'course-images', folder: 'courses' },
-  'blog': { bucket: 'student-works-images', folder: 'blog' },
-  'student-works': { bucket: 'student-works-images', folder: 'student-works' },
-  'general': { bucket: 'student-works-images', folder: 'general' },
+  'courses': { bucket: 'images', folder: 'courses' },
+  'blog': { bucket: 'images', folder: 'blog' },
+  'student-works': { bucket: 'images', folder: 'student-works' },
+  'general': { bucket: 'images', folder: 'general' },
 };
 
 async function ensureBucketExists(supabaseUrl: string, serviceKey: string, bucketName: string): Promise<void> {
@@ -46,12 +46,10 @@ async function ensureBucketExists(supabaseUrl: string, serviceKey: string, bucke
       if (!createResponse.ok) {
         const error = await createResponse.text();
         console.error("Failed to create bucket:", error);
-        throw new Error("Failed to create bucket");
       }
     }
   } catch (error) {
     console.error("Error checking/creating bucket:", error);
-    throw error;
   }
 }
 

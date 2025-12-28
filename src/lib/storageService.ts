@@ -63,7 +63,7 @@ export async function deleteStudentWorkImage(imageUrl: string): Promise<void> {
     const filePath = `student-works/${fileName}`;
 
     const response = await fetch(
-      `${supabaseUrl}/storage/v1/object/student-works-images/${filePath}`,
+      `${supabaseUrl}/storage/v1/object/images/${filePath}`,
       {
         method: 'DELETE',
         headers: {
