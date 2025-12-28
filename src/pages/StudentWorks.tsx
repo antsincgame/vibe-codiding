@@ -7,11 +7,11 @@ export default function StudentWorks() {
   const [apps, setApps] = useState<StudentWork[]>([]);
 
   useEffect(() => {
-    document.title = 'Работы учеников Vibecoding - Проекты на Cursor AI и Bolt.new';
+    document.title = 'Работы учеников вайбкодинга | Проекты Cursor AI и Bolt.new';
     const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', 'Портфолио выпускников Vibecoding: реальные сайты и приложения, созданные с Cursor AI и Bolt.new. Примеры проектов учеников школы вайб-кодинга.');
+    if (metaDesc) metaDesc.setAttribute('content', 'Портфолио учеников вайбкодинга: реальные сайты и приложения, созданные на курсах Vibecoding с Cursor AI и Bolt.new. Смотри, что создают ученики школы вайбкодинга!');
     const metaKeywords = document.querySelector('meta[name="keywords"]');
-    if (metaKeywords) metaKeywords.setAttribute('content', 'работы учеников, портфолио вайб кодинг, проекты Cursor AI, Bolt.new примеры, сайты учеников, студенческие проекты, результаты обучения');
+    if (metaKeywords) metaKeywords.setAttribute('content', 'работы учеников вайбкодинга, портфолио вайбкодинг, проекты Cursor AI, Bolt.new примеры работ, результаты обучения вайбкодингу');
     loadWorks();
   }, []);
 

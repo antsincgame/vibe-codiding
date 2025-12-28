@@ -192,26 +192,26 @@ export default function ProgrammingHistory() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    document.title = 'История программирования | От FORTRAN до AI-ассистентов и вайб-кодинга';
+    document.title = 'История программирования | От FORTRAN до вайбкодинга и Cursor AI';
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Увлекательная история программирования: от FORTRAN и Unix до Cursor AI и вайб-кодинга. Как абстракции меняли профессию разработчика. GOTO, SQL, Java GC, облака, Copilot - все переломные моменты IT-индустрии в одной статье!');
+      metaDescription.setAttribute('content', 'История программирования: от FORTRAN и Unix до вайбкодинга с Cursor AI. Как абстракции меняли разработку - GOTO, SQL, облака, и теперь вайбкодинг. Почему ИИ-ассистенты - следующий этап эволюции кода.');
     }
 
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) {
-      metaKeywords.setAttribute('content', 'история программирования, FORTRAN история, Unix C язык, SQL реляционные базы, Java GC, облачные вычисления AWS, AI ассистенты Copilot, эволюция кода, вайб кодинг история, Cursor AI история');
+      metaKeywords.setAttribute('content', 'история программирования, вайбкодинг история, эволюция кода, от FORTRAN до вайбкодинга, Cursor AI история, AI-ассистенты программирование');
     }
 
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
-      ogTitle.setAttribute('content', 'История программирования: от FORTRAN до AI и вайб-кодинга');
+      ogTitle.setAttribute('content', 'История программирования: от FORTRAN до вайбкодинга');
     }
 
     const ogDescription = document.querySelector('meta[property="og:description"]');
     if (ogDescription) {
-      ogDescription.setAttribute('content', 'Ключевые переломы в истории кода: FORTRAN, Unix, SQL, облака и AI-ассистенты. Почему скептики всегда были неправы.');
+      ogDescription.setAttribute('content', 'Как вайбкодинг стал следующим этапом эволюции программирования после FORTRAN, Unix, SQL и облаков.');
     }
 
     const handleScroll = () => {
