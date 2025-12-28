@@ -9,7 +9,7 @@ export default function Blog() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'Блог Vibecoding - Статьи о вайб-кодинге и AI-разработке';
+    document.title = 'Блог Vibecoding | Статьи о вайб-кодинге, Cursor AI и Bolt.new 2025';
 
     const updateMeta = (name: string, content: string, property?: boolean) => {
       const attr = property ? 'property' : 'name';
@@ -22,10 +22,10 @@ export default function Blog() {
       meta.setAttribute('content', content);
     };
 
-    updateMeta('description', 'Блог о вайб-кодинге: туториалы Cursor AI и Bolt.new, гайды по созданию сайтов с ИИ, новости AI-разработки. Полезные статьи для начинающих.');
-    updateMeta('keywords', 'блог вайб кодинг, статьи Cursor AI, Bolt.new гайды, AI программирование, создание сайтов туториал, нейросети разработка, vibe coding статьи');
-    updateMeta('og:title', 'Блог Vibecoding - Статьи о вайб-кодинге', true);
-    updateMeta('og:description', 'Туториалы Cursor AI, гайды Bolt.new, статьи об AI-разработке. Создавайте сайты с нейросетями.', true);
+    updateMeta('description', 'Блог Vibecoding: пошаговые туториалы Cursor AI и Bolt.new, гайды по созданию сайтов с нейросетями, советы по AI-разработке 2025. Бесплатные статьи для начинающих программистов. Новые материалы каждую неделю!');
+    updateMeta('keywords', 'блог вайб кодинг, статьи Cursor AI 2025, Bolt.new туториалы, AI программирование гайды, создание сайтов с ИИ, нейросети веб-разработка, vibe coding статьи бесплатно');
+    updateMeta('og:title', 'Блог Vibecoding | Статьи о вайб-кодинге и AI-разработке', true);
+    updateMeta('og:description', 'Бесплатные туториалы Cursor AI, гайды Bolt.new, статьи об AI-разработке. Создавайте сайты с нейросетями!', true);
     updateMeta('og:type', 'website', true);
 
     const existingSchema = document.querySelector('script[type="application/ld+json"]');

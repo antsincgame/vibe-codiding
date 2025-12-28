@@ -192,26 +192,26 @@ export default function ProgrammingHistory() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    document.title = 'История программирования: от FORTRAN до AI-ассистентов';
+    document.title = 'История программирования | От FORTRAN до AI-ассистентов и вайб-кодинга';
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'История абстракций в программировании: FORTRAN, Unix, SQL, Java GC, облака и AI-ассистенты. Как технологии меняли профессию разработчика. Эволюция кода.');
+      metaDescription.setAttribute('content', 'Увлекательная история программирования: от FORTRAN и Unix до Cursor AI и вайб-кодинга. Как абстракции меняли профессию разработчика. GOTO, SQL, Java GC, облака, Copilot - все переломные моменты IT-индустрии в одной статье!');
     }
 
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) {
-      metaKeywords.setAttribute('content', 'история программирования, FORTRAN, Unix, SQL, Java, облачные вычисления, AI ассистенты, эволюция кода, абстракции в программировании, Copilot, вайб кодинг история');
+      metaKeywords.setAttribute('content', 'история программирования, FORTRAN история, Unix C язык, SQL реляционные базы, Java GC, облачные вычисления AWS, AI ассистенты Copilot, эволюция кода, вайб кодинг история, Cursor AI история');
     }
 
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
-      ogTitle.setAttribute('content', 'История программирования: от FORTRAN до AI');
+      ogTitle.setAttribute('content', 'История программирования: от FORTRAN до AI и вайб-кодинга');
     }
 
     const ogDescription = document.querySelector('meta[property="og:description"]');
     if (ogDescription) {
-      ogDescription.setAttribute('content', 'Ключевые переломы в истории кода: FORTRAN, Unix, SQL, облака и AI-ассистенты. Как абстракции меняли разработку.');
+      ogDescription.setAttribute('content', 'Ключевые переломы в истории кода: FORTRAN, Unix, SQL, облака и AI-ассистенты. Почему скептики всегда были неправы.');
     }
 
     const handleScroll = () => {

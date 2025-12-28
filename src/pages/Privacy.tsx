@@ -1,6 +1,21 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+
+const SEO = {
+  title: 'Политика конфиденциальности | Vibecoding - защита персональных данных',
+  description: 'Политика конфиденциальности школы вайб-кодинга Vibecoding. Узнайте, как мы собираем, используем и защищаем ваши персональные данные. Cookies, права пользователей, безопасность информации.',
+  keywords: 'политика конфиденциальности Vibecoding, защита персональных данных, cookies, обработка данных, права пользователей, конфиденциальность'
+};
 
 export default function Privacy() {
+  useEffect(() => {
+    document.title = SEO.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', SEO.description);
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
+  }, []);
+
   return (
     <div style={{
       minHeight: '100vh',
