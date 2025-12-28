@@ -1111,7 +1111,7 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 
 .history-era-image-container {
   position: relative;
-  height: 200px;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
@@ -1119,6 +1119,7 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   filter: grayscale(30%) contrast(1.1);
   transition: all 0.5s;
 }
