@@ -2,14 +2,19 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 const SEO = {
-  title: 'О преподавателе | Обучение Cursor AI и Bolt.ai | Онлайн школа вайб-кодинга',
-  description: 'Дмитрий Орлов - преподаватель вайб-кодинга с 15+ лет опыта в IT. Обучение Cursor AI, Bolt.ai и созданию веб-приложений. Практический подход к программированию с AI.',
-  keywords: 'преподаватель вайб кодинга, обучение Cursor AI, Bolt.ai курсы, онлайн школа программирования, создание веб приложений, AI разработка'
+  title: 'Преподаватели | Обучение Cursor AI и Bolt.ai | Онлайн школа вайб-кодинга',
+  description: 'Дмитрий Орлов и Игорь Сухоцкий - преподаватели вайб-кодинга с многолетним опытом в IT. Обучение Cursor AI, Bolt.ai, архитектуре систем и созданию веб-приложений.',
+  keywords: 'преподаватели вайб кодинга, обучение Cursor AI, Bolt.ai курсы, онлайн школа программирования, создание веб приложений, AI разработка, архитектура систем'
 };
 
+const DEFAULT_QUOTE_DMITRY = 'Я верю, что каждый может освоить веб-разработку. Мой подход — это сочетание практического опыта, современных AI-инструментов и понятной подачи материала. Вместо заучивания теории мы создаем реальные проекты, которые можно показать в портфолио.';
+const DEFAULT_QUOTE_IGOR = 'Хорошая архитектура — это не сложность ради сложности, а простота, которая масштабируется. Я учу создавать код, который понятен не только машине, но и следующему разработчику. Минималистичные решения без магии — вот что отличает профессионала.';
+
 export default function About() {
-  const [quote, setQuote] = useState<string>('');
-  const [loading, setLoading] = useState(true);
+  const [quoteDmitry, setQuoteDmitry] = useState<string>('');
+  const [quoteIgor, setQuoteIgor] = useState<string>('');
+  const [loadingDmitry, setLoadingDmitry] = useState(true);
+  const [loadingIgor, setLoadingIgor] = useState(true);
 
   useEffect(() => {
     document.title = SEO.title;
@@ -17,13 +22,11 @@ export default function About() {
     if (metaDesc) metaDesc.setAttribute('content', SEO.description);
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
-    generateQuote();
+    generateQuotes();
   }, []);
 
-  const generateQuote = async () => {
+  const generateQuotes = async () => {
     try {
-      setLoading(true);
-
       const { data: settings } = await supabase
         .from('openrouter_settings')
         .select('*')
@@ -31,72 +34,121 @@ export default function About() {
         .maybeSingle();
 
       if (settings && settings.api_key && settings.api_key.trim() !== '') {
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${settings.api_key}`,
-            'HTTP-Referer': window.location.origin,
-            'X-Title': 'Vibecoding'
-          },
-          body: JSON.stringify({
-            model: settings.model,
-            messages: [
-              {
+        const [responseDmitry, responseIgor] = await Promise.all([
+          fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${settings.api_key}`,
+              'HTTP-Referer': window.location.origin,
+              'X-Title': 'Vibecoding'
+            },
+            body: JSON.stringify({
+              model: settings.model,
+              messages: [{
                 role: 'user',
                 content: 'Создай короткую вдохновляющую цитату (2-3 предложения) о Vibecoding - современном подходе к обучению программированию, где сочетается практический опыт, AI-инструменты и понятная подача материала. Цитата должна быть от лица преподавателя и мотивировать учеников. Только текст цитаты, без кавычек и атрибуции.'
-              }
-            ]
+              }]
+            })
+          }),
+          fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${settings.api_key}`,
+              'HTTP-Referer': window.location.origin,
+              'X-Title': 'Vibecoding'
+            },
+            body: JSON.stringify({
+              model: settings.model,
+              messages: [{
+                role: 'user',
+                content: 'Создай короткую вдохновляющую цитату (2-3 предложения) от лица опытного senior-разработчика и архитектора систем о важности чистой архитектуры, менторинга и минималистичных решений в программировании. Цитата должна мотивировать учеников изучать backend-разработку и проектирование систем. Только текст цитаты, без кавычек и атрибуции.'
+              }]
+            })
           })
-        });
+        ]);
 
-        if (response.ok) {
-          const data = await response.json();
-          setQuote(data.choices[0]?.message?.content || '');
+        if (responseDmitry.ok) {
+          const data = await responseDmitry.json();
+          setQuoteDmitry(data.choices[0]?.message?.content || DEFAULT_QUOTE_DMITRY);
         } else {
-          setQuote('Я верю, что каждый может освоить веб-разработку. Мой подход — это сочетание практического опыта, современных AI-инструментов и понятной подачи материала. Вместо заучивания теории мы создаем реальные проекты, которые можно показать в портфолио.');
+          setQuoteDmitry(DEFAULT_QUOTE_DMITRY);
+        }
+
+        if (responseIgor.ok) {
+          const data = await responseIgor.json();
+          setQuoteIgor(data.choices[0]?.message?.content || DEFAULT_QUOTE_IGOR);
+        } else {
+          setQuoteIgor(DEFAULT_QUOTE_IGOR);
         }
       } else {
-        setQuote('Я верю, что каждый может освоить веб-разработку. Мой подход — это сочетание практического опыта, современных AI-инструментов и понятной подачи материала. Вместо заучивания теории мы создаем реальные проекты, которые можно показать в портфолио.');
+        setQuoteDmitry(DEFAULT_QUOTE_DMITRY);
+        setQuoteIgor(DEFAULT_QUOTE_IGOR);
       }
-    } catch (error) {
-      setQuote('Я верю, что каждый может освоить веб-разработку. Мой подход — это сочетание практического опыта, современных AI-инструментов и понятной подачи материала. Вместо заучивания теории мы создаем реальные проекты, которые можно показать в портфолио.');
+    } catch {
+      setQuoteDmitry(DEFAULT_QUOTE_DMITRY);
+      setQuoteIgor(DEFAULT_QUOTE_IGOR);
     } finally {
-      setLoading(false);
+      setLoadingDmitry(false);
+      setLoadingIgor(false);
     }
   };
 
   return (
     <div style={{ minHeight: '100vh', paddingTop: '100px' }}>
       <section style={{
-        padding: '80px 20px',
+        padding: '60px 20px 40px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        textAlign: 'center'
+      }}>
+        <h1 style={{
+          fontSize: 'clamp(36px, 6vw, 56px)',
+          marginBottom: '20px',
+          color: 'var(--neon-cyan)'
+        }} className="glitch" data-text="НАШИ ПРЕПОДАВАТЕЛИ">
+          НАШИ ПРЕПОДАВАТЕЛИ
+        </h1>
+        <p style={{
+          fontSize: '20px',
+          color: 'rgba(255, 255, 255, 0.8)',
+          maxWidth: '700px',
+          margin: '0 auto'
+        }}>
+          Команда практикующих специалистов с многолетним опытом в IT-индустрии
+        </p>
+      </section>
+
+      <section style={{
+        padding: '40px 20px 80px',
         maxWidth: '1200px',
         margin: '0 auto'
       }}>
-        <h1 style={{
-          fontSize: 'clamp(40px, 6vw, 64px)',
+        <h2 style={{
+          fontSize: 'clamp(32px, 5vw, 48px)',
           textAlign: 'center',
           marginBottom: '20px',
           color: 'var(--neon-cyan)'
         }} className="glitch" data-text="ДМИТРИЙ ОРЛОВ">
           ДМИТРИЙ ОРЛОВ
-        </h1>
+        </h2>
 
-        <h2 style={{
-          fontSize: 'clamp(24px, 4vw, 32px)',
+        <h3 style={{
+          fontSize: 'clamp(20px, 3vw, 26px)',
           textAlign: 'center',
-          marginBottom: '60px',
+          marginBottom: '50px',
           color: 'var(--neon-pink)',
           fontWeight: 600
         }}>
           Преподаватель вайб-кодинга, Cursor AI и Bolt.ai
-        </h2>
+        </h3>
 
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
           gap: '40px',
-          marginBottom: '60px',
+          marginBottom: '50px',
           alignItems: 'start'
         }}>
           <div style={{
@@ -108,20 +160,13 @@ export default function About() {
               border: '3px solid var(--neon-cyan)',
               borderRadius: '10px',
               overflow: 'hidden',
-              boxShadow: `
-                0 0 20px var(--neon-cyan),
-                inset 0 0 20px rgba(0, 255, 249, 0.1)
-              `,
+              boxShadow: '0 0 20px var(--neon-cyan), inset 0 0 20px rgba(0, 255, 249, 0.1)',
               background: 'var(--dark-surface)'
             }}>
               <img
                 src="/image.png"
                 alt="Дмитрий Орлов"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  display: 'block'
-                }}
+                style={{ width: '100%', height: 'auto', display: 'block' }}
               />
             </div>
             <div style={{
@@ -195,28 +240,25 @@ export default function About() {
         </div>
 
         <div className="cyber-card" style={{ marginBottom: '40px' }}>
-          <h3 style={{
-            fontSize: 'clamp(24px, 4vw, 32px)',
+          <h4 style={{
+            fontSize: 'clamp(22px, 3vw, 28px)',
             marginBottom: '20px',
-            color: 'var(--neon-pink)'
+            color: 'var(--neon-cyan)'
           }}>
             Экспертиза
-          </h3>
+          </h4>
           <p style={{ fontSize: '18px', lineHeight: '1.9', marginBottom: '20px', opacity: 0.95 }}>
-            <strong style={{ color: 'var(--neon-cyan)' }}>Технический директор</strong> — это специалист, который руководит всеми техническими аспектами проектов: от выбора технологий и архитектуры до запуска и поддержки. Этот опыт бесценен для учеников, ведь Дмитрий не просто учит кодить, а показывает, как мыслит стратегически, принимать важные технические решения и создавать проекты, которые работают в реальном бизнесе.
-          </p>
-          <p style={{ fontSize: '18px', lineHeight: '1.9', marginBottom: '20px', opacity: 0.95 }}>
-            <strong style={{ color: 'var(--neon-green)' }}>Что значит быть техническим директором?</strong> Это означает уметь видеть проект целиком: понимать, какие технологии выбрать, как организовать код, как обеспечить безопасность и масштабируемость. Дмитрий передает эти знания ученикам, обучая их не просто писать код, а создавать профессиональные решения с первого дня.
+            <strong style={{ color: 'var(--neon-cyan)' }}>Технический директор</strong> — это специалист, который руководит всеми техническими аспектами проектов: от выбора технологий и архитектуры до запуска и поддержки. Этот опыт бесценен для учеников, ведь Дмитрий не просто учит кодить, а показывает, как мыслить стратегически, принимать важные технические решения и создавать проекты, которые работают в реальном бизнесе.
           </p>
 
-          <h4 style={{
-            fontSize: '22px',
-            marginTop: '30px',
+          <h5 style={{
+            fontSize: '20px',
+            marginTop: '25px',
             marginBottom: '15px',
             color: 'var(--neon-green)'
           }}>
             Основные направления обучения:
-          </h4>
+          </h5>
           <ul style={{
             fontSize: '18px',
             lineHeight: '2',
@@ -231,24 +273,20 @@ export default function About() {
           </ul>
         </div>
 
-      </section>
-
-      <section style={{
-        padding: '60px 20px',
-        background: 'rgba(19, 19, 26, 0.5)'
-      }}>
         <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto'
+          padding: '50px 20px',
+          background: 'rgba(0, 255, 249, 0.03)',
+          borderRadius: '15px',
+          marginBottom: '40px'
         }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 5vw, 48px)',
+          <h4 style={{
+            fontSize: 'clamp(24px, 4vw, 32px)',
             textAlign: 'center',
-            marginBottom: '40px',
+            marginBottom: '30px',
             color: 'var(--neon-green)'
           }}>
             Философия преподавания
-          </h2>
+          </h4>
 
           <div style={{
             position: 'relative',
@@ -256,11 +294,254 @@ export default function About() {
             background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(255, 0, 110, 0.1))',
             border: '3px solid var(--neon-cyan)',
             borderRadius: '15px',
-            boxShadow: `
-              0 0 30px rgba(0, 255, 249, 0.3),
-              inset 0 0 30px rgba(0, 255, 249, 0.1)
-            `,
-            marginBottom: '40px'
+            boxShadow: '0 0 30px rgba(0, 255, 249, 0.3), inset 0 0 30px rgba(0, 255, 249, 0.1)',
+            maxWidth: '900px',
+            margin: '0 auto 30px'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '15px',
+              left: '20px',
+              fontSize: '60px',
+              color: 'var(--neon-cyan)',
+              opacity: 0.3,
+              lineHeight: 1
+            }}>
+              "
+            </div>
+            <div style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '20px',
+              fontSize: '60px',
+              color: 'var(--neon-cyan)',
+              opacity: 0.3,
+              lineHeight: 1
+            }}>
+              "
+            </div>
+            {loadingDmitry ? (
+              <div style={{
+                textAlign: 'center',
+                padding: '30px',
+                fontSize: '18px',
+                color: 'var(--neon-cyan)'
+              }}>
+                Генерируем вдохновляющую цитату...
+              </div>
+            ) : (
+              <p style={{
+                fontSize: '20px',
+                lineHeight: '1.8',
+                fontStyle: 'italic',
+                textAlign: 'center',
+                margin: '20px 0',
+                color: '#fff'
+              }}>
+                {quoteDmitry}
+              </p>
+            )}
+          </div>
+
+          <p style={{
+            fontSize: '18px',
+            lineHeight: '1.9',
+            opacity: 0.95,
+            textAlign: 'center',
+            maxWidth: '800px',
+            margin: '0 auto'
+          }}>
+            Дмитрий постоянно исследует новые технологии и инструменты разработки, интегрируя в учебную программу только проверенные и актуальные решения. Его страсть к инновациям и искусственному интеллекту делает занятия не только полезными, но и вдохновляющими.
+          </p>
+        </div>
+      </section>
+
+      <div style={{
+        height: '3px',
+        background: 'linear-gradient(90deg, transparent, var(--neon-pink), transparent)',
+        maxWidth: '800px',
+        margin: '0 auto'
+      }} />
+
+      <section style={{
+        padding: '80px 20px',
+        maxWidth: '1200px',
+        margin: '0 auto'
+      }}>
+        <h2 style={{
+          fontSize: 'clamp(32px, 5vw, 48px)',
+          textAlign: 'center',
+          marginBottom: '20px',
+          color: 'var(--neon-pink)'
+        }} className="glitch" data-text="ИГОРЬ СУХОЦКИЙ">
+          ИГОРЬ СУХОЦКИЙ
+        </h2>
+
+        <h3 style={{
+          fontSize: 'clamp(20px, 3vw, 26px)',
+          textAlign: 'center',
+          marginBottom: '50px',
+          color: 'var(--neon-cyan)',
+          fontWeight: 600
+        }}>
+          Senior-разработчик, архитектор систем
+        </h3>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '40px',
+          marginBottom: '50px',
+          alignItems: 'start'
+        }}>
+          <div style={{
+            position: 'relative',
+            maxWidth: '400px',
+            margin: '0 auto'
+          }}>
+            <div style={{
+              border: '3px solid var(--neon-pink)',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              boxShadow: '0 0 20px var(--neon-pink), inset 0 0 20px rgba(255, 0, 110, 0.1)',
+              background: 'var(--dark-surface)'
+            }}>
+              <img
+                src="/igor.png"
+                alt="Игорь Сухоцкий"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+            </div>
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              left: '-10px',
+              width: '60px',
+              height: '60px',
+              border: '2px solid var(--neon-cyan)',
+              borderRadius: '5px',
+              background: 'transparent'
+            }} />
+            <div style={{
+              position: 'absolute',
+              bottom: '-10px',
+              right: '-10px',
+              width: '60px',
+              height: '60px',
+              border: '2px solid var(--neon-green)',
+              borderRadius: '5px',
+              background: 'transparent'
+            }} />
+          </div>
+
+          <div style={{ fontSize: '18px', lineHeight: '1.9' }}>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '15px',
+              marginBottom: '30px'
+            }}>
+              <div style={{
+                padding: '10px 20px',
+                background: 'rgba(255, 0, 110, 0.1)',
+                border: '2px solid var(--neon-pink)',
+                borderRadius: '5px',
+                color: 'var(--neon-pink)',
+                fontWeight: 700,
+                fontSize: '16px'
+              }}>
+                7+ лет PHP
+              </div>
+              <div style={{
+                padding: '10px 20px',
+                background: 'rgba(0, 255, 249, 0.1)',
+                border: '2px solid var(--neon-cyan)',
+                borderRadius: '5px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 700,
+                fontSize: '16px'
+              }}>
+                4 года Node.js
+              </div>
+              <div style={{
+                padding: '10px 20px',
+                background: 'rgba(0, 255, 65, 0.1)',
+                border: '2px solid var(--neon-green)',
+                borderRadius: '5px',
+                color: 'var(--neon-green)',
+                fontWeight: 700,
+                fontSize: '16px'
+              }}>
+                Senior / Архитектор
+              </div>
+            </div>
+
+            <p style={{ marginBottom: '20px', opacity: 0.95 }}>
+              <strong style={{ color: 'var(--neon-pink)' }}>Игорь Сухоцкий</strong> — опытный backend-разработчик и архитектор, прошедший путь от энтузиаста до senior-специалиста. За плечами — <strong>7+ лет работы с PHP</strong> (от WordPress до высоконагруженных систем) и <strong>4 года коммерческой практики с Node.js</strong>. Проектирует архитектуру сложных систем, разрабатывает <strong>REST и GraphQL API</strong>, работает с React и Vue на фронтенде.
+            </p>
+          </div>
+        </div>
+
+        <div className="cyber-card" style={{ marginBottom: '40px', borderColor: 'var(--neon-pink)' }}>
+          <h4 style={{
+            fontSize: 'clamp(22px, 3vw, 28px)',
+            marginBottom: '20px',
+            color: 'var(--neon-pink)'
+          }}>
+            Экспертиза
+          </h4>
+          <p style={{ fontSize: '18px', lineHeight: '1.9', marginBottom: '20px', opacity: 0.95 }}>
+            <strong style={{ color: 'var(--neon-pink)' }}>Архитектор систем</strong> — это специалист, который видит проект целиком: от структуры базы данных до взаимодействия микросервисов. Игорь учит студентов не просто писать код, а создавать <strong>масштабируемые решения</strong>, которые легко поддерживать и развивать. Его принцип — минималистичные решения без "магии", где каждая строка кода понятна и обоснована.
+          </p>
+          <p style={{ fontSize: '18px', lineHeight: '1.9', marginBottom: '20px', opacity: 0.95 }}>
+            <strong style={{ color: 'var(--neon-cyan)' }}>Практический опыт:</strong> платежные интеграции, системы видео-коммуникаций, аналитические API, онлайн-магазины на WooCommerce, настройка CI/CD пайплайнов и автоматизация деплоя.
+          </p>
+
+          <h5 style={{
+            fontSize: '20px',
+            marginTop: '25px',
+            marginBottom: '15px',
+            color: 'var(--neon-green)'
+          }}>
+            Ключевые компетенции:
+          </h5>
+          <ul style={{
+            fontSize: '18px',
+            lineHeight: '2',
+            paddingLeft: '25px',
+            opacity: 0.95
+          }}>
+            <li><strong>Backend-разработка</strong> — PHP, Node.js, базы данных</li>
+            <li><strong>Frontend</strong> — React, Vue, современные фреймворки</li>
+            <li><strong>API-проектирование</strong> — REST, GraphQL, микросервисы</li>
+            <li><strong>DevOps</strong> — CI/CD, автоматизация, деплой</li>
+            <li><strong>Менторинг</strong> — код-ревью, архитектурные консультации</li>
+          </ul>
+        </div>
+
+        <div style={{
+          padding: '50px 20px',
+          background: 'rgba(255, 0, 110, 0.03)',
+          borderRadius: '15px'
+        }}>
+          <h4 style={{
+            fontSize: 'clamp(24px, 4vw, 32px)',
+            textAlign: 'center',
+            marginBottom: '30px',
+            color: 'var(--neon-green)'
+          }}>
+            Философия преподавания
+          </h4>
+
+          <div style={{
+            position: 'relative',
+            padding: '40px',
+            background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 255, 249, 0.1))',
+            border: '3px solid var(--neon-pink)',
+            borderRadius: '15px',
+            boxShadow: '0 0 30px rgba(255, 0, 110, 0.3), inset 0 0 30px rgba(255, 0, 110, 0.1)',
+            maxWidth: '900px',
+            margin: '0 auto 30px'
           }}>
             <div style={{
               position: 'absolute',
@@ -284,12 +565,12 @@ export default function About() {
             }}>
               "
             </div>
-            {loading ? (
+            {loadingIgor ? (
               <div style={{
                 textAlign: 'center',
                 padding: '30px',
                 fontSize: '18px',
-                color: 'var(--neon-cyan)'
+                color: 'var(--neon-pink)'
               }}>
                 Генерируем вдохновляющую цитату...
               </div>
@@ -302,21 +583,21 @@ export default function About() {
                 margin: '20px 0',
                 color: '#fff'
               }}>
-                {quote}
+                {quoteIgor}
               </p>
             )}
           </div>
 
-          <div style={{
+          <p style={{
             fontSize: '18px',
             lineHeight: '1.9',
             opacity: 0.95,
-            marginBottom: '30px'
+            textAlign: 'center',
+            maxWidth: '800px',
+            margin: '0 auto'
           }}>
-            <p>
-              Дмитрий постоянно исследует новые технологии и инструменты разработки, интегрируя в учебную программу только проверенные и актуальные решения. Его страсть к инновациям и искусственному интеллекту делает занятия не только полезными, но и вдохновляющими.
-            </p>
-          </div>
+            Игорь делится не только техническими знаниями, но и опытом решения реальных бизнес-задач. Его подход к менторингу — это передача практических навыков через понятные примеры, код-ревью и архитектурные разборы реальных проектов.
+          </p>
         </div>
       </section>
     </div>

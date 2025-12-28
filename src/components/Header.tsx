@@ -22,7 +22,7 @@ export default function Header() {
   const navLinks = [
     { to: '/', label: 'Главная' },
     { to: '/history', label: 'История программирования' },
-    { to: '/about', label: 'О преподавателе' },
+    { to: '/about', label: 'Преподаватели' },
     { to: '/q-a', label: 'Вопросы и ответы' },
     { to: '/works', label: 'Работы' },
     { to: '/blog', label: 'Блог' },
