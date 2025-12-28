@@ -925,10 +925,16 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-intro {
-  max-width: 900px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 100px 20px;
+  padding: 100px 80px;
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .history-intro {
+    padding: 100px 20px;
+  }
 }
 
 .history-intro-card {
@@ -1009,9 +1015,15 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 
 .history-timeline {
   position: relative;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 80px 20px;
+  padding: 80px 80px;
+}
+
+@media (max-width: 768px) {
+  .history-timeline {
+    padding: 80px 20px;
+  }
 }
 
 .history-timeline-line {
@@ -1315,11 +1327,18 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-ai-intro {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto 50px;
   text-align: center;
   position: relative;
   z-index: 2;
+  padding: 0 80px;
+}
+
+@media (max-width: 768px) {
+  .history-ai-intro {
+    padding: 0 20px;
+  }
 }
 
 .history-ai-intro p {
@@ -1331,10 +1350,17 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 .history-ai-insights {
   display: grid;
   gap: 20px;
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto 60px;
+  padding: 0 80px;
   position: relative;
   z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .history-ai-insights {
+    padding: 0 20px;
+  }
 }
 
 .history-ai-insight {
@@ -1400,14 +1426,20 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-ai-risks {
-  max-width: 900px;
+  max-width: 1400px;
   margin: 0 auto 60px;
-  padding: 40px;
+  padding: 40px 80px;
   background: rgba(255, 0, 110, 0.08);
   border: 1px solid rgba(255, 0, 110, 0.3);
   border-radius: 20px;
   position: relative;
   z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .history-ai-risks {
+    padding: 40px 20px;
+  }
 }
 
 .history-risks-title {
@@ -1472,11 +1504,11 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-ai-nuance {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   gap: 25px;
-  padding: 30px;
+  padding: 30px 80px;
   background: rgba(0, 255, 249, 0.05);
   border: 1px dashed var(--neon-cyan);
   border-radius: 16px;
@@ -1505,10 +1537,22 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
   color: rgba(255, 255, 255, 0.9);
 }
 
+@media (max-width: 768px) {
+  .history-ai-nuance {
+    padding: 30px 20px;
+  }
+}
+
 .history-advice-section {
-  padding: 100px 20px;
-  max-width: 1000px;
+  padding: 100px 80px;
+  max-width: 1600px;
   margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .history-advice-section {
+    padding: 100px 20px;
+  }
 }
 
 .history-advice-header {
@@ -1628,13 +1672,19 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 
 .history-conclusion-content {
   position: relative;
-  max-width: 900px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 60px;
+  padding: 60px 80px;
   background: linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(255, 0, 110, 0.1));
   border-radius: 30px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .history-conclusion-content {
+    padding: 60px 20px;
+  }
 }
 
 .history-conclusion-glow {

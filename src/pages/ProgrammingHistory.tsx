@@ -192,6 +192,23 @@ export default function ProgrammingHistory() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    document.title = 'История Программирования: От FORTRAN до ИИ | VibeCoding';
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Путешествие сквозь эпохи абстракций в программировании: от FORTRAN и борьбы с goto до облачных вычислений и ИИ-ассистентов. Узнайте, как каждое поколение инженеров сталкивалось с новыми технологиями и училось их контролировать.');
+    }
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', 'История Программирования: От FORTRAN до ИИ');
+    }
+
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', 'Исследуйте ключевые переломы в истории программирования: FORTRAN, Unix, реляционные БД, управляемая память, облака и современные ИИ-ассистенты. Как абстракции меняли профессию разработчика.');
+    }
+
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = (window.scrollY / totalHeight) * 100;
