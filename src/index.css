@@ -1027,43 +1027,31 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-timeline-line {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(180deg,
-    var(--neon-cyan) 0%,
-    var(--neon-pink) 33%,
-    var(--neon-green) 66%,
-    var(--neon-cyan) 100%
-  );
-  transform: translateX(-50%);
-  opacity: 0.5;
+  display: none;
 }
 
 .history-era {
   position: relative;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 100px;
 }
 
-.history-era-left {
-  justify-content: flex-start;
-  padding-right: calc(50% + 50px);
-}
-
+.history-era-left,
 .history-era-right {
-  justify-content: flex-end;
-  padding-left: calc(50% + 50px);
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .history-era-node {
-  position: absolute;
-  left: 50%;
-  top: 40px;
-  transform: translateX(-50%);
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
   z-index: 10;
+  margin-bottom: 30px;
 }
 
 .history-era-node-inner {
@@ -1111,7 +1099,8 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.4s;
-  max-width: 550px;
+  max-width: 100%;
+  width: 100%;
 }
 
 .history-era:hover .history-era-card {

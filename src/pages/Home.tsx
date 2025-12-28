@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
 import type { Course, HomePageSettings } from '../types';
 import StudentWorksSection from '../components/StudentWorksSection';
+import CourseProgram from '../components/CourseProgram';
 
 const defaultSettings: HomePageSettings = {
   title: 'VIBECODING',
@@ -17,6 +18,7 @@ const defaultSettings: HomePageSettings = {
 export default function Home() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [settings, setSettings] = useState<HomePageSettings>(defaultSettings);
+  const [expandedCourseProgram, setExpandedCourseProgram] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -330,11 +332,20 @@ export default function Home() {
               }}>
                 {course.price}
               </div>
-              <Link to={`/course/${course.slug}`} style={{ width: '100%', display: 'block' }}>
-                <button className="cyber-button" style={{ width: '100%' }}>
-                  Читать о курсе
-                </button>
-              </Link>
+              {course.slug === 'vibecoding-bolt-new' ? (
+                <CourseProgram
+                  isExpanded={expandedCourseProgram === course.id}
+                  onToggle={() => setExpandedCourseProgram(
+                    expandedCourseProgram === course.id ? null : course.id
+                  )}
+                />
+              ) : (
+                <Link to={`/course/${course.slug}`} style={{ width: '100%', display: 'block' }}>
+                  <button className="cyber-button" style={{ width: '100%' }}>
+                    Читать о курсе
+                  </button>
+                </Link>
+              )}
             </div>
           ))}
         </div>
