@@ -217,38 +217,57 @@ export default function Home() {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '25px',
+          gap: '30px',
           marginBottom: '40px',
-          alignItems: 'stretch'
+          alignItems: 'start'
         }} className="courses-grid">
           {courses.map((course, index) => {
             const isMiddle = index === 1;
             const courseDescriptions: Record<string, string> = {
-              'vibecoding-bolt-new': 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Курс для абсолютных новичков.',
-              'curdor-ai': 'Ускорьте разработку с помощью ИИ-ассистента. Для тех, кто готов создавать продукты профессионального качества.',
-              'architect-vibecode': 'Станьте полноценным вайб-разработчиком! Комплексный курс от идеи до продакшена.'
+              'vibecoding-bolt-new': 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Идеальный старт в мир вайб-кодинга.',
+              'curdor-ai': 'Профессиональная разработка с ИИ-ассистентом. Создавайте продукты enterprise-уровня.',
+              'architect-vibecode': 'Полное погружение в вайб-разработку. Два инструмента, максимум возможностей.'
             };
 
-            const pricingInfo: Record<string, { oldPrice: string; discount: string; features: string[]; subtitle?: string }> = {
+            const pricingInfo: Record<string, {
+              oldPrice: string;
+              discount: string;
+              features: string[];
+              bonuses: string[];
+              subtitle?: string;
+              badge?: string;
+            }> = {
               'vibecoding-bolt-new': {
                 oldPrice: '2000 BYN',
                 discount: '-50%',
                 features: [
                   'Пожизненный доступ к материалам',
-                  'Практические проекты в портфолио',
-                  'Поддержка в общем чате',
+                  '3+ проекта в портфолио',
+                  'Создание интерактивных сайтов',
                   'Работа с GitHub'
+                ],
+                bonuses: [
+                  'Общий чат поддержки',
+                  'Шаблоны промптов'
                 ]
               },
               'architect-vibecode': {
                 oldPrice: '3600 BYN',
                 discount: '-50%',
-                subtitle: 'Vibecoding комьюнити',
+                subtitle: 'Vibecoding Community',
+                badge: 'BEST VALUE',
                 features: [
                   'Bolt.new + Cursor AI (оба курса)',
-                  'Закрытый телеграм-чат студентов',
+                  '7+ проектов в портфолио',
+                  'Полный стек AI-разработки',
+                  'Персональные консультации'
+                ],
+                bonuses: [
+                  'Закрытый Telegram-чат',
+                  'Discord-сервер комьюнити',
                   'Доступ к будущим курсам 12 мес.',
-                  'Доступ к лидам на разработку'
+                  'Приоритет на лиды разработки',
+                  'Совместные проекты с другими студентами'
                 ]
               },
               'curdor-ai': {
@@ -256,217 +275,329 @@ export default function Home() {
                 discount: '-50%',
                 features: [
                   'Пожизненный доступ к материалам',
-                  'Практические проекты в портфолио',
-                  'Поддержка в общем чате',
-                  'Работа с GitHub и CI/CD'
+                  '3+ проекта в портфолио',
+                  'Быстрый прототип за 2 часа',
+                  'GitHub + CI/CD'
+                ],
+                bonuses: [
+                  'Общий чат поддержки',
+                  'Шаблоны промптов'
                 ]
               }
             };
 
-            const pricing = pricingInfo[course.slug || ''] || { oldPrice: '', discount: '', features: [] };
+            const pricing = pricingInfo[course.slug || ''] || { oldPrice: '', discount: '', features: [], bonuses: [] };
 
             return (
               <div
                 key={course.id}
-                className="cyber-card"
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  transform: isMiddle ? 'scale(1.03)' : 'none',
-                  border: isMiddle ? '2px solid var(--neon-cyan)' : '1px solid rgba(0, 255, 249, 0.3)',
-                  boxShadow: isMiddle ? '0 0 40px rgba(0, 255, 249, 0.25), inset 0 0 30px rgba(0, 255, 249, 0.05)' : 'none',
                   position: 'relative',
                   zIndex: isMiddle ? 2 : 1,
-                  background: isMiddle ? 'linear-gradient(135deg, rgba(0, 255, 249, 0.08), rgba(0, 255, 65, 0.03))' : 'rgba(19, 19, 26, 0.9)',
-                  padding: '25px'
+                  transform: isMiddle ? 'scale(1.02)' : 'none'
                 }}
+                className="course-card-wrapper"
               >
-                <div style={{
-                  height: '140px',
-                  background: course.image_url ? 'transparent' : '#0a0a0f',
-                  marginBottom: '20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '6px',
-                  overflow: 'hidden',
-                  border: '1px solid rgba(0, 255, 249, 0.2)'
-                }}>
-                  {course.image_url ? (
-                    <img
-                      src={course.image_url}
-                      alt={course.title}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                    />
-                  ) : (
-                    <div style={{
-                      fontSize: '38px',
-                      fontWeight: 900,
-                      fontFamily: 'Orbitron, sans-serif',
-                      color: isMiddle ? 'var(--neon-cyan)' : '#fff',
-                      textShadow: isMiddle ? '0 0 20px var(--neon-cyan)' : 'none'
-                    }}>
-                      {course.slug === 'vibecoding-bolt-new' ? 'bolt.new' :
-                       course.slug === 'curdor-ai' ? 'CURSOR' :
-                       'ARCHITECT'}
-                    </div>
-                  )}
-                </div>
-
-                <h3 style={{
-                  fontSize: '18px',
-                  marginBottom: '8px',
-                  color: isMiddle ? 'var(--neon-cyan)' : '#fff',
-                  lineHeight: '1.3',
-                  fontWeight: 600
-                }}>
-                  {course.title}
-                </h3>
-
-                {pricing.subtitle && (
+                {pricing.badge && (
                   <div style={{
-                    fontSize: '13px',
-                    color: 'var(--neon-cyan)',
-                    marginBottom: '12px',
-                    fontWeight: 500
+                    position: 'absolute',
+                    top: '-12px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'linear-gradient(90deg, var(--neon-cyan), var(--neon-green))',
+                    color: '#000',
+                    padding: '6px 20px',
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    borderRadius: '20px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    zIndex: 10,
+                    boxShadow: '0 4px 15px rgba(0, 255, 249, 0.4)'
                   }}>
-                    {pricing.subtitle}
+                    {pricing.badge}
                   </div>
                 )}
 
-                <p style={{
-                  opacity: 0.8,
-                  marginBottom: '20px',
-                  lineHeight: '1.6',
-                  fontSize: '14px'
-                }}>
-                  {courseDescriptions[course.slug || ''] || stripMarkdown(course.description.split('---')[0]).substring(0, 120)}
-                  {' '}
-                  <Link to={`/course/${course.slug}`} style={{ color: 'var(--neon-cyan)', textDecoration: 'underline', fontSize: '13px' }}>
-                    Подробнее
-                  </Link>
-                </p>
+                <div
+                  className="cyber-card"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    border: isMiddle ? '2px solid var(--neon-cyan)' : '1px solid rgba(0, 255, 249, 0.3)',
+                    boxShadow: isMiddle
+                      ? '0 0 50px rgba(0, 255, 249, 0.3), 0 20px 40px rgba(0, 0, 0, 0.4)'
+                      : '0 10px 30px rgba(0, 0, 0, 0.3)',
+                    background: isMiddle
+                      ? 'linear-gradient(180deg, rgba(0, 255, 249, 0.12) 0%, rgba(0, 30, 40, 0.95) 100%)'
+                      : 'linear-gradient(180deg, rgba(30, 30, 40, 0.95) 0%, rgba(15, 15, 25, 0.98) 100%)',
+                    padding: '30px 25px',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    position: 'relative'
+                  }}
+                >
+                  {isMiddle && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: '3px',
+                      background: 'linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-green), transparent)'
+                    }} />
+                  )}
 
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginBottom: '15px',
-                  padding: '10px 0',
-                  borderTop: '1px solid rgba(0, 255, 249, 0.15)',
-                  borderBottom: '1px solid rgba(0, 255, 249, 0.15)'
-                }}>
-                  <div>
-                    <div style={{ fontSize: '11px', opacity: 0.6 }}>Возраст</div>
-                    <div style={{ color: 'var(--neon-green)', fontSize: '13px' }}>{course.age_group}</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '11px', opacity: 0.6 }}>Длительность</div>
-                    <div style={{ color: 'var(--neon-green)', fontSize: '13px' }}>{course.duration}</div>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                  <span style={{
-                    fontSize: '13px',
-                    textDecoration: 'line-through',
-                    opacity: 0.5,
-                    marginRight: '10px'
+                  <div style={{
+                    height: '120px',
+                    background: '#0a0a0f',
+                    marginBottom: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    border: isMiddle ? '1px solid rgba(0, 255, 249, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)',
+                    position: 'relative'
                   }}>
-                    {pricing.oldPrice}
-                  </span>
-                  <span style={{
-                    background: isMiddle ? 'var(--neon-cyan)' : 'var(--neon-green)',
-                    color: '#000',
-                    padding: '2px 8px',
-                    borderRadius: '4px',
-                    fontSize: '11px',
+                    {course.image_url ? (
+                      <img
+                        src={course.image_url}
+                        alt={course.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div style={{
+                        fontSize: '36px',
+                        fontWeight: 900,
+                        fontFamily: 'Orbitron, sans-serif',
+                        color: isMiddle ? 'var(--neon-cyan)' : '#fff',
+                        textShadow: isMiddle ? '0 0 30px var(--neon-cyan)' : '0 0 10px rgba(255,255,255,0.3)'
+                      }}>
+                        {course.slug === 'vibecoding-bolt-new' ? 'bolt.new' :
+                         course.slug === 'curdor-ai' ? 'CURSOR' : 'ARCHITECT'}
+                      </div>
+                    )}
+                  </div>
+
+                  <h3 style={{
+                    fontSize: '17px',
+                    marginBottom: pricing.subtitle ? '6px' : '12px',
+                    color: isMiddle ? 'var(--neon-cyan)' : '#fff',
+                    lineHeight: '1.3',
                     fontWeight: 700
                   }}>
-                    {pricing.discount}
-                  </span>
-                </div>
+                    {course.title}
+                  </h3>
 
-                <div style={{
-                  fontSize: '32px',
-                  fontWeight: 700,
-                  marginBottom: '15px',
-                  color: isMiddle ? 'var(--neon-cyan)' : 'var(--neon-pink)'
-                }}>
-                  {course.price}
-                </div>
-
-                <div style={{ marginBottom: '20px', flex: 1 }}>
-                  <div style={{
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    marginBottom: '12px',
-                    color: 'var(--neon-cyan)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Что включено:
-                  </div>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {pricing.features.map((item, idx) => (
-                      <li key={idx} style={{
-                        fontSize: '13px',
-                        marginBottom: '8px',
-                        paddingLeft: '18px',
-                        position: 'relative',
-                        opacity: 0.85,
-                        lineHeight: '1.4'
-                      }}>
-                        <span style={{
-                          position: 'absolute',
-                          left: 0,
-                          color: 'var(--neon-cyan)'
-                        }}>✓</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginBottom: '15px' }}>
-                  {isMiddle ? (
-                    <button className="cyber-button" style={{
-                      width: '100%',
-                      padding: '14px',
-                      fontSize: '14px',
-                      fontWeight: 600
-                    }}>
-                      Начать обучение
-                    </button>
-                  ) : (
-                    <button style={{
-                      width: '100%',
-                      padding: '12px',
-                      background: 'transparent',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      color: '#fff',
-                      fontSize: '14px',
+                  {pricing.subtitle && (
+                    <div style={{
+                      fontSize: '12px',
+                      color: 'var(--neon-green)',
+                      marginBottom: '12px',
                       fontWeight: 600,
-                      cursor: 'pointer',
-                      borderRadius: '6px',
-                      transition: 'all 0.3s ease'
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
                     }}>
-                      Оплатить
-                    </button>
+                      {pricing.subtitle}
+                    </div>
                   )}
-                </a>
 
-                <CourseProgram
-                  isExpanded={expandedCourseProgram === course.id}
-                  onToggle={() => setExpandedCourseProgram(
-                    expandedCourseProgram === course.id ? null : course.id
+                  <p style={{
+                    opacity: 0.75,
+                    marginBottom: '16px',
+                    lineHeight: '1.5',
+                    fontSize: '13px',
+                    minHeight: '40px'
+                  }}>
+                    {courseDescriptions[course.slug || ''] || stripMarkdown(course.description.split('---')[0]).substring(0, 100)}
+                    {' '}
+                    <Link to={`/course/${course.slug}`} style={{ color: 'var(--neon-cyan)', fontSize: '12px' }}>
+                      Подробнее
+                    </Link>
+                  </p>
+
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: '16px',
+                    padding: '10px 12px',
+                    background: 'rgba(0, 255, 249, 0.05)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(0, 255, 249, 0.1)'
+                  }}>
+                    <div>
+                      <div style={{ fontSize: '10px', opacity: 0.5, textTransform: 'uppercase' }}>Возраст</div>
+                      <div style={{ color: 'var(--neon-green)', fontSize: '13px', fontWeight: 600 }}>{course.age_group}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '10px', opacity: 0.5, textTransform: 'uppercase' }}>Длительность</div>
+                      <div style={{ color: 'var(--neon-green)', fontSize: '13px', fontWeight: 600 }}>{course.duration}</div>
+                    </div>
+                  </div>
+
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    marginBottom: '8px'
+                  }}>
+                    <span style={{
+                      fontSize: '14px',
+                      textDecoration: 'line-through',
+                      opacity: 0.4
+                    }}>
+                      {pricing.oldPrice}
+                    </span>
+                    <span style={{
+                      background: isMiddle
+                        ? 'linear-gradient(90deg, var(--neon-cyan), var(--neon-green))'
+                        : 'var(--neon-green)',
+                      color: '#000',
+                      padding: '3px 10px',
+                      borderRadius: '4px',
+                      fontSize: '11px',
+                      fontWeight: 800
+                    }}>
+                      {pricing.discount}
+                    </span>
+                  </div>
+
+                  <div style={{
+                    fontSize: '38px',
+                    fontWeight: 800,
+                    marginBottom: '20px',
+                    color: isMiddle ? 'var(--neon-cyan)' : '#fff',
+                    textShadow: isMiddle ? '0 0 20px rgba(0, 255, 249, 0.5)' : 'none',
+                    fontFamily: 'Orbitron, sans-serif'
+                  }}>
+                    {course.price}
+                  </div>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <div style={{
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      marginBottom: '10px',
+                      color: 'var(--neon-cyan)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
+                    }}>
+                      Что включено:
+                    </div>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                      {pricing.features.map((item, idx) => (
+                        <li key={idx} style={{
+                          fontSize: '12px',
+                          marginBottom: '6px',
+                          paddingLeft: '20px',
+                          position: 'relative',
+                          opacity: 0.9,
+                          lineHeight: '1.4'
+                        }}>
+                          <span style={{
+                            position: 'absolute',
+                            left: 0,
+                            color: 'var(--neon-cyan)',
+                            fontWeight: 700
+                          }}>✓</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {pricing.bonuses.length > 0 && (
+                    <div style={{
+                      marginBottom: '20px',
+                      padding: '12px',
+                      background: isMiddle
+                        ? 'linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(0, 255, 65, 0.05))'
+                        : 'rgba(255, 255, 255, 0.03)',
+                      borderRadius: '8px',
+                      border: isMiddle
+                        ? '1px solid rgba(0, 255, 249, 0.2)'
+                        : '1px solid rgba(255, 255, 255, 0.1)'
+                    }}>
+                      <div style={{
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        marginBottom: '8px',
+                        color: isMiddle ? 'var(--neon-green)' : 'var(--neon-pink)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}>
+                        <span style={{ fontSize: '14px' }}>+</span> Бонусы:
+                      </div>
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                        {pricing.bonuses.map((bonus, idx) => (
+                          <li key={idx} style={{
+                            fontSize: '11px',
+                            marginBottom: '4px',
+                            paddingLeft: '16px',
+                            position: 'relative',
+                            opacity: 0.85,
+                            lineHeight: '1.4',
+                            color: isMiddle ? 'var(--neon-green)' : '#fff'
+                          }}>
+                            <span style={{
+                              position: 'absolute',
+                              left: 0,
+                              color: isMiddle ? 'var(--neon-green)' : 'var(--neon-pink)'
+                            }}>+</span>
+                            {bonus}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
-                  courseSlug={course.slug || ''}
-                  courseId={course.id}
-                />
+
+                  <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginBottom: '12px' }}>
+                    {isMiddle ? (
+                      <button className="cyber-button" style={{
+                        width: '100%',
+                        padding: '16px',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        background: 'linear-gradient(90deg, rgba(0, 255, 249, 0.2), rgba(0, 255, 65, 0.1))',
+                        boxShadow: '0 0 20px rgba(0, 255, 249, 0.3)'
+                      }}>
+                        Начать обучение
+                      </button>
+                    ) : (
+                      <button style={{
+                        width: '100%',
+                        padding: '14px',
+                        background: 'transparent',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        color: '#fff',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        borderRadius: '8px',
+                        transition: 'all 0.3s ease',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        Записаться
+                      </button>
+                    )}
+                  </a>
+
+                  <CourseProgram
+                    isExpanded={expandedCourseProgram === course.id}
+                    onToggle={() => setExpandedCourseProgram(
+                      expandedCourseProgram === course.id ? null : course.id
+                    )}
+                    courseSlug={course.slug || ''}
+                    courseId={course.id}
+                  />
+                </div>
               </div>
             );
           })}
@@ -476,11 +607,11 @@ export default function Home() {
           @media (max-width: 1024px) {
             .courses-grid {
               grid-template-columns: 1fr !important;
-              max-width: 450px !important;
+              max-width: 420px !important;
               margin-left: auto !important;
               margin-right: auto !important;
             }
-            .courses-grid > div {
+            .course-card-wrapper {
               transform: none !important;
             }
           }
@@ -490,63 +621,121 @@ export default function Home() {
           marginTop: '60px',
           textAlign: 'center'
         }}>
-          <div className="cyber-card" style={{
-            maxWidth: '500px',
+          <div style={{
+            maxWidth: '600px',
             margin: '0 auto',
-            background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 255, 249, 0.05))',
-            border: '1px solid rgba(255, 0, 110, 0.3)',
-            padding: '30px'
+            background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.15), rgba(0, 0, 0, 0.9))',
+            border: '2px solid var(--neon-pink)',
+            borderRadius: '16px',
+            padding: '35px 30px',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 0 40px rgba(255, 0, 110, 0.2)'
           }}>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '3px',
+              background: 'linear-gradient(90deg, transparent, var(--neon-pink), var(--neon-cyan), transparent)'
+            }} />
+
             <span style={{
               display: 'inline-block',
-              background: 'var(--neon-pink)',
-              color: '#000',
-              padding: '4px 12px',
+              background: 'linear-gradient(90deg, var(--neon-pink), #ff6b6b)',
+              color: '#fff',
+              padding: '6px 16px',
               fontSize: '11px',
-              fontWeight: 700,
-              borderRadius: '4px',
+              fontWeight: 800,
+              borderRadius: '20px',
               textTransform: 'uppercase',
-              marginBottom: '15px'
+              letterSpacing: '1px',
+              marginBottom: '20px',
+              boxShadow: '0 4px 15px rgba(255, 0, 110, 0.4)'
             }}>
-              Premium
+              Premium VIP
             </span>
+
             <h3 style={{
-              fontSize: '20px',
+              fontSize: '24px',
               marginBottom: '10px',
               color: '#fff',
-              fontWeight: 600
+              fontWeight: 700,
+              fontFamily: 'Orbitron, sans-serif'
             }}>
               Персональные консультации
             </h3>
+
             <div style={{
-              fontSize: '36px',
-              fontWeight: 700,
-              marginBottom: '10px',
-              color: 'var(--neon-pink)'
+              fontSize: '42px',
+              fontWeight: 800,
+              marginBottom: '15px',
+              color: 'var(--neon-pink)',
+              fontFamily: 'Orbitron, sans-serif',
+              textShadow: '0 0 20px rgba(255, 0, 110, 0.5)'
             }}>
               3500 BYN
             </div>
+
             <p style={{
               fontSize: '14px',
-              opacity: 0.8,
-              marginBottom: '20px',
-              lineHeight: '1.6'
+              opacity: 0.85,
+              marginBottom: '25px',
+              lineHeight: '1.7',
+              maxWidth: '450px',
+              margin: '0 auto 25px'
             }}>
-              Все из тарифа "Комьюнити" + персональное сопровождение с автором курса в течение 6 месяцев: ежемесячные 1-1 созвоны, индивидуальный план, персональная поддержка в Telegram.
+              Все из тарифа "Community" + персональное сопровождение с автором курса в течение 6 месяцев
             </p>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '10px',
+              marginBottom: '25px',
+              textAlign: 'left'
+            }}>
+              {[
+                'Ежемесячные 1-1 созвоны',
+                'Индивидуальный план развития',
+                'VIP-канал в Telegram',
+                'Приоритет на все лиды',
+                'Ревью вашего кода',
+                'Помощь с трудоустройством'
+              ].map((item, idx) => (
+                <div key={idx} style={{
+                  fontSize: '12px',
+                  padding: '8px 12px',
+                  background: 'rgba(255, 0, 110, 0.1)',
+                  border: '1px solid rgba(255, 0, 110, 0.2)',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <span style={{ color: 'var(--neon-pink)', fontWeight: 700 }}>+</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+
             <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block' }}>
               <button style={{
-                padding: '12px 40px',
-                background: 'transparent',
-                border: '1px solid var(--neon-pink)',
-                color: 'var(--neon-pink)',
+                padding: '16px 50px',
+                background: 'linear-gradient(90deg, var(--neon-pink), #ff6b6b)',
+                border: 'none',
+                color: '#fff',
                 fontSize: '14px',
-                fontWeight: 600,
+                fontWeight: 700,
                 cursor: 'pointer',
-                borderRadius: '6px',
-                transition: 'all 0.3s ease'
+                borderRadius: '8px',
+                transition: 'all 0.3s ease',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                boxShadow: '0 4px 20px rgba(255, 0, 110, 0.4)'
               }}>
-                Получить доступ
+                Получить VIP-доступ
               </button>
             </a>
           </div>
