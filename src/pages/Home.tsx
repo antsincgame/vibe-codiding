@@ -205,7 +205,8 @@ export default function Home() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
           gap: '30px',
-          marginBottom: '40px'
+          marginBottom: '40px',
+          alignItems: 'start'
         }}>
           {courses.map((course, index) => (
             <div key={course.id} className="cyber-card" style={{ display: 'flex', flexDirection: 'column' }}>
