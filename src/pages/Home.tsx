@@ -219,7 +219,8 @@ export default function Home() {
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '30px',
           marginBottom: '40px',
-          alignItems: 'stretch'
+          alignItems: 'stretch',
+          paddingTop: '20px'
         }} className="courses-grid">
           {courses.map((course, index) => {
             const isMiddle = index === 1;
