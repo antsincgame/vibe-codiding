@@ -1,7 +1,7 @@
-const react = require('@vitejs/plugin-react');
-
 module.exports = {
-  plugins: [react()],
+  esbuild: {
+    jsx: 'automatic'
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,
