@@ -44,6 +44,9 @@ export default function EmailSettingsManager() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState<'confirmation' | 'welcome' | 'smtp' | 'imap'>('confirmation');
+  const [testEmail, setTestEmail] = useState('');
+  const [sendingTest, setSendingTest] = useState(false);
+  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   useEffect(() => {
     loadSettings();
@@ -219,6 +222,49 @@ export default function EmailSettingsManager() {
       alert('Ошибка при сохранении настроек');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const sendTestEmail = async () => {
+    if (!testEmail) {
+      setTestResult({ success: false, message: 'Введите email адрес для отправки тестового письма' });
+      return;
+    }
+
+    setSendingTest(true);
+    setTestResult(null);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setTestResult({ success: false, message: 'Необходима авторизация' });
+        return;
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-test-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ testEmail }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setTestResult({ success: true, message: result.message });
+      } else {
+        setTestResult({ success: false, message: result.error || 'Ошибка отправки' });
+      }
+    } catch (error) {
+      console.error('Error sending test email:', error);
+      setTestResult({ success: false, message: 'Ошибка соединения с сервером' });
+    } finally {
+      setSendingTest(false);
     }
   };
 
@@ -645,6 +691,104 @@ export default function EmailSettingsManager() {
                 <div><strong>Mail.ru:</strong> smtp.mail.ru, Port: 587, TLS: Да</div>
               </div>
             </div>
+          </div>
+
+          <div style={{
+            marginTop: '30px',
+            padding: '25px',
+            background: 'rgba(0, 255, 249, 0.05)',
+            border: '2px solid rgba(0, 255, 249, 0.3)',
+            borderRadius: '12px'
+          }}>
+            <h3 style={{
+              fontSize: '18px',
+              marginBottom: '15px',
+              color: 'var(--neon-cyan)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+              </svg>
+              Тестовое письмо
+            </h3>
+            <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '20px' }}>
+              Отправьте тестовое письмо для проверки настроек SMTP. Убедитесь, что настройки сохранены перед отправкой.
+            </p>
+            <div style={{
+              display: 'flex',
+              gap: '15px',
+              alignItems: 'flex-start',
+              flexWrap: 'wrap'
+            }}>
+              <div style={{ flex: '1', minWidth: '250px' }}>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontSize: '14px',
+                  color: 'var(--neon-cyan)',
+                  fontWeight: 600
+                }}>
+                  Email получателя
+                </label>
+                <input
+                  type="email"
+                  value={testEmail}
+                  onChange={(e) => {
+                    setTestEmail(e.target.value);
+                    setTestResult(null);
+                  }}
+                  className="cyber-input"
+                  placeholder="test@example.com"
+                  disabled={sendingTest}
+                />
+              </div>
+              <button
+                onClick={sendTestEmail}
+                className="cyber-button"
+                disabled={sendingTest || !testEmail}
+                style={{
+                  marginTop: '28px',
+                  minWidth: '200px',
+                  background: sendingTest ? 'rgba(0, 255, 249, 0.1)' : 'rgba(0, 255, 249, 0.2)',
+                  opacity: (sendingTest || !testEmail) ? 0.5 : 1,
+                  cursor: (sendingTest || !testEmail) ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {sendingTest ? 'ОТПРАВКА...' : 'ОТПРАВИТЬ ТЕСТ'}
+              </button>
+            </div>
+
+            {testResult && (
+              <div style={{
+                marginTop: '20px',
+                padding: '15px',
+                background: testResult.success ? 'rgba(0, 255, 100, 0.1)' : 'rgba(255, 0, 110, 0.1)',
+                border: `1px solid ${testResult.success ? 'rgba(0, 255, 100, 0.5)' : 'rgba(255, 0, 110, 0.5)'}`,
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={testResult.success ? '#00ff64' : '#ff006e'} strokeWidth="2">
+                  {testResult.success ? (
+                    <path d="M20 6L9 17l-5-5"/>
+                  ) : (
+                    <>
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M12 8v4M12 16h.01"/>
+                    </>
+                  )}
+                </svg>
+                <span style={{
+                  color: testResult.success ? '#00ff64' : '#ff006e',
+                  fontWeight: 500
+                }}>
+                  {testResult.message}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       )}
