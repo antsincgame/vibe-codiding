@@ -12,7 +12,7 @@ interface Module {
   lessons: Lesson[];
 }
 
-const courseProgram: Module[] = [
+const boltProgram: Module[] = [
   {
     title: 'Введение',
     lessonsCount: 3,
@@ -94,13 +94,103 @@ const courseProgram: Module[] = [
   },
 ];
 
+const cursorProgram: Module[] = [
+  {
+    title: 'Введение',
+    lessonsCount: 3,
+    totalDuration: '34мин',
+    lessons: [
+      { title: 'Зачем Cursor AI: ускорение без потери контроля', duration: '12:30' },
+      { title: 'Как писать ТЗ для ИИ: контекст, ограничения, критерии готовности', duration: '10:10' },
+      { title: 'Чеклист качества: как проверять ответы ИИ и не ломать проект', duration: '11:05' },
+    ],
+  },
+  {
+    title: 'Cursor тренинг: базовые фичи',
+    lessonsCount: 10,
+    totalDuration: '1ч 13мин',
+    lessons: [
+      { title: 'Установка и первый запуск: аккаунт, приватность, основы', duration: '07:40' },
+      { title: 'Базовые настройки: модели, автодополнение, индексация проекта', duration: '08:55' },
+      { title: 'Workspace и структура: что Cursor "понимает" о вашем проекте', duration: '06:20' },
+      { title: 'Inline-правки: быстрые изменения прямо в коде', duration: '04:10' },
+      { title: 'Chat: вопросы по коду и патчи без хаоса', duration: '09:30' },
+      { title: 'Tab: автодополнение как ускоритель', duration: '05:05' },
+      { title: 'Cmd+K: генерация/рефактор выделенного фрагмента', duration: '03:50' },
+      { title: 'Composer: многофайловые изменения и сборка фичи', duration: '12:10' },
+      { title: 'Правила проекта: .cursorrules и стандарты кода', duration: '08:15' },
+      { title: 'Привычки профи: итерации "сделай - улучши - проверь"', duration: '06:35' },
+    ],
+  },
+  {
+    title: 'Работа с кодовой базой и контекстом',
+    lessonsCount: 5,
+    totalDuration: '42мин',
+    lessons: [
+      { title: 'Контекст для ИИ: @files / @folders / @codebase', duration: '09:10' },
+      { title: 'Навигация по проекту: поиск, символы, зависимости', duration: '10:05' },
+      { title: 'Диагностика ошибок: от стектрейса к точному фиксу', duration: '07:45' },
+      { title: 'Рефакторинг по слоям: компонент - модуль - архитектура', duration: '08:30' },
+      { title: 'Документация без "воды": README, комментарии, заметки', duration: '06:50' },
+    ],
+  },
+  {
+    title: 'Инженерный workflow: Git и PR',
+    lessonsCount: 3,
+    totalDuration: '24мин',
+    lessons: [
+      { title: 'Git в Cursor: диффы, коммиты, понятные сообщения', duration: '09:15' },
+      { title: 'Ветки и PR: как просить ИИ делать изменения безопасно', duration: '07:40' },
+      { title: 'Code review с ИИ: баги, стиль, читаемость', duration: '06:35' },
+    ],
+  },
+  {
+    title: 'Архитектура и качество кода',
+    lessonsCount: 4,
+    totalDuration: '35мин',
+    lessons: [
+      { title: 'Типизация и контракты: как "заземлять" ИИ и снижать ошибки', duration: '10:20' },
+      { title: 'Тесты с ИИ: полезные кейсы вместо формальности', duration: '09:05' },
+      { title: 'Линтинг/форматирование: автоматизация качества', duration: '08:10' },
+      { title: 'Безопасность: секреты, инъекции, опасные паттерны', duration: '07:50' },
+    ],
+  },
+  {
+    title: 'Интеграции и продакшен-подход',
+    lessonsCount: 3,
+    totalDuration: '23мин',
+    lessons: [
+      { title: 'Терминал и команды: воспроизводим проблему и фиксируем', duration: '08:30' },
+      { title: 'Env variables: ключи, конфиги, разные окружения', duration: '07:15' },
+      { title: 'Деплой и продакшен-дебаг: логи, откаты, hotfix', duration: '07:40' },
+    ],
+  },
+  {
+    title: 'Финальный проект: сборка и релиз',
+    lessonsCount: 2,
+    totalDuration: '23мин',
+    lessons: [
+      { title: 'Собираем фичу "от задачи до релиза" в режиме Composer', duration: '12:15' },
+      { title: 'Полировка: производительность, UX, финальный чеклист', duration: '11:10' },
+    ],
+  },
+];
+
+const coursePrograms: Record<string, Module[]> = {
+  'vibecoding-bolt-new': boltProgram,
+  'curdor-ai': cursorProgram,
+};
+
 interface CourseProgramProps {
   isExpanded: boolean;
   onToggle: () => void;
+  courseSlug: string;
 }
 
-export default function CourseProgram({ isExpanded, onToggle }: CourseProgramProps) {
+export default function CourseProgram({ isExpanded, onToggle, courseSlug }: CourseProgramProps) {
   const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
+
+  const program = coursePrograms[courseSlug] || boltProgram;
 
   const toggleModule = (index: number) => {
     setExpandedModules(prev => {
@@ -114,7 +204,7 @@ export default function CourseProgram({ isExpanded, onToggle }: CourseProgramPro
     });
   };
 
-  const totalLessons = courseProgram.reduce((sum, m) => sum + m.lessonsCount, 0);
+  const totalLessons = program.reduce((sum, m) => sum + m.lessonsCount, 0);
 
   return (
     <div>
@@ -170,12 +260,12 @@ export default function CourseProgram({ isExpanded, onToggle }: CourseProgramPro
               Программа курса
             </span>
             <span style={{ fontSize: '13px', opacity: 0.7 }}>
-              {courseProgram.length} модулей / {totalLessons} уроков
+              {program.length} модулей / {totalLessons} уроков
             </span>
           </div>
 
           <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {courseProgram.map((module, moduleIndex) => (
+            {program.map((module, moduleIndex) => (
               <div key={moduleIndex}>
                 <button
                   onClick={() => toggleModule(moduleIndex)}
