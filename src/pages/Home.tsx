@@ -158,8 +158,8 @@ export default function Home() {
       </section>
 
       <section style={{
-        padding: '40px 20px 80px',
-        maxWidth: '1200px',
+        padding: '40px 16px 60px',
+        maxWidth: '1800px',
         margin: '0 auto'
       }}>
         <div className="cyber-card" style={{ marginBottom: '60px' }}>
@@ -619,13 +619,13 @@ export default function Home() {
       </section>
 
       <section style={{
-        padding: '80px 20px',
-        maxWidth: '1200px',
+        padding: '60px 16px',
+        maxWidth: '1800px',
         margin: '0 auto'
       }}>
-        <div className="cyber-card" style={{ marginBottom: '60px' }}>
+        <div className="cyber-card" style={{ marginBottom: '40px' }}>
           <h2 style={{
-            fontSize: 'clamp(32px, 5vw, 48px)',
+            fontSize: 'clamp(28px, 4vw, 40px)',
             marginBottom: '20px',
             color: 'var(--neon-pink)',
             textAlign: 'center'
@@ -664,9 +664,9 @@ export default function Home() {
         </div>
 
         <h2 style={{
-          fontSize: 'clamp(32px, 5vw, 48px)',
+          fontSize: 'clamp(28px, 4vw, 40px)',
           textAlign: 'center',
-          marginBottom: '50px',
+          marginBottom: '40px',
           color: 'var(--neon-cyan)'
         }}>
           Присоединяйтесь к лучшей онлайн школе вайб-кодинга!
@@ -674,13 +674,13 @@ export default function Home() {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-          gap: '40px'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '24px'
         }}>
           <div className="cyber-card" style={{
             background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 255, 249, 0.1))',
             textAlign: 'center',
-            padding: '40px'
+            padding: '30px'
           }}>
             <h3 style={{
               fontSize: 'clamp(24px, 4vw, 32px)',
@@ -717,11 +717,11 @@ export default function Home() {
           <div className="cyber-card" style={{
             background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(0, 255, 65, 0.1))',
             textAlign: 'center',
-            padding: '40px'
+            padding: '30px'
           }}>
             <h3 style={{
-              fontSize: 'clamp(24px, 4vw, 32px)',
-              marginBottom: '20px',
+              fontSize: 'clamp(22px, 3vw, 28px)',
+              marginBottom: '16px',
               color: 'var(--neon-cyan)'
             }}>
               Готовы начать обучение?
@@ -748,14 +748,14 @@ export default function Home() {
 
       {videoTestimonials.length > 0 && (
         <section style={{
-          padding: '80px 20px',
-          maxWidth: '1200px',
+          padding: '60px 16px',
+          maxWidth: '1800px',
           margin: '0 auto'
         }}>
           <h2 style={{
-            fontSize: 'clamp(32px, 5vw, 48px)',
+            fontSize: 'clamp(28px, 4vw, 40px)',
             textAlign: 'center',
-            marginBottom: '20px',
+            marginBottom: '16px',
             fontFamily: 'Orbitron, sans-serif',
             fontWeight: 700,
             textTransform: 'uppercase',
@@ -763,26 +763,23 @@ export default function Home() {
             background: 'linear-gradient(90deg, var(--neon-green), var(--neon-cyan))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            textShadow: '0 0 30px rgba(57, 255, 20, 0.6)',
-            filter: 'drop-shadow(0 0 10px rgba(0, 255, 249, 0.5))'
+            backgroundClip: 'text'
           }}>
             Отзывы наших учеников
           </h2>
           <p style={{
             textAlign: 'center',
-            fontSize: '18px',
+            fontSize: '16px',
             opacity: 0.8,
-            marginBottom: '50px',
-            lineHeight: '1.6'
+            marginBottom: '40px'
           }}>
             Узнайте, что говорят студенты о нашей школе вайб-кодинга
           </p>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-            gap: '30px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '24px'
           }}>
             {videoTestimonials.map((testimonial) => {
               const hasVideo = testimonial.video_url && (
@@ -921,22 +918,22 @@ export default function Home() {
       )}
 
       <section style={{
-        padding: '80px 20px',
-        maxWidth: '1200px',
+        padding: '60px 16px',
+        maxWidth: '1800px',
         margin: '0 auto'
       }}>
-        <div className="cyber-card" style={{ padding: '40px' }}>
+        <div className="cyber-card" style={{ padding: '30px' }}>
           <h2 style={{
-            fontSize: 'clamp(28px, 4vw, 36px)',
-            marginBottom: '30px',
+            fontSize: 'clamp(24px, 3vw, 32px)',
+            marginBottom: '24px',
             color: 'var(--neon-cyan)',
             textAlign: 'center'
           }}>
             Онлайн школа программирования вайб кодинга — Vibecoding
           </h2>
           <div style={{
-            fontSize: '16px',
-            lineHeight: '1.9',
+            fontSize: '15px',
+            lineHeight: '1.8',
             opacity: 0.85
           }}>
             <p style={{ marginBottom: '20px' }}>

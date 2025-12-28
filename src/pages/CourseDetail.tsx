@@ -99,12 +99,12 @@ export default function CourseDetail() {
   return (
     <div style={{
       minHeight: '100vh',
-      paddingTop: '120px',
-      paddingBottom: '60px',
-      paddingLeft: '20px',
-      paddingRight: '20px'
+      paddingTop: '100px',
+      paddingBottom: '40px',
+      paddingLeft: '16px',
+      paddingRight: '16px'
     }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1800px', margin: '0 auto' }}>
         {course.image_url && (
           <div style={{
             width: '100%',

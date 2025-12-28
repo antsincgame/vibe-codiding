@@ -92,7 +92,7 @@ body {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 255, 249, 0.3);
   border-radius: 8px;
-  padding: 30px;
+  padding: 24px;
   transition: all 0.3s;
   position: relative;
   overflow: hidden;
@@ -239,9 +239,9 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .header-nav {
-  max-width: 75rem;
+  max-width: 1800px;
   margin: 0 auto;
-  padding: clamp(0.75rem, 2vw, 1.5rem) clamp(1rem, 3vw, 2rem);
+  padding: 0.75rem 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -925,15 +925,15 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-intro {
-  max-width: 1600px;
+  max-width: 1800px;
   margin: 0 auto;
-  padding: 100px 80px;
+  padding: 80px 16px;
   position: relative;
 }
 
 @media (max-width: 768px) {
   .history-intro {
-    padding: 100px 20px;
+    padding: 60px 16px;
   }
 }
 
@@ -1015,14 +1015,14 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 
 .history-timeline {
   position: relative;
-  max-width: 1600px;
+  max-width: 1800px;
   margin: 0 auto;
-  padding: 80px 80px;
+  padding: 60px 16px;
 }
 
 @media (max-width: 768px) {
   .history-timeline {
-    padding: 80px 20px;
+    padding: 40px 16px;
   }
 }
 
@@ -1317,17 +1317,17 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-ai-intro {
-  max-width: 1400px;
-  margin: 0 auto 50px;
+  max-width: 1800px;
+  margin: 0 auto 40px;
   text-align: center;
   position: relative;
   z-index: 2;
-  padding: 0 80px;
+  padding: 0 16px;
 }
 
 @media (max-width: 768px) {
   .history-ai-intro {
-    padding: 0 20px;
+    padding: 0 16px;
   }
 }
 
@@ -1339,17 +1339,17 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 
 .history-ai-insights {
   display: grid;
-  gap: 20px;
-  max-width: 1400px;
-  margin: 0 auto 60px;
-  padding: 0 80px;
+  gap: 16px;
+  max-width: 1800px;
+  margin: 0 auto 40px;
+  padding: 0 16px;
   position: relative;
   z-index: 2;
 }
 
 @media (max-width: 768px) {
   .history-ai-insights {
-    padding: 0 20px;
+    padding: 0 16px;
   }
 }
 
@@ -1416,19 +1416,19 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-ai-risks {
-  max-width: 1400px;
-  margin: 0 auto 60px;
-  padding: 40px 80px;
+  max-width: 1800px;
+  margin: 0 auto 40px;
+  padding: 30px 16px;
   background: rgba(255, 0, 110, 0.08);
   border: 1px solid rgba(255, 0, 110, 0.3);
-  border-radius: 20px;
+  border-radius: 12px;
   position: relative;
   z-index: 2;
 }
 
 @media (max-width: 768px) {
   .history-ai-risks {
-    padding: 40px 20px;
+    padding: 24px 16px;
   }
 }
 
@@ -1494,54 +1494,54 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-ai-nuance {
-  max-width: 1400px;
+  max-width: 1800px;
   margin: 0 auto;
   display: flex;
-  gap: 25px;
-  padding: 30px 80px;
+  gap: 20px;
+  padding: 24px 16px;
   background: rgba(0, 255, 249, 0.05);
   border: 1px dashed var(--neon-cyan);
-  border-radius: 16px;
+  border-radius: 12px;
   position: relative;
   z-index: 2;
 }
 
 .history-nuance-icon {
   flex-shrink: 0;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--neon-cyan);
   color: #000;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 900;
   border-radius: 50%;
 }
 
 .history-ai-nuance p {
-  font-size: 17px;
-  line-height: 1.8;
+  font-size: 15px;
+  line-height: 1.7;
   margin: 0;
   color: rgba(255, 255, 255, 0.9);
 }
 
 @media (max-width: 768px) {
   .history-ai-nuance {
-    padding: 30px 20px;
+    padding: 20px 16px;
   }
 }
 
 .history-advice-section {
-  padding: 100px 80px;
-  max-width: 1600px;
+  padding: 60px 16px;
+  max-width: 1800px;
   margin: 0 auto;
 }
 
 @media (max-width: 768px) {
   .history-advice-section {
-    padding: 100px 20px;
+    padding: 40px 16px;
   }
 }
 
@@ -1657,23 +1657,23 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .history-conclusion {
-  padding: 100px 20px;
+  padding: 60px 16px;
 }
 
 .history-conclusion-content {
   position: relative;
-  max-width: 1400px;
+  max-width: 1800px;
   margin: 0 auto;
-  padding: 60px 80px;
+  padding: 40px 24px;
   background: linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(255, 0, 110, 0.1));
-  border-radius: 30px;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
 }
 
 @media (max-width: 768px) {
   .history-conclusion-content {
-    padding: 60px 20px;
+    padding: 30px 16px;
   }
 }
 

@@ -50,12 +50,12 @@ export default function Courses() {
   return (
     <div style={{
       minHeight: '100vh',
-      paddingTop: '120px',
-      paddingBottom: '60px',
-      paddingLeft: '20px',
-      paddingRight: '20px'
+      paddingTop: '100px',
+      paddingBottom: '40px',
+      paddingLeft: '16px',
+      paddingRight: '16px'
     }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1800px', margin: '0 auto' }}>
         <h1 style={{
           fontSize: 'clamp(40px, 6vw, 60px)',
           textAlign: 'center',
