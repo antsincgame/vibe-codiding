@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
-import type { Course, HomePageSettings } from '../types';
+import type { Course, HomePageSettings, VideoTestimonial } from '../types';
 import StudentWorksSection from '../components/StudentWorksSection';
 import CourseProgram from '../components/CourseProgram';
 
@@ -19,6 +19,7 @@ export default function Home() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [settings, setSettings] = useState<HomePageSettings>(defaultSettings);
   const [expandedCourseProgram, setExpandedCourseProgram] = useState<string | null>(null);
+  const [videoTestimonials, setVideoTestimonials] = useState<VideoTestimonial[]>([]);
 
   useEffect(() => {
     loadData();
@@ -41,6 +42,7 @@ export default function Home() {
   const loadData = async () => {
     await loadSettings();
     await loadCourses();
+    await loadVideoTestimonials();
   };
 
   const loadSettings = async () => {
@@ -80,6 +82,19 @@ export default function Home() {
 
     if (data) {
       setCourses(data);
+    }
+  };
+
+  const loadVideoTestimonials = async () => {
+    const { data } = await supabase
+      .from('video_testimonials')
+      .select('*')
+      .eq('is_active', true)
+      .order('order_index', { ascending: true })
+      .limit(3);
+
+    if (data) {
+      setVideoTestimonials(data);
     }
   };
 
@@ -475,6 +490,90 @@ export default function Home() {
       </section>
 
       <StudentWorksSection />
+
+      {videoTestimonials.length > 0 && (
+        <section style={{
+          padding: '80px 20px',
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          <h2 style={{
+            fontSize: 'clamp(32px, 5vw, 48px)',
+            textAlign: 'center',
+            marginBottom: '20px',
+            fontFamily: 'Orbitron, sans-serif',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '2px',
+            background: 'linear-gradient(90deg, var(--neon-green), var(--neon-cyan))',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            textShadow: '0 0 30px rgba(57, 255, 20, 0.6)',
+            filter: 'drop-shadow(0 0 10px rgba(0, 255, 249, 0.5))'
+          }}>
+            Отзывы наших учеников
+          </h2>
+          <p style={{
+            textAlign: 'center',
+            fontSize: '18px',
+            opacity: 0.8,
+            marginBottom: '50px',
+            lineHeight: '1.6'
+          }}>
+            Узнайте, что говорят студенты о нашей школе вайб-кодинга
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '30px'
+          }}>
+            {videoTestimonials.map((testimonial) => (
+              <div key={testimonial.id} className="cyber-card" style={{
+                padding: '0',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <div style={{
+                  position: 'relative',
+                  paddingBottom: '56.25%',
+                  height: 0,
+                  overflow: 'hidden',
+                  background: '#000'
+                }}>
+                  <iframe
+                    src={testimonial.video_url}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      border: 'none'
+                    }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                <div style={{
+                  padding: '20px',
+                  textAlign: 'center'
+                }}>
+                  <h3 style={{
+                    fontSize: '18px',
+                    color: 'var(--neon-cyan)',
+                    fontWeight: 600
+                  }}>
+                    {testimonial.student_name}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section style={{
         padding: '80px 20px',

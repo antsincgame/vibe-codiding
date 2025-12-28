@@ -124,3 +124,14 @@ export interface CourseLesson {
   created_at: string;
   updated_at: string;
 }
+
+export interface VideoTestimonial {
+  id: string;
+  student_name: string;
+  video_url: string;
+  thumbnail_url: string;
+  order_index: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}

@@ -6,6 +6,7 @@ import { renderMarkdown, stripMarkdown } from '../lib/markdown';
 import EmailSettingsManager from '../components/EmailSettingsManager';
 import AdminFormField from '../components/AdminFormField';
 import CourseLessonsManager from '../components/CourseLessonsManager';
+import VideoTestimonialsManager from '../components/VideoTestimonialsManager';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 
 interface UserProfile {
@@ -20,7 +21,7 @@ interface UserProfile {
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'blog' | 'home' | 'email' | 'users'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'users'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -412,6 +413,17 @@ export default function Admin() {
             }}
           >
             Работы учеников
+          </button>
+          <button
+            onClick={() => setActiveTab('testimonials')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'testimonials' ? 1 : 0.5,
+              borderColor: 'var(--neon-green)',
+              color: 'var(--neon-green)'
+            }}
+          >
+            Видеоотзывы
           </button>
           <button
             onClick={() => setActiveTab('blog')}
@@ -964,6 +976,10 @@ export default function Admin() {
             settings={homeSettings}
             onSave={saveHomeSettings}
           />
+        )}
+
+        {activeTab === 'testimonials' && (
+          <VideoTestimonialsManager />
         )}
 
         {activeTab === 'email' && (
