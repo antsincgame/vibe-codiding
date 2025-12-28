@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../lib/storageService';
 import { renderMarkdown, stripMarkdown } from '../lib/markdown';
 import EmailSettingsManager from '../components/EmailSettingsManager';
+import AdminFormField from '../components/AdminFormField';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 
 interface UserProfile {
@@ -1192,30 +1193,38 @@ function CourseModal({
       overflow: 'auto'
     }}>
       <div className="cyber-card" style={{ maxWidth: '800px', width: '100%', margin: '40px 0' }}>
-        <h2 style={{ fontSize: '28px', marginBottom: '25px', color: 'var(--neon-cyan)' }}>
+        <h2 style={{ fontSize: '28px', marginBottom: '30px', color: 'var(--neon-cyan)' }}>
           {course.id ? 'Редактировать курс' : 'Новый курс'}
         </h2>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Название курса *
+        <div className="admin-form-group">
+          <label className="admin-form-label admin-form-label-required">
+            Название курса
           </label>
+          <div className="admin-form-hint">
+            Это название будет отображаться в списке курсов и на странице курса
+          </div>
           <input
             type="text"
+            className="admin-form-input"
             value={formData.title}
             onChange={(e) => handleTitleChange(e.target.value)}
             placeholder="Например: Веб-разработка для начинающих"
           />
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            URL (slug)
+        <div className="admin-form-group">
+          <label className="admin-form-label">
+            URL адрес (slug)
           </label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ opacity: 0.6 }}>/course/</span>
+          <div className="admin-form-hint">
+            Уникальный идентификатор для URL: site.com/course/ваш-slug
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ opacity: 0.6, fontWeight: 600 }}>/course/</span>
             <input
               type="text"
+              className="admin-form-input"
               value={formData.slug || ''}
               onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })}
               placeholder="web-development"
@@ -1224,10 +1233,10 @@ function CourseModal({
           </div>
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-            <label style={{ color: 'var(--neon-cyan)', fontWeight: 600 }}>
-              Описание * (Markdown)
+        <div className="admin-form-group">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <label className="admin-form-label admin-form-label-required" style={{ marginBottom: 0 }}>
+              Описание (Markdown)
             </label>
             <button
               type="button"
@@ -1236,31 +1245,31 @@ function CourseModal({
                 background: 'transparent',
                 border: '1px solid var(--neon-cyan)',
                 color: 'var(--neon-cyan)',
-                padding: '4px 12px',
+                padding: '6px 14px',
                 cursor: 'pointer',
-                fontSize: '12px',
-                borderRadius: '4px'
+                fontSize: '11px',
+                borderRadius: '4px',
+                fontWeight: 600,
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 255, 249, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
               }}
             >
-              {showPreview ? 'Скрыть предпросмотр' : 'Показать предпросмотр'}
+              {showPreview ? '✕ Скрыть' : '▼ Показать'} предпросмотр
             </button>
           </div>
-          <div style={{
-            fontSize: '12px',
-            opacity: 0.7,
-            marginBottom: '8px',
-            padding: '8px 12px',
-            background: 'rgba(0, 255, 249, 0.05)',
-            border: '1px solid rgba(0, 255, 249, 0.2)',
-            borderRadius: '4px'
-          }}>
-            Поддерживается Markdown: **жирный**, *курсив*, # Заголовок, ## Подзаголовок, - списки, [ссылка](url)
+          <div className="admin-form-hint">
+            Форматирование: **жирный**, *курсив*, # Заголовок, - списки, [ссылка](url)
           </div>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            rows={8}
             placeholder="Подробное описание курса с поддержкой Markdown"
+            className="admin-form-textarea"
             style={{ fontFamily: 'monospace', fontSize: '14px' }}
           />
           {showPreview && formData.description && (
@@ -1289,16 +1298,20 @@ function CourseModal({
           )}
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Изображение курса
+        <div className="admin-form-group">
+          <label className="admin-form-label">
+            Изображение обложки курса
           </label>
+          <div className="admin-form-hint">
+            Рекомендуемый размер: 1200x600px или больше. Формат: JPG, PNG
+          </div>
           <input
             type="file"
             accept="image/*"
             onChange={handleImageUpload}
             disabled={isUploading}
-            style={{ marginBottom: '10px' }}
+            className="admin-form-input"
+            style={{ marginBottom: '10px', padding: '12px 16px', cursor: isUploading ? 'not-allowed' : 'pointer' }}
           />
           {uploadError && (
             <div style={{ color: 'var(--neon-pink)', marginBottom: '10px', fontSize: '14px' }}>
@@ -1347,69 +1360,59 @@ function CourseModal({
               </button>
             </div>
           )}
-          <div style={{ marginTop: '10px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', opacity: 0.8 }}>
-              Или укажите URL изображения:
-            </label>
+          <AdminFormField label="Или укажите URL изображения" hint="Используйте этот метод для внешних изображений">
             <input
               type="url"
+              className="admin-form-input"
               value={formData.image_url}
               onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
               placeholder="https://example.com/image.jpg"
             />
-          </div>
+          </AdminFormField>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-              Длительность *
-            </label>
+        <div className="admin-form-row">
+          <AdminFormField label="Длительность" hint="Пример: 3 месяца или 12 недель" required>
             <input
               type="text"
+              className="admin-form-input"
               value={formData.duration}
               onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
               placeholder="3 месяца"
             />
-          </div>
+          </AdminFormField>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-              Возрастная группа *
-            </label>
+          <AdminFormField label="Возрастная группа" hint="Пример: 16+ или 12-18 лет" required>
             <input
               type="text"
+              className="admin-form-input"
               value={formData.age_group}
               onChange={(e) => setFormData({ ...formData, age_group: e.target.value })}
               placeholder="16+"
             />
-          </div>
+          </AdminFormField>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-              Цена *
-            </label>
+        <div className="admin-form-row">
+          <AdminFormField label="Стоимость обучения" hint="Пример: 200 BYN/месяц или Бесплатно" required>
             <input
               type="text"
+              className="admin-form-input"
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
               placeholder="200 BYN/мес"
             />
-          </div>
+          </AdminFormField>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-              Порядок отображения
-            </label>
+          <AdminFormField label="Порядок отображения" hint="Курсы сортируются по возрастанию этого значения">
             <input
               type="number"
+              className="admin-form-input"
               value={formData.order_index}
               onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
               min={0}
             />
-          </div>
+          </AdminFormField>
         </div>
 
         <div style={{
@@ -1575,41 +1578,42 @@ function FaqModal({
       padding: '20px',
       overflow: 'auto'
     }}>
-      <div className="cyber-card" style={{ maxWidth: '600px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}>
-        <h2 style={{ fontSize: '28px', marginBottom: '20px', color: 'var(--neon-cyan)' }}>
+      <div className="cyber-card" style={{ maxWidth: '700px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}>
+        <h2 style={{ fontSize: '28px', marginBottom: '30px', color: 'var(--neon-cyan)' }}>
           {faq.id ? 'Редактировать вопрос' : 'Новый вопрос'}
         </h2>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Вопрос</label>
+
+        <AdminFormField label="Вопрос пользователя" hint="Сформулируйте вопрос четко и понятно" required>
           <input
             type="text"
+            className="admin-form-input"
             value={formData.question}
             onChange={(e) => setFormData({ ...formData, question: e.target.value })}
+            placeholder="Как начать обучение?"
           />
-        </div>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Ответ</label>
+        </AdminFormField>
+
+        <AdminFormField label="Ответ" hint="Дайте подробный и полезный ответ на вопрос" required>
           <textarea
+            className="admin-form-textarea"
             value={formData.answer}
             onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-            rows={6}
+            placeholder="Введите полный ответ здесь..."
           />
-        </div>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Категория</label>
+        </AdminFormField>
+
+        <AdminFormField label="Категория" hint="Выберите категорию для группировки вопросов" required>
           <select
+            className="admin-form-select"
             value={formData.category}
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
           >
             <option value="general">Общие вопросы</option>
             <option value="courses">О курсах</option>
-            <option value="payment">Оплата</option>
+            <option value="payment">Оплата и условия</option>
             <option value="technical">Технические вопросы</option>
           </select>
-        </div>
+        </AdminFormField>
 
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
@@ -1681,60 +1685,61 @@ function StudentWorkModal({
       padding: '20px',
       overflow: 'auto'
     }}>
-      <div className="cyber-card" style={{ maxWidth: '600px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}>
-        <h2 style={{ fontSize: '28px', marginBottom: '20px', color: 'var(--neon-green)' }}>
-          {work.id ? 'Редактировать работу' : 'Новая работа'}
+      <div className="cyber-card" style={{ maxWidth: '700px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}>
+        <h2 style={{ fontSize: '28px', marginBottom: '30px', color: 'var(--neon-green)' }}>
+          {work.id ? 'Редактировать работу ученика' : 'Добавить работу ученика'}
         </h2>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Имя ученика</label>
+        <AdminFormField label="Имя ученика" hint="Полное имя автора работы" required>
           <input
             type="text"
+            className="admin-form-input"
             value={formData.student_name}
             onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
-            placeholder="Например: Мария"
+            placeholder="Например: Мария Сидорова"
           />
-        </div>
+        </AdminFormField>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Возраст</label>
+        <AdminFormField label="Возраст" hint="Возраст ученика на момент создания работы" required>
           <input
             type="number"
+            className="admin-form-input"
             value={formData.student_age}
             onChange={(e) => setFormData({ ...formData, student_age: parseInt(e.target.value) || 0 })}
             min={1}
             max={100}
+            placeholder="15"
           />
-        </div>
+        </AdminFormField>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Название проекта</label>
+        <AdminFormField label="Название проекта" hint="Короткое и информативное название работы" required>
           <input
             type="text"
+            className="admin-form-input"
             value={formData.project_title}
             onChange={(e) => setFormData({ ...formData, project_title: e.target.value })}
-            placeholder="Например: Блог о котиках"
+            placeholder="Например: Интерактивный блог о котиках"
           />
-        </div>
+        </AdminFormField>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Описание проекта</label>
+        <AdminFormField label="Описание проекта" hint="Расскажите, что делает проект и какие технологии использованы">
           <textarea
+            className="admin-form-textarea"
             value={formData.project_description}
             onChange={(e) => setFormData({ ...formData, project_description: e.target.value })}
-            rows={3}
-            placeholder="Краткое описание того, что делает проект"
+            style={{ minHeight: '100px' }}
+            placeholder="Описание функционала и особенностей проекта..."
           />
-        </div>
+        </AdminFormField>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>URL проекта</label>
+        <AdminFormField label="URL проекта" hint="Ссылка на публикацию или демо проекта">
           <div style={{ display: 'flex', gap: '10px' }}>
             <input
               type="url"
+              className="admin-form-input"
               value={formData.project_url}
               onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
-              placeholder="https://example.com"
+              placeholder="https://example.com/project"
               style={{ flex: 1 }}
             />
             {formData.project_url && (
@@ -1755,16 +1760,16 @@ function StudentWorkModal({
               </a>
             )}
           </div>
-        </div>
+        </AdminFormField>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Картинка</label>
+        <AdminFormField label="Изображение проекта" hint="Скриншот или изображение работы (JPG, PNG)">
           <input
             type="file"
             accept="image/*"
             onChange={handleImageUpload}
             disabled={isUploading}
-            style={{ marginBottom: '10px' }}
+            className="admin-form-input"
+            style={{ marginBottom: '10px', padding: '12px 16px', cursor: isUploading ? 'not-allowed' : 'pointer' }}
           />
           {uploadError && (
             <div style={{ color: 'var(--neon-pink)', marginBottom: '10px', fontSize: '14px' }}>
@@ -1796,7 +1801,7 @@ function StudentWorkModal({
               />
             </div>
           )}
-        </div>
+        </AdminFormField>
 
         <div style={{ marginBottom: '15px' }}>
           <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)' }}>Инструмент</label>
@@ -1948,54 +1953,48 @@ function BlogPostModal({
         width: '100%',
         margin: '40px 0'
       }}>
-        <h2 style={{ fontSize: '28px', marginBottom: '25px', color: 'var(--neon-pink)' }}>
-          {post.id ? 'Редактировать статью' : 'Новая статья'}
+        <h2 style={{ fontSize: '28px', marginBottom: '30px', color: 'var(--neon-pink)' }}>
+          {post.id ? 'Редактировать статью' : 'Новая статья в блоге'}
         </h2>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Заголовок *
-          </label>
+        <AdminFormField label="Заголовок статьи" hint="Привлекательный и информативный заголовок" required>
           <input
             type="text"
+            className="admin-form-input"
             value={formData.title}
             onChange={(e) => handleTitleChange(e.target.value)}
-            placeholder="Название статьи"
+            placeholder="Например: Как начать изучать веб-разработку"
           />
-        </div>
+        </AdminFormField>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            URL (slug) *
-          </label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ opacity: 0.6 }}>/blog/</span>
+        <AdminFormField label="URL адрес (slug)" hint="Уникальный идентификатор: site.com/blog/ваш-slug" required>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ opacity: 0.6, fontWeight: 600 }}>/blog/</span>
             <input
               type="text"
+              className="admin-form-input"
               value={formData.slug}
               onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })}
-              placeholder="url-statyi"
+              placeholder="kak-nachat-web-razrabotku"
               style={{ flex: 1 }}
             />
           </div>
-        </div>
+        </AdminFormField>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Краткое описание (для превью)
-          </label>
+        <AdminFormField label="Краткое описание" hint="Отображается в списке статей как превью (до 200 символов)">
           <textarea
+            className="admin-form-textarea"
             value={formData.excerpt}
             onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-            rows={3}
-            placeholder="Краткое описание статьи для списка блога"
+            placeholder="Краткое описание статьи..."
+            style={{ minHeight: '80px' }}
           />
-        </div>
+        </AdminFormField>
 
-        <div style={{ marginBottom: '20px' }}>
+        <div className="admin-form-group">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <label style={{ color: 'var(--neon-cyan)', fontWeight: 600 }}>
-              Содержимое статьи *
+            <label className="admin-form-label admin-form-label-required" style={{ marginBottom: 0 }}>
+              Содержимое статьи (Markdown)
             </label>
             <button
               type="button"
@@ -2196,46 +2195,39 @@ function BlogPostModal({
               data-content-editor="true"
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              rows={15}
-              placeholder="Текст статьи. Используйте кнопки выше для форматирования или пишите markdown вручную"
+              placeholder="Введите текст статьи здесь. Используйте кнопки для форматирования или markdown синтаксис"
+              className="admin-form-textarea"
               style={{
                 fontFamily: 'monospace',
                 fontSize: '14px',
                 lineHeight: '1.6',
-                width: '100%',
-                padding: '12px',
-                background: 'rgba(0, 0, 0, 0.5)',
-                border: '2px solid var(--neon-cyan)',
-                borderRadius: '4px',
-                color: 'white',
-                resize: 'vertical'
+                minHeight: '400px'
               }}
             />
           ) : (
             <div style={{
-              padding: '12px',
-              background: 'rgba(0, 0, 0, 0.5)',
+              padding: '20px',
+              background: 'rgba(0, 255, 100, 0.05)',
               border: '2px solid var(--neon-green)',
-              borderRadius: '4px',
+              borderRadius: '6px',
               minHeight: '300px',
               maxHeight: '500px',
-              overflowY: 'auto'
+              overflowY: 'auto',
+              lineHeight: '1.8'
             }}>
               <div dangerouslySetInnerHTML={{ __html: renderMarkdown(formData.content) }} />
             </div>
           )}
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Обложка
-          </label>
+        <AdminFormField label="Изображение обложки" hint="Главное изображение для статьи (рекомендуемый размер: 1200x600px)">
           <input
             type="file"
             accept="image/*"
+            className="admin-form-input"
+            style={{ padding: '12px 16px', cursor: isUploading ? 'not-allowed' : 'pointer' }}
             onChange={handleImageUpload}
             disabled={isUploading}
-            style={{ marginBottom: '10px' }}
           />
           {uploadError && (
             <div style={{ color: 'var(--neon-pink)', marginBottom: '10px', fontSize: '14px' }}>
@@ -2267,7 +2259,7 @@ function BlogPostModal({
               />
             </div>
           )}
-        </div>
+        </AdminFormField>
 
         <div style={{
           background: 'rgba(0, 255, 249, 0.05)',
