@@ -244,24 +244,6 @@ export default function Home() {
                   zIndex: isMiddle ? 2 : 1
                 }}
               >
-                {isMiddle && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '-12px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: 'var(--neon-cyan)',
-                    color: '#000',
-                    padding: '4px 16px',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    borderRadius: '4px'
-                  }}>
-                    Полный курс
-                  </div>
-                )}
                 <div style={{
                   height: '180px',
                   background: course.image_url ? 'transparent' : '#0a0a0f',
