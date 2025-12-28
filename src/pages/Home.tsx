@@ -526,51 +526,141 @@ export default function Home() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
             gap: '30px'
           }}>
-            {videoTestimonials.map((testimonial) => (
-              <div key={testimonial.id} className="cyber-card" style={{
-                padding: '0',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
-                <div style={{
-                  position: 'relative',
-                  paddingBottom: '56.25%',
-                  height: 0,
+            {videoTestimonials.map((testimonial) => {
+              const hasVideo = testimonial.video_url && (
+                testimonial.video_url.includes('youtube.com') ||
+                testimonial.video_url.includes('youtu.be') ||
+                testimonial.video_url.includes('.mp4') ||
+                testimonial.video_url.includes('.webm')
+              );
+
+              return (
+                <div key={testimonial.id} className="cyber-card" style={{
+                  padding: '0',
                   overflow: 'hidden',
-                  background: '#000'
+                  display: 'flex',
+                  flexDirection: 'column',
+                  background: 'linear-gradient(135deg, rgba(0, 20, 30, 0.9), rgba(0, 40, 50, 0.8))',
+                  border: '1px solid rgba(0, 255, 249, 0.3)',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease'
                 }}>
-                  <iframe
-                    src={testimonial.video_url}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      border: 'none'
-                    }}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  {hasVideo ? (
+                    <div style={{
+                      position: 'relative',
+                      paddingBottom: '56.25%',
+                      height: 0,
+                      overflow: 'hidden',
+                      background: '#000'
+                    }}>
+                      <iframe
+                        src={testimonial.video_url}
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          border: 'none'
+                        }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : (
+                    <div style={{ padding: '25px' }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '20px',
+                        marginBottom: '20px'
+                      }}>
+                        <div style={{
+                          width: '80px',
+                          height: '80px',
+                          borderRadius: '50%',
+                          overflow: 'hidden',
+                          flexShrink: 0,
+                          border: '3px solid var(--neon-cyan)',
+                          boxShadow: '0 0 20px rgba(0, 255, 249, 0.4)'
+                        }}>
+                          <img
+                            src={testimonial.thumbnail_url}
+                            alt={testimonial.student_name}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover'
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <h3 style={{
+                            fontSize: '20px',
+                            color: 'var(--neon-cyan)',
+                            fontWeight: 700,
+                            marginBottom: '5px',
+                            fontFamily: 'Orbitron, sans-serif'
+                          }}>
+                            {testimonial.student_name}
+                          </h3>
+                          <div style={{
+                            color: 'var(--neon-green)',
+                            fontSize: '14px',
+                            fontWeight: 600
+                          }}>
+                            Выпускник Vibecoding
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{
+                        fontSize: '32px',
+                        color: 'var(--neon-cyan)',
+                        opacity: 0.3,
+                        lineHeight: 1,
+                        marginBottom: '10px'
+                      }}>
+                        "
+                      </div>
+                      <p style={{
+                        fontSize: '15px',
+                        lineHeight: '1.7',
+                        opacity: 0.9,
+                        color: 'var(--text-primary)',
+                        marginBottom: '15px'
+                      }}>
+                        {testimonial.testimonial_text}
+                      </p>
+                      <div style={{
+                        fontSize: '32px',
+                        color: 'var(--neon-cyan)',
+                        opacity: 0.3,
+                        lineHeight: 1,
+                        textAlign: 'right'
+                      }}>
+                        "
+                      </div>
+                    </div>
+                  )}
+                  {hasVideo && (
+                    <div style={{
+                      padding: '20px',
+                      textAlign: 'center'
+                    }}>
+                      <h3 style={{
+                        fontSize: '18px',
+                        color: 'var(--neon-cyan)',
+                        fontWeight: 600
+                      }}>
+                        {testimonial.student_name}
+                      </h3>
+                    </div>
+                  )}
                 </div>
-                <div style={{
-                  padding: '20px',
-                  textAlign: 'center'
-                }}>
-                  <h3 style={{
-                    fontSize: '18px',
-                    color: 'var(--neon-cyan)',
-                    fontWeight: 600
-                  }}>
-                    {testimonial.student_name}
-                  </h3>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}

@@ -130,6 +130,7 @@ export interface VideoTestimonial {
   student_name: string;
   video_url: string;
   thumbnail_url: string;
+  testimonial_text: string;
   order_index: number;
   is_active: boolean;
   created_at: string;

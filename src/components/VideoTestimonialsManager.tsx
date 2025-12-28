@@ -57,15 +57,24 @@ export default function VideoTestimonialsManager() {
   };
 
   const saveTestimonial = async () => {
-    if (!editingTestimonial?.student_name || !editingTestimonial?.video_url) return;
+    if (!editingTestimonial?.student_name) {
+      alert('Введите имя студента');
+      return;
+    }
+
+    if (!editingTestimonial.video_url && !editingTestimonial.testimonial_text) {
+      alert('Добавьте видео или текст отзыва');
+      return;
+    }
 
     if (editingTestimonial.id) {
       await supabase
         .from('video_testimonials')
         .update({
           student_name: editingTestimonial.student_name,
-          video_url: editingTestimonial.video_url,
+          video_url: editingTestimonial.video_url || '',
           thumbnail_url: editingTestimonial.thumbnail_url || '',
+          testimonial_text: editingTestimonial.testimonial_text || '',
           order_index: editingTestimonial.order_index || 0,
           is_active: editingTestimonial.is_active ?? true
         })
@@ -73,8 +82,9 @@ export default function VideoTestimonialsManager() {
     } else {
       await supabase.from('video_testimonials').insert({
         student_name: editingTestimonial.student_name,
-        video_url: editingTestimonial.video_url,
+        video_url: editingTestimonial.video_url || '',
         thumbnail_url: editingTestimonial.thumbnail_url || '',
+        testimonial_text: editingTestimonial.testimonial_text || '',
         order_index: editingTestimonial.order_index || testimonials.length,
         is_active: editingTestimonial.is_active ?? true
       });
@@ -85,7 +95,7 @@ export default function VideoTestimonialsManager() {
   };
 
   const deleteTestimonial = async (id: string) => {
-    if (!confirm('Удалить видеоотзыв?')) return;
+    if (!confirm('Удалить отзыв?')) return;
     await supabase.from('video_testimonials').delete().eq('id', id);
     loadTestimonials();
   };
@@ -142,15 +152,24 @@ export default function VideoTestimonialsManager() {
     cursor: 'pointer',
   };
 
+  const hasVideo = (testimonial: VideoTestimonial) => {
+    return testimonial.video_url && (
+      testimonial.video_url.includes('youtube.com') ||
+      testimonial.video_url.includes('youtu.be') ||
+      testimonial.video_url.includes('.mp4') ||
+      testimonial.video_url.includes('.webm')
+    );
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '24px', color: 'var(--neon-cyan)' }}>Видеоотзывы</h2>
+        <h2 style={{ fontSize: '24px', color: 'var(--neon-cyan)' }}>Отзывы учеников</h2>
         <button
-          onClick={() => setEditingTestimonial({ student_name: '', video_url: '', thumbnail_url: '', order_index: testimonials.length, is_active: true })}
+          onClick={() => setEditingTestimonial({ student_name: '', video_url: '', thumbnail_url: '', testimonial_text: '', order_index: testimonials.length, is_active: true })}
           style={buttonPrimary}
         >
-          + Добавить видеоотзыв
+          + Добавить отзыв
         </button>
       </div>
 
@@ -165,7 +184,7 @@ export default function VideoTestimonialsManager() {
           border: '1px dashed rgba(0, 255, 249, 0.3)',
         }}>
           <p style={{ fontSize: '16px', opacity: 0.7 }}>
-            Пока нет видеоотзывов. Добавьте первый!
+            Пока нет отзывов. Добавьте первый!
           </p>
         </div>
       ) : (
@@ -185,20 +204,32 @@ export default function VideoTestimonialsManager() {
               }}
             >
               <div style={{
-                width: '200px',
-                height: '112px',
-                background: '#000',
-                borderRadius: '4px',
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
                 overflow: 'hidden',
                 flexShrink: 0,
+                border: '2px solid var(--neon-cyan)',
+                background: '#000'
               }}>
-                {testimonial.video_url.includes('youtube.com') || testimonial.video_url.includes('youtu.be') ? (
-                  <iframe
-                    src={testimonial.video_url}
-                    style={{ width: '100%', height: '100%', border: 'none' }}
+                {testimonial.thumbnail_url ? (
+                  <img
+                    src={testimonial.thumbnail_url}
+                    alt={testimonial.student_name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 ) : (
-                  <video src={testimonial.video_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    color: 'var(--neon-cyan)'
+                  }}>
+                    {testimonial.student_name.charAt(0)}
+                  </div>
                 )}
               </div>
               <div style={{ flex: 1 }}>
@@ -206,11 +237,13 @@ export default function VideoTestimonialsManager() {
                   {testimonial.student_name}
                 </div>
                 <div style={{ fontSize: '13px', opacity: 0.7, marginBottom: '5px' }}>
-                  Порядок: {testimonial.order_index}
+                  {hasVideo(testimonial) ? 'Видеоотзыв' : 'Текстовый отзыв'} | Порядок: {testimonial.order_index}
                 </div>
-                <div style={{ fontSize: '12px', opacity: 0.6, wordBreak: 'break-all' }}>
-                  {testimonial.video_url.substring(0, 60)}...
-                </div>
+                {testimonial.testimonial_text && (
+                  <div style={{ fontSize: '13px', opacity: 0.6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '400px' }}>
+                    {testimonial.testimonial_text.substring(0, 80)}...
+                  </div>
+                )}
               </div>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button
@@ -263,7 +296,7 @@ export default function VideoTestimonialsManager() {
               border: '2px solid var(--neon-cyan)',
               borderRadius: '12px',
               padding: '30px',
-              maxWidth: '600px',
+              maxWidth: '700px',
               width: '100%',
               maxHeight: '90vh',
               overflowY: 'auto',
@@ -271,12 +304,12 @@ export default function VideoTestimonialsManager() {
             onClick={e => e.stopPropagation()}
           >
             <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '20px', marginBottom: '20px' }}>
-              {editingTestimonial.id ? 'Редактировать видеоотзыв' : 'Новый видеоотзыв'}
+              {editingTestimonial.id ? 'Редактировать отзыв' : 'Новый отзыв'}
             </h3>
 
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
-                Имя студента
+                Имя студента *
               </label>
               <input
                 type="text"
@@ -289,13 +322,53 @@ export default function VideoTestimonialsManager() {
 
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
-                URL видео или загрузите файл
+                Фото студента (URL)
               </label>
+              <input
+                type="text"
+                value={editingTestimonial.thumbnail_url || ''}
+                onChange={e => setEditingTestimonial({ ...editingTestimonial, thumbnail_url: e.target.value })}
+                placeholder="https://images.pexels.com/..."
+                style={inputStyle}
+              />
+              <div style={{ fontSize: '13px', opacity: 0.6, marginTop: '8px' }}>
+                Можно использовать фото с Pexels или Unsplash
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
+                Текст отзыва
+              </label>
+              <textarea
+                value={editingTestimonial.testimonial_text || ''}
+                onChange={e => setEditingTestimonial({ ...editingTestimonial, testimonial_text: e.target.value })}
+                placeholder="Напишите текст отзыва студента..."
+                style={{ ...inputStyle, minHeight: '150px', resize: 'vertical' }}
+              />
+              <div style={{ fontSize: '13px', opacity: 0.6, marginTop: '8px' }}>
+                Рекомендуется 100-200 слов
+              </div>
+            </div>
+
+            <div style={{
+              padding: '15px',
+              background: 'rgba(0, 255, 249, 0.1)',
+              borderRadius: '8px',
+              marginBottom: '20px',
+              border: '1px solid rgba(0, 255, 249, 0.2)'
+            }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '10px', color: 'var(--neon-cyan)' }}>
+                Видео (опционально)
+              </div>
+              <div style={{ fontSize: '13px', opacity: 0.8, marginBottom: '15px' }}>
+                Если добавить видео, оно заменит текстовый отзыв с фото
+              </div>
               <input
                 type="text"
                 value={editingTestimonial.video_url || ''}
                 onChange={e => setEditingTestimonial({ ...editingTestimonial, video_url: e.target.value })}
-                placeholder="https://www.youtube.com/embed/... или загрузите файл"
+                placeholder="https://www.youtube.com/embed/..."
                 style={{ ...inputStyle, marginBottom: '10px' }}
               />
               <input
@@ -318,9 +391,6 @@ export default function VideoTestimonialsManager() {
                   Загрузка видео...
                 </div>
               )}
-              <div style={{ fontSize: '13px', opacity: 0.6, marginTop: '8px' }}>
-                Можно вставить YouTube embed URL или загрузить видео файл
-              </div>
             </div>
 
             <div style={{ marginBottom: '20px' }}>
