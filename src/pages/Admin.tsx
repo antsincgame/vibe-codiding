@@ -5,6 +5,7 @@ import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../l
 import { renderMarkdown, stripMarkdown } from '../lib/markdown';
 import EmailSettingsManager from '../components/EmailSettingsManager';
 import AdminFormField from '../components/AdminFormField';
+import CourseLessonsManager from '../components/CourseLessonsManager';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 
 interface UserProfile {
@@ -34,6 +35,7 @@ export default function Admin() {
   const [editingWork, setEditingWork] = useState<StudentWork | null>(null);
   const [editingBlogPost, setEditingBlogPost] = useState<BlogPost | null>(null);
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
+  const [managingLessonsCourse, setManagingLessonsCourse] = useState<Course | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -532,6 +534,18 @@ export default function Admin() {
                           style={{ padding: '8px 20px', fontSize: '14px' }}
                         >
                           Редактировать
+                        </button>
+                        <button
+                          onClick={() => setManagingLessonsCourse(course)}
+                          className="cyber-button"
+                          style={{
+                            padding: '8px 20px',
+                            fontSize: '14px',
+                            borderColor: '#ffd700',
+                            color: '#ffd700'
+                          }}
+                        >
+                          Уроки
                         </button>
                         {course.slug && (
                           <a
@@ -1089,6 +1103,14 @@ export default function Admin() {
           user={editingUser}
           onSave={saveUser}
           onClose={() => setEditingUser(null)}
+        />
+      )}
+
+      {managingLessonsCourse && (
+        <CourseLessonsManager
+          courseId={managingLessonsCourse.id}
+          courseTitle={managingLessonsCourse.title}
+          onClose={() => setManagingLessonsCourse(null)}
         />
       )}
     </div>

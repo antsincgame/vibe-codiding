@@ -103,3 +103,24 @@ export interface HomePageSettings {
   meta_description: string;
   meta_keywords: string;
 }
+
+export interface CourseModule {
+  id: string;
+  course_id: string;
+  title: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+  lessons?: CourseLesson[];
+}
+
+export interface CourseLesson {
+  id: string;
+  module_id: string;
+  title: string;
+  duration: string;
+  youtube_url: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}

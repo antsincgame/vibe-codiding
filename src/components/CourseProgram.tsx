@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
 interface Lesson {
   title: string;
   duration: string;
+  youtube_url?: string;
 }
 
 interface Module {
@@ -185,12 +187,74 @@ interface CourseProgramProps {
   isExpanded: boolean;
   onToggle: () => void;
   courseSlug: string;
+  courseId?: string;
 }
 
-export default function CourseProgram({ isExpanded, onToggle, courseSlug }: CourseProgramProps) {
-  const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
+const calculateTotalDuration = (lessons: Lesson[]): string => {
+  let totalMinutes = 0;
+  lessons.forEach(l => {
+    const parts = l.duration.split(':');
+    if (parts.length === 2) {
+      totalMinutes += parseInt(parts[0]) + parseInt(parts[1]) / 60;
+    }
+  });
+  if (totalMinutes >= 60) {
+    const hours = Math.floor(totalMinutes / 60);
+    const mins = Math.round(totalMinutes % 60);
+    return `${hours}ч ${mins}мин`;
+  }
+  return `${Math.round(totalMinutes)}мин`;
+};
 
-  const program = coursePrograms[courseSlug] || boltProgram;
+export default function CourseProgram({ isExpanded, onToggle, courseSlug, courseId }: CourseProgramProps) {
+  const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
+  const [dbProgram, setDbProgram] = useState<Module[] | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (courseId && isExpanded) {
+      loadProgramFromDb();
+    }
+  }, [courseId, isExpanded]);
+
+  const loadProgramFromDb = async () => {
+    if (!courseId) return;
+
+    setLoading(true);
+    const { data: modulesData } = await supabase
+      .from('course_modules')
+      .select('*')
+      .eq('course_id', courseId)
+      .order('order_index');
+
+    if (modulesData && modulesData.length > 0) {
+      const moduleIds = modulesData.map(m => m.id);
+      const { data: lessonsData } = await supabase
+        .from('course_lessons')
+        .select('*')
+        .in('module_id', moduleIds)
+        .order('order_index');
+
+      const program: Module[] = modulesData.map(module => {
+        const lessons = (lessonsData?.filter(l => l.module_id === module.id) || []).map(l => ({
+          title: l.title,
+          duration: l.duration,
+          youtube_url: l.youtube_url || undefined,
+        }));
+        return {
+          title: module.title,
+          lessonsCount: lessons.length,
+          totalDuration: calculateTotalDuration(lessons),
+          lessons,
+        };
+      });
+
+      setDbProgram(program);
+    }
+    setLoading(false);
+  };
+
+  const program = dbProgram || coursePrograms[courseSlug] || boltProgram;
 
   const toggleModule = (index: number) => {
     setExpandedModules(prev => {
@@ -246,6 +310,16 @@ export default function CourseProgram({ isExpanded, onToggle, courseSlug }: Cour
             overflow: 'hidden',
           }}
         >
+          {loading ? (
+            <div style={{ padding: '30px', textAlign: 'center', opacity: 0.7 }}>
+              Загрузка программы...
+            </div>
+          ) : program.length === 0 ? (
+            <div style={{ padding: '30px', textAlign: 'center', opacity: 0.7 }}>
+              Программа курса скоро будет добавлена
+            </div>
+          ) : (
+          <>
           <div
             style={{
               padding: '16px 20px',
@@ -345,6 +419,8 @@ export default function CourseProgram({ isExpanded, onToggle, courseSlug }: Cour
               </div>
             ))}
           </div>
+          </>
+          )}
         </div>
       )}
     </div>

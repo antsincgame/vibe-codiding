@@ -332,21 +332,14 @@ export default function Home() {
               }}>
                 {course.price}
               </div>
-              {(course.slug === 'vibecoding-bolt-new' || course.slug === 'curdor-ai') ? (
-                <CourseProgram
-                  isExpanded={expandedCourseProgram === course.id}
-                  onToggle={() => setExpandedCourseProgram(
-                    expandedCourseProgram === course.id ? null : course.id
-                  )}
-                  courseSlug={course.slug}
-                />
-              ) : (
-                <Link to={`/course/${course.slug}`} style={{ width: '100%', display: 'block' }}>
-                  <button className="cyber-button" style={{ width: '100%' }}>
-                    Читать о курсе
-                  </button>
-                </Link>
-              )}
+              <CourseProgram
+                isExpanded={expandedCourseProgram === course.id}
+                onToggle={() => setExpandedCourseProgram(
+                  expandedCourseProgram === course.id ? null : course.id
+                )}
+                courseSlug={course.slug || ''}
+                courseId={course.id}
+              />
             </div>
           ))}
         </div>
