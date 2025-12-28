@@ -362,12 +362,20 @@ export default function Admin() {
           <h1 style={{ fontSize: '48px' }} className="neon-text">
             ADMIN PANEL
           </h1>
-          <button onClick={handleLogout} className="cyber-button" style={{
-            borderColor: 'var(--neon-pink)',
-            color: 'var(--neon-pink)'
-          }}>
-            Выход
-          </button>
+          <div style={{ display: 'flex', gap: '15px' }}>
+            <button onClick={() => navigate('/')} className="cyber-button" style={{
+              borderColor: 'var(--neon-cyan)',
+              color: 'var(--neon-cyan)'
+            }}>
+              На главную
+            </button>
+            <button onClick={handleLogout} className="cyber-button" style={{
+              borderColor: 'var(--neon-pink)',
+              color: 'var(--neon-pink)'
+            }}>
+              Выход
+            </button>
+          </div>
         </div>
 
         <div style={{
