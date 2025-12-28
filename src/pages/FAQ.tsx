@@ -3,9 +3,9 @@ import { supabase } from '../lib/supabase';
 import type { FAQ as FAQType } from '../types';
 
 const SEO = {
-  title: 'FAQ | Вопросы об онлайн курсах вайб-кодинга | Обучение Cursor AI и Bolt.ai',
-  description: 'Ответы на вопросы о курсах vibe coding. Как проходит обучение Cursor AI и Bolt.ai? Стоимость, формат занятий, требования. Онлайн школа программирования вайб кодинга.',
-  keywords: 'FAQ вайб кодинг, вопросы курсы Cursor AI, Bolt.ai обучение, онлайн школа программирования, создание веб приложений курсы'
+  title: 'FAQ Vibecoding - Вопросы о курсах вайб-кодинга',
+  description: 'Ответы на вопросы о курсах Vibecoding: стоимость, формат обучения, требования к компьютеру, трудоустройство после курса. Cursor AI и Bolt.new для начинающих.',
+  keywords: 'FAQ вайб кодинг, вопросы о курсах, стоимость обучения, как проходят занятия, требования к обучению, карьера после курсов, Cursor AI вопросы, Bolt.new FAQ'
 };
 
 interface FAQSection {

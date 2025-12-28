@@ -10,9 +10,9 @@ const defaultSettings: HomePageSettings = {
   title: 'VIBECODING',
   subtitle: 'Vibecoding - лучшая школа программирования с помощью ИИ (вайб-кодинг)',
   description: 'Забудьте о сложных языках программирования! В Vibecoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайб-кодинг с Cursor AI и Bolt.ai.',
-  meta_title: 'Лучшая онлайн школа вайб-кодинга | Обучение Cursor AI и Bolt.ai | Создание веб-приложений',
-  meta_description: 'Онлайн школа программирования вайб кодинга. Обучение Cursor AI и Bolt.ai с нуля. Создание веб-приложений без сложного кода. Курсы vibe coding для начинающих и продвинутых.',
-  meta_keywords: 'обучение вайб кодингу, курсы vibe coding, школа программирования вайб кодинга, создание веб приложений, обучение Cursor AI, Bolt.ai курсы, онлайн школа программирования, AI разработка, вайб-кодинг обучение',
+  meta_title: 'Vibecoding - Курсы вайб-кодинга с Cursor AI и Bolt.new',
+  meta_description: 'Vibecoding - школа вайб-кодинга. Научим создавать сайты и приложения с Cursor AI и Bolt.new за 2 месяца. Онлайн курсы для начинающих от 16 лет.',
+  meta_keywords: 'вайб кодинг, vibe coding, Cursor AI, Bolt.new, Bolt.ai, создание сайтов с ИИ, программирование с нейросетью, AI разработка, веб-приложения без кода, курсы программирования онлайн, обучение веб-разработке, no-code, low-code',
 };
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    document.title = settings.meta_title || 'Лучшая онлайн школа вайб-кодинга | Обучение Cursor AI и Bolt.ai';
+    document.title = settings.meta_title || 'Vibecoding - Курсы вайб-кодинга с Cursor AI и Bolt.new';
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {

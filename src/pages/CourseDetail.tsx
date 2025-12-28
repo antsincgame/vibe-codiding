@@ -5,11 +5,12 @@ import type { Course } from '../types';
 import CourseDescription from '../components/CourseDescription';
 
 const setSEO = (course: Course) => {
-  document.title = `${course.title} | Онлайн курс вайб-кодинга | Vibecoding`;
+  document.title = `${course.title} - Курс вайб-кодинга Vibecoding`;
   const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute('content', `${course.description} Обучение Cursor AI и Bolt.ai онлайн.`);
+  const shortDesc = course.description.substring(0, 120).replace(/\n/g, ' ').trim();
+  if (metaDesc) metaDesc.setAttribute('content', `${shortDesc}... Программа курса, цена, записаться на обучение.`);
   const metaKeywords = document.querySelector('meta[name="keywords"]');
-  if (metaKeywords) metaKeywords.setAttribute('content', 'курсы vibe coding, обучение Cursor AI, Bolt.ai курсы, создание веб приложений, онлайн школа программирования');
+  if (metaKeywords) metaKeywords.setAttribute('content', `${course.title}, вайб кодинг курс, Cursor AI, Bolt.new, обучение программированию, веб-разработка онлайн, создание сайтов с ИИ`);
 };
 
 export default function CourseDetail() {

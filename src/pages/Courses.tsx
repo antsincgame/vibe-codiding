@@ -5,9 +5,9 @@ import { stripMarkdown } from '../lib/markdown';
 import type { Course } from '../types';
 
 const SEO = {
-  title: 'Онлайн курсы вайб-кодинга | Обучение Cursor AI и Bolt.ai | Создание веб-приложений',
-  description: 'Курсы vibe coding онлайн. Обучение Cursor AI для профессиональной разработки и Bolt.ai для создания веб-приложений. Школа программирования вайб кодинга для начинающих.',
-  keywords: 'курсы vibe coding, обучение Cursor AI, Bolt.ai курсы, онлайн курсы программирования, создание веб приложений, школа вайб кодинга'
+  title: 'Курсы вайб-кодинга - Cursor AI и Bolt.new онлайн',
+  description: 'Онлайн курсы Vibecoding: Cursor AI для профессиональной разработки, Bolt.new для быстрого создания сайтов. Обучение с нуля за 2 месяца. Цены и программа.',
+  keywords: 'курсы вайб кодинга, vibe coding курсы, Cursor AI курс, Bolt.new обучение, онлайн курсы программирования, веб-разработка с нуля, AI программирование, создание сайтов курс'
 };
 
 export default function Courses() {

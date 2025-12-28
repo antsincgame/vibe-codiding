@@ -43,7 +43,7 @@ export default function BlogPostPage() {
   };
 
   const updateSEO = (postData: BlogPost) => {
-    document.title = postData.meta_title || `${postData.title} | Vibecoding`;
+    document.title = postData.meta_title || `${postData.title} - Блог Vibecoding`;
 
     const updateMeta = (name: string, content: string | null, property?: boolean) => {
       if (!content) return;
