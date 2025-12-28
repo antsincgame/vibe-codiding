@@ -76,8 +76,7 @@ export default function Home() {
       .from('courses')
       .select('*')
       .eq('is_active', true)
-      .order('order_index', { ascending: true })
-      .limit(3);
+      .order('order_index', { ascending: true });
 
     if (data) {
       setCourses(data);
@@ -217,146 +216,542 @@ export default function Home() {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '30px',
           marginBottom: '40px',
-          alignItems: 'start'
-        }}>
-          {courses.map((course, index) => (
-            <div key={course.id} className="cyber-card" style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{
-                height: '200px',
-                background: course.image_url ? 'transparent' : (index % 2 === 0
-                  ? 'linear-gradient(135deg, var(--neon-cyan), var(--neon-pink))'
-                  : 'linear-gradient(135deg, var(--neon-green), var(--neon-cyan))'),
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '60px',
-                borderRadius: '4px',
-                overflow: 'hidden'
-              }}>
-                {course.image_url ? (
-                  <img
-                    src={course.image_url}
-                    alt={course.title}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                ) : (
-                  '💻'
+          alignItems: 'stretch'
+        }} className="courses-grid">
+          {courses.map((course, index) => {
+            const isMiddle = index === 1;
+            const courseDescriptions: Record<string, string> = {
+              'vibecoding-bolt-new': 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Курс для абсолютных новичков, которые хотят освоить современные инструменты разработки.',
+              'curdor-ai': 'Ускорьте разработку с помощью ИИ-ассистента. Для тех, кто готов выйти на новый уровень и создавать продукты профессионального качества.',
+              'architect-vibecode': 'Станьте полноценным вайб-разработчиком! Комплексный курс, объединяющий Bolt.new и Cursor AI для создания приложений от идеи до продакшена.'
+            };
+
+            return (
+              <div
+                key={course.id}
+                className="cyber-card"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transform: isMiddle ? 'scale(1.02)' : 'none',
+                  border: isMiddle ? '2px solid var(--neon-cyan)' : '1px solid rgba(0, 255, 249, 0.3)',
+                  boxShadow: isMiddle ? '0 0 30px rgba(0, 255, 249, 0.3), inset 0 0 20px rgba(0, 255, 249, 0.05)' : 'none',
+                  position: 'relative',
+                  zIndex: isMiddle ? 2 : 1
+                }}
+              >
+                {isMiddle && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-12px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'var(--neon-cyan)',
+                    color: '#000',
+                    padding: '4px 16px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    borderRadius: '4px'
+                  }}>
+                    Полный курс
+                  </div>
                 )}
+                <div style={{
+                  height: '180px',
+                  background: course.image_url ? 'transparent' : '#0a0a0f',
+                  marginBottom: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '4px',
+                  overflow: 'hidden',
+                  border: '1px solid rgba(0, 255, 249, 0.2)'
+                }}>
+                  {course.image_url ? (
+                    <img
+                      src={course.image_url}
+                      alt={course.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                  ) : (
+                    <div style={{
+                      fontSize: '42px',
+                      fontWeight: 900,
+                      fontFamily: 'Orbitron, sans-serif',
+                      color: isMiddle ? 'var(--neon-cyan)' : '#fff',
+                      textShadow: isMiddle ? '0 0 20px var(--neon-cyan)' : 'none'
+                    }}>
+                      {course.slug === 'vibecoding-bolt-new' ? 'bolt.new' :
+                       course.slug === 'curdor-ai' ? 'CURSOR' :
+                       'ARCHITECT'}
+                    </div>
+                  )}
+                </div>
+                <h3 style={{
+                  fontSize: '20px',
+                  marginBottom: '15px',
+                  color: isMiddle ? 'var(--neon-cyan)' : 'var(--neon-cyan)',
+                  lineHeight: '1.3'
+                }}>
+                  {course.title}
+                </h3>
+                <p style={{
+                  opacity: 0.9,
+                  marginBottom: '20px',
+                  lineHeight: '1.7',
+                  flex: 1,
+                  fontSize: '14px'
+                }}>
+                  {courseDescriptions[course.slug || ''] || stripMarkdown(course.description.split('---')[0]).substring(0, 150)}
+                  {' '}
+                  <Link to={`/course/${course.slug}`} style={{ color: 'var(--neon-cyan)', textDecoration: 'underline' }}>
+                    Узнать больше про вайбкодинг сайтов и приложений
+                  </Link>
+                </p>
+                {Array.isArray(course.features) && course.features.length > 0 && (
+                  <div style={{
+                    marginBottom: '20px',
+                    padding: '15px',
+                    background: 'rgba(0, 255, 249, 0.05)',
+                    border: '1px solid rgba(0, 255, 249, 0.2)',
+                    borderRadius: '6px'
+                  }}>
+                    <h4 style={{
+                      fontSize: '12px',
+                      color: 'var(--neon-green)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                      marginBottom: '12px',
+                      fontWeight: 600
+                    }}>
+                      Основные особенности:
+                    </h4>
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '8px'
+                    }}>
+                      {(course.features as string[]).slice(0, 5).map((feature, idx) => (
+                        <div key={idx} style={{
+                          fontSize: '12px',
+                          padding: '6px 10px',
+                          background: 'rgba(0, 255, 249, 0.08)',
+                          border: '1px solid rgba(0, 255, 249, 0.15)',
+                          borderRadius: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}>
+                          <span style={{ color: 'var(--neon-cyan)', fontWeight: 700 }}>✓</span>
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: '15px',
+                  padding: '12px 0',
+                  borderTop: '1px solid rgba(0, 255, 249, 0.2)',
+                  borderBottom: '1px solid rgba(0, 255, 249, 0.2)'
+                }}>
+                  <div>
+                    <div style={{ fontSize: '11px', opacity: 0.6 }}>Возраст</div>
+                    <div style={{ color: 'var(--neon-green)', fontSize: '14px' }}>{course.age_group}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '11px', opacity: 0.6 }}>Длительность</div>
+                    <div style={{ color: 'var(--neon-green)', fontSize: '14px' }}>{course.duration}</div>
+                  </div>
+                </div>
+                <div style={{
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  color: 'var(--neon-pink)',
+                  marginBottom: '15px'
+                }}>
+                  {course.price}
+                </div>
+                <CourseProgram
+                  isExpanded={expandedCourseProgram === course.id}
+                  onToggle={() => setExpandedCourseProgram(
+                    expandedCourseProgram === course.id ? null : course.id
+                  )}
+                  courseSlug={course.slug || ''}
+                  courseId={course.id}
+                />
               </div>
+            );
+          })}
+        </div>
+
+        <style>{`
+          @media (max-width: 1024px) {
+            .courses-grid {
+              grid-template-columns: 1fr !important;
+            }
+            .courses-grid > div {
+              transform: none !important;
+            }
+          }
+        `}</style>
+
+        <div style={{
+          marginTop: '80px',
+          textAlign: 'center'
+        }}>
+          <h2 style={{
+            fontSize: 'clamp(28px, 4vw, 40px)',
+            marginBottom: '15px',
+            fontFamily: 'Orbitron, sans-serif',
+            fontWeight: 700,
+            color: 'var(--neon-cyan)'
+          }}>
+            Тарифы обучения
+          </h2>
+          <p style={{
+            fontSize: '16px',
+            opacity: 0.7,
+            marginBottom: '50px'
+          }}>
+            Присоединяйтесь сейчас и будьте в числе первых кто получит преимущество в разработке с ИИ.
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '25px',
+            maxWidth: '1100px',
+            margin: '0 auto'
+          }} className="pricing-grid">
+            <div style={{
+              background: 'rgba(19, 19, 26, 0.9)',
+              border: '1px solid rgba(0, 255, 249, 0.2)',
+              borderRadius: '8px',
+              padding: '35px 25px',
+              textAlign: 'left'
+            }}>
               <h3 style={{
-                fontSize: '24px',
+                fontSize: '18px',
+                marginBottom: '20px',
+                color: '#fff',
+                fontWeight: 600
+              }}>
+                Отдельный курс
+              </h3>
+              <div style={{ marginBottom: '20px' }}>
+                <span style={{
+                  fontSize: '14px',
+                  textDecoration: 'line-through',
+                  opacity: 0.5,
+                  marginRight: '10px'
+                }}>
+                  2000 BYN
+                </span>
+                <span style={{
+                  background: 'var(--neon-green)',
+                  color: '#000',
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: 700
+                }}>
+                  -50%
+                </span>
+              </div>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: 700,
+                marginBottom: '15px',
+                color: '#fff'
+              }}>
+                1000 BYN
+              </div>
+              <p style={{
+                fontSize: '14px',
+                opacity: 0.7,
+                marginBottom: '25px',
+                lineHeight: '1.6'
+              }}>
+                Полный доступ к курсу по освоению ИИ-инструментов в разработке
+              </p>
+              <div style={{ marginBottom: '25px' }}>
+                <div style={{
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  marginBottom: '15px',
+                  color: 'var(--neon-cyan)'
+                }}>
+                  Что включено:
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                  {[
+                    'Пожизненный доступ к материалам курса',
+                    'Bolt.new ИЛИ Cursor AI на выбор',
+                    'Практические проекты в портфолио',
+                    'Поддержка в общем чате'
+                  ].map((item, idx) => (
+                    <li key={idx} style={{
+                      fontSize: '13px',
+                      marginBottom: '10px',
+                      paddingLeft: '20px',
+                      position: 'relative',
+                      opacity: 0.85,
+                      lineHeight: '1.5'
+                    }}>
+                      <span style={{
+                        position: 'absolute',
+                        left: 0,
+                        color: 'var(--neon-cyan)'
+                      }}>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
+                <button style={{
+                  width: '100%',
+                  padding: '12px',
+                  background: 'transparent',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  borderRadius: '6px',
+                  transition: 'all 0.3s ease'
+                }}>
+                  Оплатить
+                </button>
+              </a>
+            </div>
+
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(0, 255, 65, 0.05))',
+              border: '2px solid var(--neon-cyan)',
+              borderRadius: '8px',
+              padding: '35px 25px',
+              textAlign: 'left',
+              position: 'relative',
+              boxShadow: '0 0 40px rgba(0, 255, 249, 0.2)'
+            }}>
+              <h3 style={{
+                fontSize: '18px',
+                marginBottom: '8px',
+                color: '#fff',
+                fontWeight: 600
+              }}>
+                Курс и подписка на Vibecoding
+              </h3>
+              <div style={{
+                fontSize: '13px',
+                color: 'var(--neon-cyan)',
+                marginBottom: '20px'
+              }}>
+                комьюнити
+              </div>
+              <div style={{ marginBottom: '20px' }}>
+                <span style={{
+                  fontSize: '14px',
+                  textDecoration: 'line-through',
+                  opacity: 0.5,
+                  marginRight: '10px'
+                }}>
+                  3600 BYN
+                </span>
+                <span style={{
+                  background: 'var(--neon-cyan)',
+                  color: '#000',
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: 700
+                }}>
+                  -50%
+                </span>
+              </div>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: 700,
                 marginBottom: '15px',
                 color: 'var(--neon-cyan)'
               }}>
-                {course.title}
-              </h3>
+                1800 BYN
+              </div>
               <p style={{
-                opacity: 0.9,
-                marginBottom: '20px',
-                lineHeight: '1.8',
-                flex: 1,
-                fontSize: '15px'
+                fontSize: '14px',
+                opacity: 0.7,
+                marginBottom: '25px',
+                lineHeight: '1.6'
               }}>
-                {course.slug === 'vibecoding-bolt-new'
-                  ? 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Курс для абсолютных новичков, которые хотят освоить современные инструменты разработки.'
-                  : course.slug === 'curdor-ai'
-                  ? 'Ускорьте разработку с помощью ИИ-ассистента. Для тех, кто готов выйти на новый уровень и создавать продукты профессионального качества.'
-                  : (() => {
-                      const firstSection = course.description.split('---')[0];
-                      const cleaned = stripMarkdown(firstSection).replace(/\n+/g, ' ').trim();
-                      const words = cleaned.split(/\s+/).slice(0, 25).join(' ');
-                      return words.length < cleaned.length ? words + '...' : words;
-                    })()
-                }
-                {' '}
-                <Link to={`/course/${course.slug}`} style={{ color: 'var(--neon-cyan)', textDecoration: 'underline' }}>
-                  Узнать больше про вайбкодинг сайтов и приложений
-                </Link>
+                Полный курс + годовое членство в сообществе Vibecoding
               </p>
-              {Array.isArray(course.features) && course.features.length > 0 && (
+              <div style={{ marginBottom: '25px' }}>
                 <div style={{
-                  marginBottom: '20px',
-                  padding: '20px',
-                  background: 'rgba(0, 255, 249, 0.08)',
-                  border: '1px solid rgba(0, 255, 249, 0.3)',
-                  borderRadius: '6px'
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  marginBottom: '15px',
+                  color: 'var(--neon-cyan)'
                 }}>
-                  <h4 style={{
-                    fontSize: '13px',
-                    color: 'var(--neon-green)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    marginBottom: '12px',
-                    fontWeight: 600
-                  }}>
-                    Основные особенности:
-                  </h4>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '10px'
-                  }}>
-                    {(course.features as string[]).map((feature, idx) => (
-                      <div key={idx} style={{
-                        fontSize: '13px',
-                        padding: '8px 12px',
-                        background: 'rgba(0, 255, 249, 0.1)',
-                        border: '1px solid rgba(0, 255, 249, 0.2)',
-                        borderRadius: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}>
-                        <span style={{ color: 'var(--neon-cyan)', fontWeight: 700 }}>✓</span>
-                        <span>{feature}</span>
-                      </div>
-                    ))}
-                  </div>
+                  Что включено:
                 </div>
-              )}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '20px',
-                padding: '15px 0',
-                borderTop: '1px solid rgba(0, 255, 249, 0.3)',
-                borderBottom: '1px solid rgba(0, 255, 249, 0.3)'
-              }}>
-                <div>
-                  <div style={{ fontSize: '12px', opacity: 0.6 }}>Возраст</div>
-                  <div style={{ color: 'var(--neon-green)' }}>{course.age_group}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '12px', opacity: 0.6 }}>Длительность</div>
-                  <div style={{ color: 'var(--neon-green)' }}>{course.duration}</div>
-                </div>
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                  {[
+                    'Bolt.new + Cursor AI (оба курса)',
+                    'Доступ в закрытый телеграм-чат студентов',
+                    'Бесплатный доступ ко всем будущим курсам и обновлениям в течение 12 месяцев',
+                    'Лучшие студенты получат доступ к лидам для платной разработки'
+                  ].map((item, idx) => (
+                    <li key={idx} style={{
+                      fontSize: '13px',
+                      marginBottom: '10px',
+                      paddingLeft: '20px',
+                      position: 'relative',
+                      opacity: 0.85,
+                      lineHeight: '1.5'
+                    }}>
+                      <span style={{
+                        position: 'absolute',
+                        left: 0,
+                        color: 'var(--neon-cyan)'
+                      }}>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div style={{
-                fontSize: '28px',
-                fontWeight: 700,
-                color: 'var(--neon-pink)',
-                marginBottom: '20px'
-              }}>
-                {course.price}
-              </div>
-              <CourseProgram
-                isExpanded={expandedCourseProgram === course.id}
-                onToggle={() => setExpandedCourseProgram(
-                  expandedCourseProgram === course.id ? null : course.id
-                )}
-                courseSlug={course.slug || ''}
-                courseId={course.id}
-              />
+              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
+                <button className="cyber-button" style={{
+                  width: '100%',
+                  padding: '12px',
+                  fontSize: '14px',
+                  fontWeight: 600
+                }}>
+                  Начать обучение
+                </button>
+              </a>
             </div>
-          ))}
+
+            <div style={{
+              background: 'rgba(19, 19, 26, 0.9)',
+              border: '1px solid rgba(0, 255, 249, 0.2)',
+              borderRadius: '8px',
+              padding: '35px 25px',
+              textAlign: 'left',
+              position: 'relative'
+            }}>
+              <span style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                background: 'var(--neon-pink)',
+                color: '#000',
+                padding: '4px 10px',
+                fontSize: '11px',
+                fontWeight: 700,
+                borderRadius: '4px',
+                textTransform: 'uppercase'
+              }}>
+                Premium
+              </span>
+              <h3 style={{
+                fontSize: '18px',
+                marginBottom: '20px',
+                color: '#fff',
+                fontWeight: 600
+              }}>
+                Персональные консультации
+              </h3>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: 700,
+                marginBottom: '15px',
+                color: '#fff'
+              }}>
+                3500 BYN
+              </div>
+              <p style={{
+                fontSize: '14px',
+                opacity: 0.7,
+                marginBottom: '25px',
+                lineHeight: '1.6'
+              }}>
+                Полный курс + комьюнити + персональное сопровождение с автором курса в течение 6 месяцев.
+              </p>
+              <div style={{ marginBottom: '25px' }}>
+                <div style={{
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  marginBottom: '15px',
+                  color: 'var(--neon-cyan)'
+                }}>
+                  Что включено:
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                  {[
+                    'Все из тарифа "Комьюнити"',
+                    'Ежемесячные часовые 1-1 созвоны с автором курса',
+                    'Индивидуальный план по достижению ваших ИИ-целей',
+                    'Персональная поддержка в Telegram',
+                    'Приоритетный доступ к лидам на разработку'
+                  ].map((item, idx) => (
+                    <li key={idx} style={{
+                      fontSize: '13px',
+                      marginBottom: '10px',
+                      paddingLeft: '20px',
+                      position: 'relative',
+                      opacity: 0.85,
+                      lineHeight: '1.5'
+                    }}>
+                      <span style={{
+                        position: 'absolute',
+                        left: 0,
+                        color: 'var(--neon-cyan)'
+                      }}>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
+                <button style={{
+                  width: '100%',
+                  padding: '12px',
+                  background: 'transparent',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  borderRadius: '6px',
+                  transition: 'all 0.3s ease'
+                }}>
+                  Получить доступ
+                </button>
+              </a>
+            </div>
+          </div>
+
+          <style>{`
+            @media (max-width: 900px) {
+              .pricing-grid {
+                grid-template-columns: 1fr !important;
+                max-width: 400px !important;
+              }
+            }
+          `}</style>
         </div>
       </section>
 
