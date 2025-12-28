@@ -217,18 +217,53 @@ export default function Home() {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '30px',
+          gap: '25px',
           marginBottom: '40px',
-          alignItems: 'stretch',
-          paddingTop: '20px'
+          alignItems: 'stretch'
         }} className="courses-grid">
           {courses.map((course, index) => {
             const isMiddle = index === 1;
             const courseDescriptions: Record<string, string> = {
-              'vibecoding-bolt-new': 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Курс для абсолютных новичков, которые хотят освоить современные инструменты разработки.',
-              'curdor-ai': 'Ускорьте разработку с помощью ИИ-ассистента. Для тех, кто готов выйти на новый уровень и создавать продукты профессионального качества.',
-              'architect-vibecode': 'Станьте полноценным вайб-разработчиком! Комплексный курс, объединяющий Bolt.new и Cursor AI для создания приложений от идеи до продакшена.'
+              'vibecoding-bolt-new': 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Курс для абсолютных новичков.',
+              'curdor-ai': 'Ускорьте разработку с помощью ИИ-ассистента. Для тех, кто готов создавать продукты профессионального качества.',
+              'architect-vibecode': 'Станьте полноценным вайб-разработчиком! Комплексный курс от идеи до продакшена.'
             };
+
+            const pricingInfo: Record<string, { oldPrice: string; discount: string; features: string[]; subtitle?: string }> = {
+              'vibecoding-bolt-new': {
+                oldPrice: '2000 BYN',
+                discount: '-50%',
+                features: [
+                  'Пожизненный доступ к материалам',
+                  'Практические проекты в портфолио',
+                  'Поддержка в общем чате',
+                  'Работа с GitHub'
+                ]
+              },
+              'architect-vibecode': {
+                oldPrice: '3600 BYN',
+                discount: '-50%',
+                subtitle: 'Vibecoding комьюнити',
+                features: [
+                  'Bolt.new + Cursor AI (оба курса)',
+                  'Закрытый телеграм-чат студентов',
+                  'Доступ к будущим курсам 12 мес.',
+                  'Доступ к лидам на разработку'
+                ]
+              },
+              'curdor-ai': {
+                oldPrice: '2000 BYN',
+                discount: '-50%',
+                features: [
+                  'Пожизненный доступ к материалам',
+                  'Практические проекты в портфолио',
+                  'Поддержка в общем чате',
+                  'Работа с GitHub и CI/CD'
+                ]
+              }
+            };
+
+            const pricing = pricingInfo[course.slug || ''] || { oldPrice: '', discount: '', features: [] };
 
             return (
               <div
@@ -237,21 +272,23 @@ export default function Home() {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  transform: isMiddle ? 'scale(1.02)' : 'none',
+                  transform: isMiddle ? 'scale(1.03)' : 'none',
                   border: isMiddle ? '2px solid var(--neon-cyan)' : '1px solid rgba(0, 255, 249, 0.3)',
-                  boxShadow: isMiddle ? '0 0 30px rgba(0, 255, 249, 0.3), inset 0 0 20px rgba(0, 255, 249, 0.05)' : 'none',
+                  boxShadow: isMiddle ? '0 0 40px rgba(0, 255, 249, 0.25), inset 0 0 30px rgba(0, 255, 249, 0.05)' : 'none',
                   position: 'relative',
-                  zIndex: isMiddle ? 2 : 1
+                  zIndex: isMiddle ? 2 : 1,
+                  background: isMiddle ? 'linear-gradient(135deg, rgba(0, 255, 249, 0.08), rgba(0, 255, 65, 0.03))' : 'rgba(19, 19, 26, 0.9)',
+                  padding: '25px'
                 }}
               >
                 <div style={{
-                  height: '180px',
+                  height: '140px',
                   background: course.image_url ? 'transparent' : '#0a0a0f',
                   marginBottom: '20px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   overflow: 'hidden',
                   border: '1px solid rgba(0, 255, 249, 0.2)'
                 }}>
@@ -267,7 +304,7 @@ export default function Home() {
                     />
                   ) : (
                     <div style={{
-                      fontSize: '42px',
+                      fontSize: '38px',
                       fontWeight: 900,
                       fontFamily: 'Orbitron, sans-serif',
                       color: isMiddle ? 'var(--neon-cyan)' : '#fff',
@@ -279,93 +316,149 @@ export default function Home() {
                     </div>
                   )}
                 </div>
+
                 <h3 style={{
-                  fontSize: '20px',
-                  marginBottom: '15px',
-                  color: isMiddle ? 'var(--neon-cyan)' : 'var(--neon-cyan)',
-                  lineHeight: '1.3'
+                  fontSize: '18px',
+                  marginBottom: '8px',
+                  color: isMiddle ? 'var(--neon-cyan)' : '#fff',
+                  lineHeight: '1.3',
+                  fontWeight: 600
                 }}>
                   {course.title}
                 </h3>
-                <p style={{
-                  opacity: 0.9,
-                  marginBottom: '20px',
-                  lineHeight: '1.7',
-                  flex: 1,
-                  fontSize: '14px'
-                }}>
-                  {courseDescriptions[course.slug || ''] || stripMarkdown(course.description.split('---')[0]).substring(0, 150)}
-                  {' '}
-                  <Link to={`/course/${course.slug}`} style={{ color: 'var(--neon-cyan)', textDecoration: 'underline' }}>
-                    Узнать больше про вайбкодинг сайтов и приложений
-                  </Link>
-                </p>
-                {Array.isArray(course.features) && course.features.length > 0 && (
+
+                {pricing.subtitle && (
                   <div style={{
-                    marginBottom: '20px',
-                    padding: '15px',
-                    background: 'rgba(0, 255, 249, 0.05)',
-                    border: '1px solid rgba(0, 255, 249, 0.2)',
-                    borderRadius: '6px'
+                    fontSize: '13px',
+                    color: 'var(--neon-cyan)',
+                    marginBottom: '12px',
+                    fontWeight: 500
                   }}>
-                    <h4 style={{
-                      fontSize: '12px',
-                      color: 'var(--neon-green)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '1px',
-                      marginBottom: '12px',
-                      fontWeight: 600
-                    }}>
-                      Основные особенности:
-                    </h4>
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '8px'
-                    }}>
-                      {(course.features as string[]).slice(0, 5).map((feature, idx) => (
-                        <div key={idx} style={{
-                          fontSize: '12px',
-                          padding: '6px 10px',
-                          background: 'rgba(0, 255, 249, 0.08)',
-                          border: '1px solid rgba(0, 255, 249, 0.15)',
-                          borderRadius: '4px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}>
-                          <span style={{ color: 'var(--neon-cyan)', fontWeight: 700 }}>✓</span>
-                          <span>{feature}</span>
-                        </div>
-                      ))}
-                    </div>
+                    {pricing.subtitle}
                   </div>
                 )}
+
+                <p style={{
+                  opacity: 0.8,
+                  marginBottom: '20px',
+                  lineHeight: '1.6',
+                  fontSize: '14px'
+                }}>
+                  {courseDescriptions[course.slug || ''] || stripMarkdown(course.description.split('---')[0]).substring(0, 120)}
+                  {' '}
+                  <Link to={`/course/${course.slug}`} style={{ color: 'var(--neon-cyan)', textDecoration: 'underline', fontSize: '13px' }}>
+                    Подробнее
+                  </Link>
+                </p>
+
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   marginBottom: '15px',
-                  padding: '12px 0',
-                  borderTop: '1px solid rgba(0, 255, 249, 0.2)',
-                  borderBottom: '1px solid rgba(0, 255, 249, 0.2)'
+                  padding: '10px 0',
+                  borderTop: '1px solid rgba(0, 255, 249, 0.15)',
+                  borderBottom: '1px solid rgba(0, 255, 249, 0.15)'
                 }}>
                   <div>
                     <div style={{ fontSize: '11px', opacity: 0.6 }}>Возраст</div>
-                    <div style={{ color: 'var(--neon-green)', fontSize: '14px' }}>{course.age_group}</div>
+                    <div style={{ color: 'var(--neon-green)', fontSize: '13px' }}>{course.age_group}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '11px', opacity: 0.6 }}>Длительность</div>
-                    <div style={{ color: 'var(--neon-green)', fontSize: '14px' }}>{course.duration}</div>
+                    <div style={{ color: 'var(--neon-green)', fontSize: '13px' }}>{course.duration}</div>
                   </div>
                 </div>
+
+                <div style={{ marginBottom: '15px' }}>
+                  <span style={{
+                    fontSize: '13px',
+                    textDecoration: 'line-through',
+                    opacity: 0.5,
+                    marginRight: '10px'
+                  }}>
+                    {pricing.oldPrice}
+                  </span>
+                  <span style={{
+                    background: isMiddle ? 'var(--neon-cyan)' : 'var(--neon-green)',
+                    color: '#000',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    fontSize: '11px',
+                    fontWeight: 700
+                  }}>
+                    {pricing.discount}
+                  </span>
+                </div>
+
                 <div style={{
-                  fontSize: '24px',
+                  fontSize: '32px',
                   fontWeight: 700,
-                  color: 'var(--neon-pink)',
-                  marginBottom: '15px'
+                  marginBottom: '15px',
+                  color: isMiddle ? 'var(--neon-cyan)' : 'var(--neon-pink)'
                 }}>
                   {course.price}
                 </div>
+
+                <div style={{ marginBottom: '20px', flex: 1 }}>
+                  <div style={{
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    marginBottom: '12px',
+                    color: 'var(--neon-cyan)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    Что включено:
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {pricing.features.map((item, idx) => (
+                      <li key={idx} style={{
+                        fontSize: '13px',
+                        marginBottom: '8px',
+                        paddingLeft: '18px',
+                        position: 'relative',
+                        opacity: 0.85,
+                        lineHeight: '1.4'
+                      }}>
+                        <span style={{
+                          position: 'absolute',
+                          left: 0,
+                          color: 'var(--neon-cyan)'
+                        }}>✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginBottom: '15px' }}>
+                  {isMiddle ? (
+                    <button className="cyber-button" style={{
+                      width: '100%',
+                      padding: '14px',
+                      fontSize: '14px',
+                      fontWeight: 600
+                    }}>
+                      Начать обучение
+                    </button>
+                  ) : (
+                    <button style={{
+                      width: '100%',
+                      padding: '12px',
+                      background: 'transparent',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      color: '#fff',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      borderRadius: '6px',
+                      transition: 'all 0.3s ease'
+                    }}>
+                      Оплатить
+                    </button>
+                  )}
+                </a>
+
                 <CourseProgram
                   isExpanded={expandedCourseProgram === course.id}
                   onToggle={() => setExpandedCourseProgram(
@@ -383,6 +476,9 @@ export default function Home() {
           @media (max-width: 1024px) {
             .courses-grid {
               grid-template-columns: 1fr !important;
+              max-width: 450px !important;
+              margin-left: auto !important;
+              margin-right: auto !important;
             }
             .courses-grid > div {
               transform: none !important;
@@ -391,350 +487,69 @@ export default function Home() {
         `}</style>
 
         <div style={{
-          marginTop: '80px',
+          marginTop: '60px',
           textAlign: 'center'
         }}>
-          <h2 style={{
-            fontSize: 'clamp(28px, 4vw, 40px)',
-            marginBottom: '15px',
-            fontFamily: 'Orbitron, sans-serif',
-            fontWeight: 700,
-            color: 'var(--neon-cyan)'
+          <div className="cyber-card" style={{
+            maxWidth: '500px',
+            margin: '0 auto',
+            background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 255, 249, 0.05))',
+            border: '1px solid rgba(255, 0, 110, 0.3)',
+            padding: '30px'
           }}>
-            Тарифы обучения
-          </h2>
-          <p style={{
-            fontSize: '16px',
-            opacity: 0.7,
-            marginBottom: '50px'
-          }}>
-            Присоединяйтесь сейчас и будьте в числе первых кто получит преимущество в разработке с ИИ.
-          </p>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '25px',
-            maxWidth: '1100px',
-            margin: '0 auto'
-          }} className="pricing-grid">
-            <div style={{
-              background: 'rgba(19, 19, 26, 0.9)',
-              border: '1px solid rgba(0, 255, 249, 0.2)',
-              borderRadius: '8px',
-              padding: '35px 25px',
-              textAlign: 'left'
+            <span style={{
+              display: 'inline-block',
+              background: 'var(--neon-pink)',
+              color: '#000',
+              padding: '4px 12px',
+              fontSize: '11px',
+              fontWeight: 700,
+              borderRadius: '4px',
+              textTransform: 'uppercase',
+              marginBottom: '15px'
             }}>
-              <h3 style={{
-                fontSize: '18px',
-                marginBottom: '20px',
-                color: '#fff',
-                fontWeight: 600
-              }}>
-                Отдельный курс
-              </h3>
-              <div style={{ marginBottom: '20px' }}>
-                <span style={{
-                  fontSize: '14px',
-                  textDecoration: 'line-through',
-                  opacity: 0.5,
-                  marginRight: '10px'
-                }}>
-                  2000 BYN
-                </span>
-                <span style={{
-                  background: 'var(--neon-green)',
-                  color: '#000',
-                  padding: '2px 8px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontWeight: 700
-                }}>
-                  -50%
-                </span>
-              </div>
-              <div style={{
-                fontSize: '36px',
-                fontWeight: 700,
-                marginBottom: '15px',
-                color: '#fff'
-              }}>
-                1000 BYN
-              </div>
-              <p style={{
-                fontSize: '14px',
-                opacity: 0.7,
-                marginBottom: '25px',
-                lineHeight: '1.6'
-              }}>
-                Полный доступ к курсу по освоению ИИ-инструментов в разработке
-              </p>
-              <div style={{ marginBottom: '25px' }}>
-                <div style={{
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  marginBottom: '15px',
-                  color: 'var(--neon-cyan)'
-                }}>
-                  Что включено:
-                </div>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                  {[
-                    'Пожизненный доступ к материалам курса',
-                    'Bolt.new ИЛИ Cursor AI на выбор',
-                    'Практические проекты в портфолио',
-                    'Поддержка в общем чате'
-                  ].map((item, idx) => (
-                    <li key={idx} style={{
-                      fontSize: '13px',
-                      marginBottom: '10px',
-                      paddingLeft: '20px',
-                      position: 'relative',
-                      opacity: 0.85,
-                      lineHeight: '1.5'
-                    }}>
-                      <span style={{
-                        position: 'absolute',
-                        left: 0,
-                        color: 'var(--neon-cyan)'
-                      }}>✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
-                <button style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  color: '#fff',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  borderRadius: '6px',
-                  transition: 'all 0.3s ease'
-                }}>
-                  Оплатить
-                </button>
-              </a>
-            </div>
-
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(0, 255, 65, 0.05))',
-              border: '2px solid var(--neon-cyan)',
-              borderRadius: '8px',
-              padding: '35px 25px',
-              textAlign: 'left',
-              position: 'relative',
-              boxShadow: '0 0 40px rgba(0, 255, 249, 0.2)'
+              Premium
+            </span>
+            <h3 style={{
+              fontSize: '20px',
+              marginBottom: '10px',
+              color: '#fff',
+              fontWeight: 600
             }}>
-              <h3 style={{
-                fontSize: '18px',
-                marginBottom: '8px',
-                color: '#fff',
-                fontWeight: 600
-              }}>
-                Курс и подписка на Vibecoding
-              </h3>
-              <div style={{
-                fontSize: '13px',
-                color: 'var(--neon-cyan)',
-                marginBottom: '20px'
-              }}>
-                комьюнити
-              </div>
-              <div style={{ marginBottom: '20px' }}>
-                <span style={{
-                  fontSize: '14px',
-                  textDecoration: 'line-through',
-                  opacity: 0.5,
-                  marginRight: '10px'
-                }}>
-                  3600 BYN
-                </span>
-                <span style={{
-                  background: 'var(--neon-cyan)',
-                  color: '#000',
-                  padding: '2px 8px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontWeight: 700
-                }}>
-                  -50%
-                </span>
-              </div>
-              <div style={{
-                fontSize: '36px',
-                fontWeight: 700,
-                marginBottom: '15px',
-                color: 'var(--neon-cyan)'
-              }}>
-                1800 BYN
-              </div>
-              <p style={{
-                fontSize: '14px',
-                opacity: 0.7,
-                marginBottom: '25px',
-                lineHeight: '1.6'
-              }}>
-                Полный курс + годовое членство в сообществе Vibecoding
-              </p>
-              <div style={{ marginBottom: '25px' }}>
-                <div style={{
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  marginBottom: '15px',
-                  color: 'var(--neon-cyan)'
-                }}>
-                  Что включено:
-                </div>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                  {[
-                    'Bolt.new + Cursor AI (оба курса)',
-                    'Доступ в закрытый телеграм-чат студентов',
-                    'Бесплатный доступ ко всем будущим курсам и обновлениям в течение 12 месяцев',
-                    'Лучшие студенты получат доступ к лидам для платной разработки'
-                  ].map((item, idx) => (
-                    <li key={idx} style={{
-                      fontSize: '13px',
-                      marginBottom: '10px',
-                      paddingLeft: '20px',
-                      position: 'relative',
-                      opacity: 0.85,
-                      lineHeight: '1.5'
-                    }}>
-                      <span style={{
-                        position: 'absolute',
-                        left: 0,
-                        color: 'var(--neon-cyan)'
-                      }}>✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
-                <button className="cyber-button" style={{
-                  width: '100%',
-                  padding: '12px',
-                  fontSize: '14px',
-                  fontWeight: 600
-                }}>
-                  Начать обучение
-                </button>
-              </a>
-            </div>
-
+              Персональные консультации
+            </h3>
             <div style={{
-              background: 'rgba(19, 19, 26, 0.9)',
-              border: '1px solid rgba(0, 255, 249, 0.2)',
-              borderRadius: '8px',
-              padding: '35px 25px',
-              textAlign: 'left',
-              position: 'relative'
+              fontSize: '36px',
+              fontWeight: 700,
+              marginBottom: '10px',
+              color: 'var(--neon-pink)'
             }}>
-              <span style={{
-                position: 'absolute',
-                top: '15px',
-                right: '15px',
-                background: 'var(--neon-pink)',
-                color: '#000',
-                padding: '4px 10px',
-                fontSize: '11px',
-                fontWeight: 700,
-                borderRadius: '4px',
-                textTransform: 'uppercase'
-              }}>
-                Premium
-              </span>
-              <h3 style={{
-                fontSize: '18px',
-                marginBottom: '20px',
-                color: '#fff',
-                fontWeight: 600
-              }}>
-                Персональные консультации
-              </h3>
-              <div style={{
-                fontSize: '36px',
-                fontWeight: 700,
-                marginBottom: '15px',
-                color: '#fff'
-              }}>
-                3500 BYN
-              </div>
-              <p style={{
-                fontSize: '14px',
-                opacity: 0.7,
-                marginBottom: '25px',
-                lineHeight: '1.6'
-              }}>
-                Полный курс + комьюнити + персональное сопровождение с автором курса в течение 6 месяцев.
-              </p>
-              <div style={{ marginBottom: '25px' }}>
-                <div style={{
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  marginBottom: '15px',
-                  color: 'var(--neon-cyan)'
-                }}>
-                  Что включено:
-                </div>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                  {[
-                    'Все из тарифа "Комьюнити"',
-                    'Ежемесячные часовые 1-1 созвоны с автором курса',
-                    'Индивидуальный план по достижению ваших ИИ-целей',
-                    'Персональная поддержка в Telegram',
-                    'Приоритетный доступ к лидам на разработку'
-                  ].map((item, idx) => (
-                    <li key={idx} style={{
-                      fontSize: '13px',
-                      marginBottom: '10px',
-                      paddingLeft: '20px',
-                      position: 'relative',
-                      opacity: 0.85,
-                      lineHeight: '1.5'
-                    }}>
-                      <span style={{
-                        position: 'absolute',
-                        left: 0,
-                        color: 'var(--neon-cyan)'
-                      }}>✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
-                <button style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  color: '#fff',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  borderRadius: '6px',
-                  transition: 'all 0.3s ease'
-                }}>
-                  Получить доступ
-                </button>
-              </a>
+              3500 BYN
             </div>
+            <p style={{
+              fontSize: '14px',
+              opacity: 0.8,
+              marginBottom: '20px',
+              lineHeight: '1.6'
+            }}>
+              Все из тарифа "Комьюнити" + персональное сопровождение с автором курса в течение 6 месяцев: ежемесячные 1-1 созвоны, индивидуальный план, персональная поддержка в Telegram.
+            </p>
+            <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block' }}>
+              <button style={{
+                padding: '12px 40px',
+                background: 'transparent',
+                border: '1px solid var(--neon-pink)',
+                color: 'var(--neon-pink)',
+                fontSize: '14px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                borderRadius: '6px',
+                transition: 'all 0.3s ease'
+              }}>
+                Получить доступ
+              </button>
+            </a>
           </div>
-
-          <style>{`
-            @media (max-width: 900px) {
-              .pricing-grid {
-                grid-template-columns: 1fr !important;
-                max-width: 400px !important;
-              }
-            }
-          `}</style>
         </div>
       </section>
 
