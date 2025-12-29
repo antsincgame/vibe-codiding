@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../lib/storageService';
 import { renderMarkdown, stripMarkdown } from '../lib/markdown';
 import EmailSettingsManager from '../components/EmailSettingsManager';
+import EmailLogsManager from '../components/EmailLogsManager';
 import AdminFormField from '../components/AdminFormField';
 import CourseLessonsManager from '../components/CourseLessonsManager';
 import VideoTestimonialsManager from '../components/VideoTestimonialsManager';
@@ -21,7 +22,7 @@ interface UserProfile {
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'users'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'email-logs' | 'users'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -502,6 +503,17 @@ export default function Admin() {
             }}
           >
             Email настройки
+          </button>
+          <button
+            onClick={() => setActiveTab('email-logs')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'email-logs' ? 1 : 0.5,
+              borderColor: '#8b5cf6',
+              color: '#8b5cf6'
+            }}
+          >
+            Логи Email
           </button>
           <button
             onClick={() => setActiveTab('users')}
@@ -1029,6 +1041,10 @@ export default function Admin() {
 
         {activeTab === 'email' && (
           <EmailSettingsManager />
+        )}
+
+        {activeTab === 'email-logs' && (
+          <EmailLogsManager />
         )}
 
         {activeTab === 'users' && (
