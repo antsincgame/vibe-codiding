@@ -71,10 +71,10 @@ Deno.serve(async (req: Request) => {
     });
 
     if (!htmlContent && !textContent) {
-      console.log(`No content in payload, trying to fetch from Resend API for email_id: ${emailData.email_id}`);
+      console.log(`No content in payload, fetching from Resend inbound API for email_id: ${emailData.email_id}`);
 
       try {
-        const resendResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}`, {
+        const resendResponse = await fetch(`https://api.resend.com/emails/receiving/${emailData.email_id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${resendApiKey}`,
@@ -82,14 +82,15 @@ Deno.serve(async (req: Request) => {
           }
         });
 
-        console.log('Resend API response status:', resendResponse.status);
+        console.log('Resend inbound API response status:', resendResponse.status);
         const responseText = await resendResponse.text();
-        console.log('Resend API response:', responseText);
+        console.log('Resend inbound API response:', responseText);
 
         if (resendResponse.ok) {
           const emailContent = JSON.parse(responseText);
-          htmlContent = emailContent.html || emailContent.body || null;
+          htmlContent = emailContent.html || null;
           textContent = emailContent.text || null;
+          console.log('Fetched content:', { hasHtml: !!htmlContent, hasText: !!textContent });
         }
       } catch (error) {
         console.error('Error fetching email content:', error);
@@ -112,7 +113,7 @@ Deno.serve(async (req: Request) => {
 
       for (const attachment of emailData.attachments) {
         try {
-          const attachmentResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}/attachments/${attachment.id}`, {
+          const attachmentResponse = await fetch(`https://api.resend.com/emails/receiving/${emailData.email_id}/attachments/${attachment.id}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${resendApiKey}`
