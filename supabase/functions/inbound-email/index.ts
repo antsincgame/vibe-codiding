@@ -83,7 +83,7 @@ Deno.serve(async (req: Request) => {
             await new Promise(resolve => setTimeout(resolve, retryDelay));
           }
 
-          const resendResponse = await fetch(`https://api.resend.com/emails/receiving/${emailData.email_id}`, {
+          const resendResponse = await fetch(`https://api.resend.com/emails/received/${emailData.email_id}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${resendApiKey}`,
@@ -143,7 +143,7 @@ Deno.serve(async (req: Request) => {
 
       for (const attachment of emailData.attachments) {
         try {
-          const attachmentResponse = await fetch(`https://api.resend.com/emails/receiving/${emailData.email_id}/attachments/${attachment.id}`, {
+          const attachmentResponse = await fetch(`https://api.resend.com/emails/received/${emailData.email_id}/attachments/${attachment.id}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${resendApiKey}`
