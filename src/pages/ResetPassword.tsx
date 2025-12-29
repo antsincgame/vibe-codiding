@@ -18,10 +18,11 @@ const isPasswordValid = (password: string) => {
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
-  const { resetPassword } = useAuth();
+  const { resetPassword, verifyResetToken } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [verifyingToken, setVerifyingToken] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [password, setPassword] = useState('');
@@ -35,10 +36,26 @@ export default function ResetPassword() {
   const email = searchParams.get('email');
 
   useEffect(() => {
-    if (!token || !email) {
-      setError('Неверная ссылка для сброса пароля. Запросите новую ссылку.');
-    }
-  }, [token, email]);
+    const checkToken = async () => {
+      if (!token || !email) {
+        setError('Неверная ссылка для сброса пароля. Запросите новую ссылку.');
+        setTokenExpired(true);
+        setVerifyingToken(false);
+        return;
+      }
+
+      const result = await verifyResetToken(token, email);
+
+      if (!result.valid) {
+        setTokenExpired(true);
+        setError(result.message || 'Ссылка недействительна или истекла. Запросите новую ссылку.');
+      }
+
+      setVerifyingToken(false);
+    };
+
+    checkToken();
+  }, [token, email, verifyResetToken]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,6 +112,42 @@ export default function ResetPassword() {
   };
 
   const passwordValidation = validatePassword(password);
+
+  if (verifyingToken) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        paddingTop: '120px',
+        paddingBottom: '60px',
+        paddingLeft: '20px',
+        paddingRight: '20px'
+      }}>
+        <div style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}>
+          <div className="cyber-card" style={{ padding: '40px' }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              margin: '0 auto 30px',
+              borderRadius: '50%',
+              background: 'rgba(0, 255, 100, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              animation: 'pulse 2s ease-in-out infinite'
+            }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green)" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+            </div>
+            <h2 style={{ color: 'var(--neon-green)', marginBottom: '20px', fontSize: '24px' }}>Проверка ссылки...</h2>
+            <p style={{ opacity: 0.7, fontSize: '14px' }}>
+              Пожалуйста, подождите
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (tokenExpired) {
     return (

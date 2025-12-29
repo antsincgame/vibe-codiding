@@ -24,6 +24,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
   sendPasswordResetEmail: (email: string) => Promise<{ error: Error | null }>;
+  verifyResetToken: (token: string, email: string) => Promise<{ valid: boolean; error: string | null; message: string | null }>;
   resetPassword: (token: string, email: string, newPassword: string) => Promise<{ error: Error | null }>;
 }
 
@@ -205,6 +206,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const verifyResetToken = async (token: string, email: string) => {
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/verify-reset-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ token, email }),
+      });
+
+      const data = await response.json();
+
+      if (!data.valid) {
+        return {
+          valid: false,
+          error: data.error,
+          message: data.message
+        };
+      }
+
+      return { valid: true, error: null, message: null };
+    } catch (error) {
+      return {
+        valid: false,
+        error: 'network_error',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  };
+
   const resetPassword = async (token: string, email: string, newPassword: string) => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -307,6 +340,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signOut,
     updateProfile,
     sendPasswordResetEmail,
+    verifyResetToken,
     resetPassword
   };
 
