@@ -55,32 +55,34 @@ Deno.serve(async (req: Request) => {
 
     const emailData = payload.data;
 
-    let htmlContent = emailData.html || null;
-    let textContent = emailData.text || null;
+    let htmlContent = null;
+    let textContent = null;
 
-    if (!htmlContent && !textContent) {
-      console.log(`Fetching full email content for email_id: ${emailData.email_id}`);
+    console.log(`Fetching full email content for email_id: ${emailData.email_id}`);
 
-      try {
-        const resendResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${resendApiKey}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (resendResponse.ok) {
-          const emailContent = await resendResponse.json();
-          htmlContent = emailContent.html || null;
-          textContent = emailContent.text || null;
-          console.log('Successfully fetched email content from Resend API');
-        } else {
-          console.error('Failed to fetch email content from Resend:', resendResponse.status, await resendResponse.text());
+    try {
+      const resendResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json'
         }
-      } catch (error) {
-        console.error('Error fetching email content:', error);
+      });
+
+      if (resendResponse.ok) {
+        const emailContent = await resendResponse.json();
+        htmlContent = emailContent.html || null;
+        textContent = emailContent.text || null;
+        console.log('Successfully fetched email content from Resend API', {
+          hasHtml: !!htmlContent,
+          hasText: !!textContent
+        });
+      } else {
+        const errorText = await resendResponse.text();
+        console.error('Failed to fetch email content from Resend:', resendResponse.status, errorText);
       }
+    } catch (error) {
+      console.error('Error fetching email content:', error);
     }
 
     const fromMatch = emailData.from.match(/^(.+?)\s*<(.+?)>$/) || [null, null, emailData.from];
