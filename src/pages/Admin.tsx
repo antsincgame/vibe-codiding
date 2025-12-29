@@ -334,6 +334,43 @@ export default function Admin() {
     }
   };
 
+  const deleteUser = async (userId: string) => {
+    if (!confirm('Вы уверены, что хотите удалить этого пользователя? Это действие нельзя отменить.')) {
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert('Сессия истекла. Войдите снова.');
+        return;
+      }
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/delete-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(`Ошибка удаления: ${data.error || 'Unknown error'}`);
+        return;
+      }
+
+      setEditingUser(null);
+      loadData();
+      alert('Пользователь успешно удален');
+    } catch (err) {
+      alert('Произошла ошибка при удалении пользователя');
+    }
+  };
+
   const updateRegistrationStatus = async (id: string, status: string) => {
     await supabase
       .from('trial_registrations')
@@ -1141,6 +1178,7 @@ export default function Admin() {
         <UserModal
           user={editingUser}
           onSave={saveUser}
+          onDelete={deleteUser}
           onClose={() => setEditingUser(null)}
         />
       )}
@@ -2748,13 +2786,16 @@ function HomePageSettingsModal({
 function UserModal({
   user,
   onSave,
+  onDelete,
   onClose
 }: {
   user: UserProfile;
   onSave: (user: Partial<UserProfile>) => void;
+  onDelete: (userId: string) => void;
   onClose: () => void;
 }) {
   const [formData, setFormData] = useState(user);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   return (
     <div style={{
@@ -2876,7 +2917,7 @@ function UserModal({
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
           <button
             onClick={() => onSave(formData)}
             className="cyber-button"
@@ -2895,6 +2936,84 @@ function UserModal({
           >
             Отмена
           </button>
+        </div>
+
+        <div style={{
+          borderTop: '1px solid rgba(255, 0, 110, 0.3)',
+          paddingTop: '20px'
+        }}>
+          {!showDeleteConfirm ? (
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              style={{
+                width: '100%',
+                padding: '12px',
+                background: 'transparent',
+                border: '1px solid rgba(255, 0, 110, 0.5)',
+                borderRadius: '4px',
+                color: 'var(--neon-pink)',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 0, 110, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+              }}
+            >
+              Удалить пользователя
+            </button>
+          ) : (
+            <div style={{
+              padding: '15px',
+              background: 'rgba(255, 0, 110, 0.1)',
+              border: '1px solid var(--neon-pink)',
+              borderRadius: '6px'
+            }}>
+              <p style={{
+                marginBottom: '15px',
+                fontSize: '14px',
+                color: 'var(--neon-pink)'
+              }}>
+                Вы уверены? Это действие нельзя отменить. Все данные пользователя будут удалены.
+              </p>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  onClick={() => onDelete(user.id)}
+                  style={{
+                    flex: 1,
+                    padding: '10px',
+                    background: 'var(--neon-pink)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Да, удалить
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  style={{
+                    flex: 1,
+                    padding: '10px',
+                    background: 'transparent',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    borderRadius: '4px',
+                    color: 'white',
+                    fontSize: '14px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Отмена
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
