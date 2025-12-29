@@ -15,6 +15,8 @@ interface InboundEmailPayload {
     from: string;
     to: string[];
     subject: string;
+    html?: string;
+    text?: string;
     message_id?: string;
     cc?: string[];
     bcc?: string[];
@@ -26,16 +28,6 @@ interface InboundEmailPayload {
       content_id?: string;
     }>;
   };
-}
-
-interface ResendEmailContent {
-  id: string;
-  from: string;
-  to: string[];
-  subject: string;
-  html: string;
-  text: string;
-  headers?: Record<string, string>;
 }
 
 Deno.serve(async (req: Request) => {
@@ -63,23 +55,33 @@ Deno.serve(async (req: Request) => {
 
     const emailData = payload.data;
 
-    console.log(`Fetching email content for email_id: ${emailData.email_id}`);
+    let htmlContent = emailData.html || null;
+    let textContent = emailData.text || null;
 
-    const resendResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json'
+    if (!htmlContent && !textContent) {
+      console.log(`Fetching full email content for email_id: ${emailData.email_id}`);
+
+      try {
+        const resendResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (resendResponse.ok) {
+          const emailContent = await resendResponse.json();
+          htmlContent = emailContent.html || null;
+          textContent = emailContent.text || null;
+          console.log('Successfully fetched email content from Resend API');
+        } else {
+          console.error('Failed to fetch email content from Resend:', resendResponse.status, await resendResponse.text());
+        }
+      } catch (error) {
+        console.error('Error fetching email content:', error);
       }
-    });
-
-    if (!resendResponse.ok) {
-      console.error('Failed to fetch email content from Resend:', resendResponse.status, await resendResponse.text());
-      throw new Error(`Resend API error: ${resendResponse.status}`);
     }
-
-    const emailContent: ResendEmailContent = await resendResponse.json();
-    console.log('Successfully fetched email content from Resend');
 
     const fromMatch = emailData.from.match(/^(.+?)\s*<(.+?)>$/) || [null, null, emailData.from];
     const fromName = fromMatch[1]?.trim() || null;
@@ -149,9 +151,9 @@ Deno.serve(async (req: Request) => {
         from_name: fromName,
         to_email: emailData.to[0],
         subject: emailData.subject || '(No subject)',
-        text_content: emailContent.text || null,
-        html_content: emailContent.html || null,
-        headers: emailContent.headers || {},
+        text_content: textContent,
+        html_content: htmlContent,
+        headers: {},
         attachments: attachmentsMetadata,
         is_read: false,
         is_archived: false
@@ -172,7 +174,8 @@ Deno.serve(async (req: Request) => {
         success: true,
         message: 'Email received and stored',
         email_id: emailData.email_id,
-        attachments_count: attachmentsMetadata.length
+        attachments_count: attachmentsMetadata.length,
+        has_content: !!(htmlContent || textContent)
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
