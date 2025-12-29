@@ -1,12 +1,20 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
-import nodemailer from "npm:nodemailer@6.9.8";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
+
+interface ResendEmailRequest {
+  from: string;
+  to: string[];
+  subject: string;
+  html: string;
+  reply_to?: string;
+  tags?: Array<{ name: string; value: string }>;
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -65,18 +73,17 @@ Deno.serve(async (req: Request) => {
       .from('system_settings')
       .select('key, value')
       .in('key', [
-        'smtp_host',
-        'smtp_port',
-        'smtp_user',
-        'smtp_password',
-        'smtp_from_email',
-        'smtp_from_name',
-        'smtp_secure'
+        'resend_api_key',
+        'resend_from_email',
+        'resend_from_name',
+        'resend_reply_to',
+        'resend_track_opens',
+        'resend_track_clicks'
       ]);
 
     if (!settings || settings.length === 0) {
       return new Response(
-        JSON.stringify({ error: 'SMTP settings not configured' }),
+        JSON.stringify({ error: 'Resend settings not configured' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -86,33 +93,17 @@ Deno.serve(async (req: Request) => {
       settingsMap[item.key] = item.value;
     });
 
-    const smtpHost = settingsMap['smtp_host'];
-    const smtpPort = parseInt(settingsMap['smtp_port'] || '587');
-    const smtpUser = settingsMap['smtp_user'];
-    const smtpPassword = settingsMap['smtp_password'];
-    const smtpFromEmail = settingsMap['smtp_from_email'];
-    const smtpFromName = settingsMap['smtp_from_name'] || 'VIBECODING';
-    const smtpSecure = settingsMap['smtp_secure'] === 'true';
+    const resendApiKey = settingsMap['resend_api_key'];
+    const fromEmail = settingsMap['resend_from_email'];
+    const fromName = settingsMap['resend_from_name'] || 'VIBECODING';
+    const replyTo = settingsMap['resend_reply_to'] || undefined;
 
-    if (!smtpHost || !smtpUser || !smtpPassword || !smtpFromEmail) {
+    if (!resendApiKey || !fromEmail) {
       return new Response(
-        JSON.stringify({ error: 'Incomplete SMTP configuration. Please fill all required fields.' }),
+        JSON.stringify({ error: 'Resend API Key и Email отправителя обязательны. Заполните настройки.' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      auth: {
-        user: smtpUser,
-        pass: smtpPassword,
-      },
-      tls: {
-        rejectUnauthorized: false
-      }
-    });
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -133,7 +124,7 @@ Deno.serve(async (req: Request) => {
           <h1>VIBECODING</h1>
           <p>Это тестовое письмо из админ-панели VIBECODING.</p>
           <div class="success">
-            <p class="success-text">Ваши SMTP настройки работают корректно!</p>
+            <p class="success-text">Ваши настройки Resend работают корректно!</p>
           </div>
           <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">Отправлено: ${new Date().toLocaleString('ru-RU')}</p>
         </div>
@@ -141,18 +132,58 @@ Deno.serve(async (req: Request) => {
       </html>
     `;
 
-    await transporter.sendMail({
-      from: `"${smtpFromName}" <${smtpFromEmail}>`,
-      to: testEmail,
+    const emailPayload: ResendEmailRequest = {
+      from: `${fromName} <${fromEmail}>`,
+      to: [testEmail],
       subject: 'VIBECODING - Тестовое письмо',
-      text: 'Это тестовое письмо из админ-панели VIBECODING. Ваши SMTP настройки работают корректно!',
       html: htmlContent,
+      tags: [
+        { name: 'category', value: 'test' },
+        { name: 'environment', value: 'production' }
+      ]
+    };
+
+    if (replyTo) {
+      emailPayload.reply_to = replyTo;
+    }
+
+    const resendResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(emailPayload),
     });
+
+    const resendData = await resendResponse.json();
+
+    if (!resendResponse.ok) {
+      console.error('Resend API error:', resendData);
+      return new Response(
+        JSON.stringify({ 
+          error: `Ошибка Resend API: ${resendData.message || 'Unknown error'}` 
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    await supabase
+      .from('email_logs')
+      .insert({
+        resend_email_id: resendData.id,
+        recipient_email: testEmail,
+        subject: 'VIBECODING - Тестовое письмо',
+        template_type: 'test',
+        status: 'sent',
+        metadata: { test: true }
+      });
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Тестовое письмо успешно отправлено на ${testEmail}` 
+        message: `Тестовое письмо успешно отправлено на ${testEmail}`,
+        emailId: resendData.id
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
@@ -162,7 +193,7 @@ Deno.serve(async (req: Request) => {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
       JSON.stringify({ 
-        error: `Ошибка отправки: ${errorMessage}. Проверьте настройки SMTP.` 
+        error: `Ошибка отправки: ${errorMessage}. Проверьте настройки Resend.` 
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

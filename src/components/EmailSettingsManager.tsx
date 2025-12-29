@@ -7,18 +7,23 @@ interface EmailSettings {
   confirmationTemplate: string;
   welcomeSubject: string;
   welcomeTemplate: string;
-  smtpHost: string;
-  smtpPort: string;
-  smtpUser: string;
-  smtpPassword: string;
-  smtpFromEmail: string;
-  smtpFromName: string;
-  smtpSecure: boolean;
-  imapHost: string;
-  imapPort: string;
-  imapUser: string;
-  imapPassword: string;
-  imapSecure: boolean;
+  resendApiKey: string;
+  resendFromEmail: string;
+  resendFromName: string;
+  resendReplyTo: string;
+  resendTrackOpens: boolean;
+  resendTrackClicks: boolean;
+}
+
+interface EmailLog {
+  id: string;
+  recipient_email: string;
+  subject: string;
+  template_type: string;
+  status: string;
+  opened_at: string | null;
+  clicked_at: string | null;
+  created_at: string;
 }
 
 export default function EmailSettingsManager() {
@@ -28,29 +33,31 @@ export default function EmailSettingsManager() {
     confirmationTemplate: '',
     welcomeSubject: '',
     welcomeTemplate: '',
-    smtpHost: '',
-    smtpPort: '587',
-    smtpUser: '',
-    smtpPassword: '',
-    smtpFromEmail: '',
-    smtpFromName: 'VIBECODING',
-    smtpSecure: false,
-    imapHost: '',
-    imapPort: '993',
-    imapUser: '',
-    imapPassword: '',
-    imapSecure: true
+    resendApiKey: '',
+    resendFromEmail: 'noreply@vibecoding.com',
+    resendFromName: 'VIBECODING',
+    resendReplyTo: '',
+    resendTrackOpens: true,
+    resendTrackClicks: true
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<'confirmation' | 'welcome' | 'smtp' | 'imap'>('confirmation');
+  const [activeTab, setActiveTab] = useState<'resend' | 'templates' | 'analytics'>('resend');
   const [testEmail, setTestEmail] = useState('');
   const [sendingTest, setSendingTest] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [emailLogs, setEmailLogs] = useState<EmailLog[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   useEffect(() => {
     loadSettings();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'analytics') {
+      loadEmailLogs();
+    }
+  }, [activeTab]);
 
   const loadSettings = async () => {
     try {
@@ -63,18 +70,12 @@ export default function EmailSettingsManager() {
           'email_confirmation_template',
           'email_welcome_subject',
           'email_welcome_template',
-          'smtp_host',
-          'smtp_port',
-          'smtp_user',
-          'smtp_password',
-          'smtp_from_email',
-          'smtp_from_name',
-          'smtp_secure',
-          'imap_host',
-          'imap_port',
-          'imap_user',
-          'imap_password',
-          'imap_secure'
+          'resend_api_key',
+          'resend_from_email',
+          'resend_from_name',
+          'resend_reply_to',
+          'resend_track_opens',
+          'resend_track_clicks'
         ]);
 
       if (data) {
@@ -89,24 +90,36 @@ export default function EmailSettingsManager() {
           confirmationTemplate: settingsMap['email_confirmation_template'] || '',
           welcomeSubject: settingsMap['email_welcome_subject'] || '',
           welcomeTemplate: settingsMap['email_welcome_template'] || '',
-          smtpHost: settingsMap['smtp_host'] || '',
-          smtpPort: settingsMap['smtp_port'] || '587',
-          smtpUser: settingsMap['smtp_user'] || '',
-          smtpPassword: settingsMap['smtp_password'] || '',
-          smtpFromEmail: settingsMap['smtp_from_email'] || '',
-          smtpFromName: settingsMap['smtp_from_name'] || 'VIBECODING',
-          smtpSecure: settingsMap['smtp_secure'] === 'true',
-          imapHost: settingsMap['imap_host'] || '',
-          imapPort: settingsMap['imap_port'] || '993',
-          imapUser: settingsMap['imap_user'] || '',
-          imapPassword: settingsMap['imap_password'] || '',
-          imapSecure: settingsMap['imap_secure'] === 'true'
+          resendApiKey: settingsMap['resend_api_key'] || '',
+          resendFromEmail: settingsMap['resend_from_email'] || 'noreply@vibecoding.com',
+          resendFromName: settingsMap['resend_from_name'] || 'VIBECODING',
+          resendReplyTo: settingsMap['resend_reply_to'] || '',
+          resendTrackOpens: settingsMap['resend_track_opens'] !== 'false',
+          resendTrackClicks: settingsMap['resend_track_clicks'] !== 'false'
         });
       }
     } catch (error) {
       console.error('Error loading email settings:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadEmailLogs = async () => {
+    setLoadingLogs(true);
+    try {
+      const { data, error } = await supabase
+        .from('email_logs')
+        .select('id, recipient_email, subject, template_type, status, opened_at, clicked_at, created_at')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+      setEmailLogs(data || []);
+    } catch (error) {
+      console.error('Error loading email logs:', error);
+    } finally {
+      setLoadingLogs(false);
     }
   };
 
@@ -140,64 +153,34 @@ export default function EmailSettingsManager() {
           description: 'HTML template for welcome email'
         },
         {
-          key: 'smtp_host',
-          value: settings.smtpHost,
-          description: 'SMTP server host'
+          key: 'resend_api_key',
+          value: settings.resendApiKey,
+          description: 'Resend API Key'
         },
         {
-          key: 'smtp_port',
-          value: settings.smtpPort,
-          description: 'SMTP server port'
+          key: 'resend_from_email',
+          value: settings.resendFromEmail,
+          description: 'Email отправителя'
         },
         {
-          key: 'smtp_user',
-          value: settings.smtpUser,
-          description: 'SMTP username'
+          key: 'resend_from_name',
+          value: settings.resendFromName,
+          description: 'Имя отправителя'
         },
         {
-          key: 'smtp_password',
-          value: settings.smtpPassword,
-          description: 'SMTP password'
+          key: 'resend_reply_to',
+          value: settings.resendReplyTo,
+          description: 'Email для ответов (опционально)'
         },
         {
-          key: 'smtp_from_email',
-          value: settings.smtpFromEmail,
-          description: 'Email FROM address'
+          key: 'resend_track_opens',
+          value: settings.resendTrackOpens.toString(),
+          description: 'Отслеживать открытия писем'
         },
         {
-          key: 'smtp_from_name',
-          value: settings.smtpFromName,
-          description: 'Email FROM name'
-        },
-        {
-          key: 'smtp_secure',
-          value: settings.smtpSecure.toString(),
-          description: 'Use TLS/SSL for SMTP'
-        },
-        {
-          key: 'imap_host',
-          value: settings.imapHost,
-          description: 'IMAP server host'
-        },
-        {
-          key: 'imap_port',
-          value: settings.imapPort,
-          description: 'IMAP server port'
-        },
-        {
-          key: 'imap_user',
-          value: settings.imapUser,
-          description: 'IMAP username'
-        },
-        {
-          key: 'imap_password',
-          value: settings.imapPassword,
-          description: 'IMAP password'
-        },
-        {
-          key: 'imap_secure',
-          value: settings.imapSecure.toString(),
-          description: 'Use TLS/SSL for IMAP'
+          key: 'resend_track_clicks',
+          value: settings.resendTrackClicks.toString(),
+          description: 'Отслеживать клики по ссылкам'
         }
       ];
 
@@ -268,6 +251,46 @@ export default function EmailSettingsManager() {
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'sent':
+        return '#00fff9';
+      case 'delivered':
+        return '#00ff64';
+      case 'opened':
+        return '#00ff64';
+      case 'clicked':
+        return '#ffc800';
+      case 'bounced':
+        return '#ff006e';
+      case 'complained':
+        return '#ff006e';
+      default:
+        return '#888';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'sent':
+        return 'Отправлено';
+      case 'delivered':
+        return 'Доставлено';
+      case 'opened':
+        return 'Открыто';
+      case 'clicked':
+        return 'Клик';
+      case 'bounced':
+        return 'Отклонено';
+      case 'complained':
+        return 'Жалоба';
+      case 'pending':
+        return 'Ожидание';
+      default:
+        return status;
+    }
+  };
+
   if (loading) {
     return <div style={{ padding: '40px', textAlign: 'center' }}>Загрузка...</div>;
   }
@@ -286,40 +309,16 @@ export default function EmailSettingsManager() {
           marginBottom: '15px',
           color: 'var(--neon-cyan)'
         }}>
-          Важная информация
+          Resend.com - Email сервис
         </h3>
         <p style={{ fontSize: '14px', opacity: 0.9, marginBottom: '10px' }}>
-          Настройки email применяются в Supabase Dashboard. Для полной настройки:
+          Для отправки email используется сервис Resend.com с верифицированным доменом vibecoding.com.
         </p>
-        <ol style={{ fontSize: '14px', opacity: 0.9, paddingLeft: '20px' }}>
-          <li>Перейдите в Authentication → Email Templates в Supabase Dashboard</li>
-          <li>Скопируйте HTML шаблоны из полей ниже</li>
-          <li>Убедитесь, что Email Confirmation включен в Auth Settings</li>
-        </ol>
-      </div>
-
-      <div style={{ marginBottom: '30px' }}>
-        <label style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          fontSize: '16px',
-          cursor: 'pointer'
-        }}>
-          <input
-            type="checkbox"
-            checked={settings.confirmationEnabled}
-            onChange={(e) => setSettings({ ...settings, confirmationEnabled: e.target.checked })}
-            style={{
-              width: '20px',
-              height: '20px',
-              cursor: 'pointer'
-            }}
-          />
-          <span style={{ color: 'var(--neon-cyan)', fontWeight: 600 }}>
-            Включить подтверждение email для новых учеников
-          </span>
-        </label>
+        <ul style={{ fontSize: '14px', opacity: 0.9, paddingLeft: '20px', lineHeight: '1.8' }}>
+          <li>Бесплатно до 3000 писем/месяц</li>
+          <li>Аналитика открытий и кликов</li>
+          <li>Поддержка массовых рассылок</li>
+        </ul>
       </div>
 
       <div style={{
@@ -330,200 +329,55 @@ export default function EmailSettingsManager() {
         flexWrap: 'wrap'
       }}>
         <button
-          onClick={() => setActiveTemplate('confirmation')}
+          onClick={() => setActiveTab('resend')}
           className="cyber-button"
           style={{
-            background: activeTemplate === 'confirmation' ? 'rgba(0, 255, 249, 0.2)' : 'transparent',
+            background: activeTab === 'resend' ? 'rgba(0, 255, 249, 0.2)' : 'transparent',
             border: 'none',
-            borderBottom: activeTemplate === 'confirmation' ? '2px solid var(--neon-cyan)' : 'none',
+            borderBottom: activeTab === 'resend' ? '2px solid var(--neon-cyan)' : 'none',
             borderRadius: 0,
             padding: '15px 30px'
           }}
         >
-          Подтверждение Email
+          Resend API
         </button>
         <button
-          onClick={() => setActiveTemplate('welcome')}
+          onClick={() => setActiveTab('templates')}
           className="cyber-button"
           style={{
-            background: activeTemplate === 'welcome' ? 'rgba(255, 0, 110, 0.2)' : 'transparent',
+            background: activeTab === 'templates' ? 'rgba(255, 0, 110, 0.2)' : 'transparent',
             border: 'none',
-            borderBottom: activeTemplate === 'welcome' ? '2px solid var(--neon-pink)' : 'none',
+            borderBottom: activeTab === 'templates' ? '2px solid var(--neon-pink)' : 'none',
             borderRadius: 0,
             padding: '15px 30px'
           }}
         >
-          Приветственное письмо
+          Шаблоны
         </button>
         <button
-          onClick={() => setActiveTemplate('smtp')}
+          onClick={() => setActiveTab('analytics')}
           className="cyber-button"
           style={{
-            background: activeTemplate === 'smtp' ? 'rgba(0, 255, 100, 0.2)' : 'transparent',
+            background: activeTab === 'analytics' ? 'rgba(0, 255, 100, 0.2)' : 'transparent',
             border: 'none',
-            borderBottom: activeTemplate === 'smtp' ? '2px solid var(--neon-green)' : 'none',
+            borderBottom: activeTab === 'analytics' ? '2px solid var(--neon-green)' : 'none',
             borderRadius: 0,
             padding: '15px 30px'
           }}
         >
-          SMTP (Исходящая)
-        </button>
-        <button
-          onClick={() => setActiveTemplate('imap')}
-          className="cyber-button"
-          style={{
-            background: activeTemplate === 'imap' ? 'rgba(255, 200, 0, 0.2)' : 'transparent',
-            border: 'none',
-            borderBottom: activeTemplate === 'imap' ? '2px solid #ffc800' : 'none',
-            borderRadius: 0,
-            padding: '15px 30px'
-          }}
-        >
-          IMAP (Входящая)
+          Аналитика
         </button>
       </div>
 
-      {activeTemplate === 'confirmation' && (
+      {activeTab === 'resend' && (
         <div>
-          <div style={{ marginBottom: '25px' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '10px',
-              fontSize: '14px',
-              color: 'var(--neon-cyan)',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              fontWeight: 600
-            }}>
-              Тема письма подтверждения
-            </label>
-            <input
-              type="text"
-              value={settings.confirmationSubject}
-              onChange={(e) => setSettings({ ...settings, confirmationSubject: e.target.value })}
-              className="cyber-input"
-              placeholder="Подтверждение регистрации в VIBECODING"
-            />
-          </div>
-
-          <div style={{ marginBottom: '25px' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '10px',
-              fontSize: '14px',
-              color: 'var(--neon-cyan)',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              fontWeight: 600
-            }}>
-              HTML шаблон подтверждения
-              <span style={{ fontSize: '12px', opacity: 0.7, marginLeft: '10px', textTransform: 'none' }}>
-                (Используйте переменные: {'\{\{ .ConfirmationURL \}\}'}, {'\{\{ .SiteURL \}\}'})
-              </span>
-            </label>
-            <textarea
-              value={settings.confirmationTemplate}
-              onChange={(e) => setSettings({ ...settings, confirmationTemplate: e.target.value })}
-              className="cyber-input"
-              style={{
-                minHeight: '400px',
-                fontFamily: 'monospace',
-                fontSize: '12px',
-                lineHeight: '1.5'
-              }}
-              placeholder="<!DOCTYPE html>..."
-            />
-          </div>
-        </div>
-      )}
-
-      {activeTemplate === 'welcome' && (
-        <div>
-          <div style={{ marginBottom: '25px' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '10px',
-              fontSize: '14px',
-              color: 'var(--neon-pink)',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              fontWeight: 600
-            }}>
-              Тема приветственного письма
-            </label>
-            <input
-              type="text"
-              value={settings.welcomeSubject}
-              onChange={(e) => setSettings({ ...settings, welcomeSubject: e.target.value })}
-              className="cyber-input"
-              placeholder="Добро пожаловать в VIBECODING!"
-            />
-          </div>
-
-          <div style={{ marginBottom: '25px' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '10px',
-              fontSize: '14px',
-              color: 'var(--neon-pink)',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              fontWeight: 600
-            }}>
-              HTML шаблон приветствия
-              <span style={{ fontSize: '12px', opacity: 0.7, marginLeft: '10px', textTransform: 'none' }}>
-                (Используйте переменные: {'\{\{ .UserName \}\}'}, {'\{\{ .DashboardURL \}\}'}, {'\{\{ .SiteURL \}\}'})
-              </span>
-            </label>
-            <textarea
-              value={settings.welcomeTemplate}
-              onChange={(e) => setSettings({ ...settings, welcomeTemplate: e.target.value })}
-              className="cyber-input"
-              style={{
-                minHeight: '400px',
-                fontFamily: 'monospace',
-                fontSize: '12px',
-                lineHeight: '1.5'
-              }}
-              placeholder="<!DOCTYPE html>..."
-            />
-          </div>
-        </div>
-      )}
-
-      {activeTemplate === 'smtp' && (
-        <div>
-          <div style={{
-            marginBottom: '25px',
-            padding: '20px',
-            background: 'rgba(0, 255, 100, 0.05)',
-            border: '1px solid rgba(0, 255, 100, 0.2)',
-            borderRadius: '8px'
-          }}>
-            <h3 style={{
-              fontSize: '16px',
-              marginBottom: '10px',
-              color: 'var(--neon-green)'
-            }}>
-              Информация о SMTP
-            </h3>
-            <p style={{ fontSize: '14px', opacity: 0.9, marginBottom: '10px' }}>
-              Настройки SMTP позволяют отправлять email с собственного почтового сервера.
-            </p>
-            <ul style={{ fontSize: '13px', opacity: 0.8, paddingLeft: '20px', lineHeight: '1.8' }}>
-              <li>Используйте данные вашего SMTP сервера (Gmail, Yandex, Mail.ru и др.)</li>
-              <li>Для Gmail используйте "Пароли приложений" вместо основного пароля</li>
-              <li>Стандартные порты: 587 (TLS), 465 (SSL), 25 (без шифрования)</li>
-            </ul>
-          </div>
-
           <div style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: '20px',
             marginBottom: '20px'
           }}>
-            <div>
+            <div style={{ gridColumn: '1 / -1' }}>
               <label style={{
                 display: 'block',
                 marginBottom: '8px',
@@ -531,88 +385,20 @@ export default function EmailSettingsManager() {
                 color: 'var(--neon-cyan)',
                 fontWeight: 600
               }}>
-                SMTP Хост *
-              </label>
-              <input
-                type="text"
-                value={settings.smtpHost}
-                onChange={(e) => setSettings({ ...settings, smtpHost: e.target.value })}
-                className="cyber-input"
-                placeholder="smtp.gmail.com"
-              />
-            </div>
-
-            <div>
-              <label style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontSize: '14px',
-                color: 'var(--neon-cyan)',
-                fontWeight: 600
-              }}>
-                SMTP Порт *
-              </label>
-              <input
-                type="text"
-                value={settings.smtpPort}
-                onChange={(e) => setSettings({ ...settings, smtpPort: e.target.value })}
-                className="cyber-input"
-                placeholder="587"
-              />
-            </div>
-          </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '20px',
-            marginBottom: '20px'
-          }}>
-            <div>
-              <label style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontSize: '14px',
-                color: 'var(--neon-cyan)',
-                fontWeight: 600
-              }}>
-                SMTP Пользователь (email) *
-              </label>
-              <input
-                type="email"
-                value={settings.smtpUser}
-                onChange={(e) => setSettings({ ...settings, smtpUser: e.target.value })}
-                className="cyber-input"
-                placeholder="your-email@gmail.com"
-              />
-            </div>
-
-            <div>
-              <label style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontSize: '14px',
-                color: 'var(--neon-cyan)',
-                fontWeight: 600
-              }}>
-                SMTP Пароль *
+                Resend API Key *
               </label>
               <input
                 type="password"
-                value={settings.smtpPassword}
-                onChange={(e) => setSettings({ ...settings, smtpPassword: e.target.value })}
+                value={settings.resendApiKey}
+                onChange={(e) => setSettings({ ...settings, resendApiKey: e.target.value })}
                 className="cyber-input"
-                placeholder="••••••••••••"
+                placeholder="re_xxxxxxxxxxxxxxxxxxxx"
               />
+              <p style={{ fontSize: '12px', opacity: 0.6, marginTop: '5px' }}>
+                Получите API ключ в <a href="https://resend.com/api-keys" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--neon-cyan)' }}>resend.com/api-keys</a>
+              </p>
             </div>
-          </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '20px',
-            marginBottom: '20px'
-          }}>
             <div>
               <label style={{
                 display: 'block',
@@ -625,8 +411,8 @@ export default function EmailSettingsManager() {
               </label>
               <input
                 type="email"
-                value={settings.smtpFromEmail}
-                onChange={(e) => setSettings({ ...settings, smtpFromEmail: e.target.value })}
+                value={settings.resendFromEmail}
+                onChange={(e) => setSettings({ ...settings, resendFromEmail: e.target.value })}
                 className="cyber-input"
                 placeholder="noreply@vibecoding.com"
               />
@@ -644,15 +430,45 @@ export default function EmailSettingsManager() {
               </label>
               <input
                 type="text"
-                value={settings.smtpFromName}
-                onChange={(e) => setSettings({ ...settings, smtpFromName: e.target.value })}
+                value={settings.resendFromName}
+                onChange={(e) => setSettings({ ...settings, resendFromName: e.target.value })}
                 className="cyber-input"
                 placeholder="VIBECODING"
               />
             </div>
+
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                Reply-To Email (опционально)
+              </label>
+              <input
+                type="email"
+                value={settings.resendReplyTo}
+                onChange={(e) => setSettings({ ...settings, resendReplyTo: e.target.value })}
+                className="cyber-input"
+                placeholder="support@vibecoding.com"
+              />
+              <p style={{ fontSize: '12px', opacity: 0.6, marginTop: '5px' }}>
+                Email на который будут приходить ответы от получателей
+              </p>
+            </div>
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{
+            display: 'flex',
+            gap: '30px',
+            marginBottom: '30px',
+            padding: '20px',
+            background: 'rgba(0, 255, 100, 0.05)',
+            border: '1px solid rgba(0, 255, 100, 0.2)',
+            borderRadius: '8px'
+          }}>
             <label style={{
               display: 'flex',
               alignItems: 'center',
@@ -662,8 +478,8 @@ export default function EmailSettingsManager() {
             }}>
               <input
                 type="checkbox"
-                checked={settings.smtpSecure}
-                onChange={(e) => setSettings({ ...settings, smtpSecure: e.target.checked })}
+                checked={settings.resendTrackOpens}
+                onChange={(e) => setSettings({ ...settings, resendTrackOpens: e.target.checked })}
                 style={{
                   width: '18px',
                   height: '18px',
@@ -671,26 +487,31 @@ export default function EmailSettingsManager() {
                 }}
               />
               <span style={{ color: 'var(--neon-green)', fontWeight: 600 }}>
-                Использовать TLS/SSL (рекомендуется для безопасности)
+                Отслеживать открытия
               </span>
             </label>
-          </div>
 
-          <div style={{
-            padding: '15px',
-            background: 'rgba(255, 255, 100, 0.05)',
-            border: '1px solid rgba(255, 255, 100, 0.3)',
-            borderRadius: '6px',
-            marginBottom: '20px'
-          }}>
-            <div style={{ fontSize: '13px', opacity: 0.9 }}>
-              <strong style={{ color: 'var(--neon-cyan)' }}>Примеры настроек для популярных провайдеров:</strong>
-              <div style={{ marginTop: '10px', lineHeight: '1.8' }}>
-                <div><strong>Gmail:</strong> smtp.gmail.com, Port: 587, TLS: Да</div>
-                <div><strong>Yandex:</strong> smtp.yandex.ru, Port: 587, TLS: Да</div>
-                <div><strong>Mail.ru:</strong> smtp.mail.ru, Port: 587, TLS: Да</div>
-              </div>
-            </div>
+            <label style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              fontSize: '15px',
+              cursor: 'pointer'
+            }}>
+              <input
+                type="checkbox"
+                checked={settings.resendTrackClicks}
+                onChange={(e) => setSettings({ ...settings, resendTrackClicks: e.target.checked })}
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{ color: 'var(--neon-green)', fontWeight: 600 }}>
+                Отслеживать клики
+              </span>
+            </label>
           </div>
 
           <div style={{
@@ -714,7 +535,7 @@ export default function EmailSettingsManager() {
               Тестовое письмо
             </h3>
             <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '20px' }}>
-              Отправьте тестовое письмо для проверки настроек SMTP. Убедитесь, что настройки сохранены перед отправкой.
+              Отправьте тестовое письмо для проверки настроек Resend. Убедитесь, что настройки сохранены перед отправкой.
             </p>
             <div style={{
               display: 'flex',
@@ -790,166 +611,243 @@ export default function EmailSettingsManager() {
               </div>
             )}
           </div>
+
+          <div style={{
+            marginTop: '30px',
+            padding: '20px',
+            background: 'rgba(255, 200, 0, 0.05)',
+            border: '1px solid rgba(255, 200, 0, 0.3)',
+            borderRadius: '8px'
+          }}>
+            <h4 style={{ color: '#ffc800', marginBottom: '10px' }}>Настройка Webhook для аналитики</h4>
+            <p style={{ fontSize: '14px', opacity: 0.9, marginBottom: '10px' }}>
+              Для получения данных об открытиях и кликах настройте webhook в Resend Dashboard:
+            </p>
+            <ol style={{ fontSize: '13px', opacity: 0.8, paddingLeft: '20px', lineHeight: '1.8' }}>
+              <li>Перейдите в <a href="https://resend.com/webhooks" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--neon-cyan)' }}>resend.com/webhooks</a></li>
+              <li>Нажмите "Add Webhook"</li>
+              <li>Endpoint URL: <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>{import.meta.env.VITE_SUPABASE_URL}/functions/v1/resend-webhook</code></li>
+              <li>Выберите события: email.sent, email.delivered, email.opened, email.clicked, email.bounced</li>
+            </ol>
+          </div>
         </div>
       )}
 
-      {activeTemplate === 'imap' && (
+      {activeTab === 'templates' && (
         <div>
-          <div style={{
-            marginBottom: '25px',
-            padding: '20px',
-            background: 'rgba(255, 200, 0, 0.05)',
-            border: '1px solid rgba(255, 200, 0, 0.2)',
-            borderRadius: '8px'
-          }}>
-            <h3 style={{
-              fontSize: '16px',
-              marginBottom: '10px',
-              color: '#ffc800'
-            }}>
-              Информация о IMAP
-            </h3>
-            <p style={{ fontSize: '14px', opacity: 0.9, marginBottom: '10px' }}>
-              Настройки IMAP позволяют получать входящие email с вашего почтового сервера.
-            </p>
-            <ul style={{ fontSize: '13px', opacity: 0.8, paddingLeft: '20px', lineHeight: '1.8' }}>
-              <li>Используйте данные вашего IMAP сервера (Gmail, Yandex, Mail.ru и др.)</li>
-              <li>Для Gmail используйте "Пароли приложений" вместо основного пароля</li>
-              <li>Стандартные порты: 993 (SSL/TLS), 143 (без шифрования)</li>
-              <li>Рекомендуется использовать SSL/TLS для безопасности</li>
-            </ul>
-          </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '20px',
-            marginBottom: '20px'
-          }}>
-            <div>
-              <label style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontSize: '14px',
-                color: 'var(--neon-cyan)',
-                fontWeight: 600
-              }}>
-                IMAP Хост *
-              </label>
-              <input
-                type="text"
-                value={settings.imapHost}
-                onChange={(e) => setSettings({ ...settings, imapHost: e.target.value })}
-                className="cyber-input"
-                placeholder="imap.gmail.com"
-              />
-            </div>
-
-            <div>
-              <label style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontSize: '14px',
-                color: 'var(--neon-cyan)',
-                fontWeight: 600
-              }}>
-                IMAP Порт *
-              </label>
-              <input
-                type="text"
-                value={settings.imapPort}
-                onChange={(e) => setSettings({ ...settings, imapPort: e.target.value })}
-                className="cyber-input"
-                placeholder="993"
-              />
-            </div>
-          </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '20px',
-            marginBottom: '20px'
-          }}>
-            <div>
-              <label style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontSize: '14px',
-                color: 'var(--neon-cyan)',
-                fontWeight: 600
-              }}>
-                IMAP Пользователь (email) *
-              </label>
-              <input
-                type="email"
-                value={settings.imapUser}
-                onChange={(e) => setSettings({ ...settings, imapUser: e.target.value })}
-                className="cyber-input"
-                placeholder="your-email@gmail.com"
-              />
-            </div>
-
-            <div>
-              <label style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontSize: '14px',
-                color: 'var(--neon-cyan)',
-                fontWeight: 600
-              }}>
-                IMAP Пароль *
-              </label>
-              <input
-                type="password"
-                value={settings.imapPassword}
-                onChange={(e) => setSettings({ ...settings, imapPassword: e.target.value })}
-                className="cyber-input"
-                placeholder="••••••••••••"
-              />
-            </div>
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '30px' }}>
             <label style={{
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              fontSize: '15px',
+              fontSize: '16px',
               cursor: 'pointer'
             }}>
               <input
                 type="checkbox"
-                checked={settings.imapSecure}
-                onChange={(e) => setSettings({ ...settings, imapSecure: e.target.checked })}
+                checked={settings.confirmationEnabled}
+                onChange={(e) => setSettings({ ...settings, confirmationEnabled: e.target.checked })}
                 style={{
-                  width: '18px',
-                  height: '18px',
+                  width: '20px',
+                  height: '20px',
                   cursor: 'pointer'
                 }}
               />
-              <span style={{ color: '#ffc800', fontWeight: 600 }}>
-                Использовать SSL/TLS (рекомендуется для безопасности)
+              <span style={{ color: 'var(--neon-cyan)', fontWeight: 600 }}>
+                Включить подтверждение email для новых учеников
               </span>
             </label>
           </div>
 
-          <div style={{
-            padding: '15px',
-            background: 'rgba(255, 255, 100, 0.05)',
-            border: '1px solid rgba(255, 255, 100, 0.3)',
-            borderRadius: '6px',
-            marginBottom: '20px'
-          }}>
-            <div style={{ fontSize: '13px', opacity: 0.9 }}>
-              <strong style={{ color: 'var(--neon-cyan)' }}>Примеры настроек для популярных провайдеров:</strong>
-              <div style={{ marginTop: '10px', lineHeight: '1.8' }}>
-                <div><strong>Gmail:</strong> imap.gmail.com, Port: 993, SSL: Да</div>
-                <div><strong>Yandex:</strong> imap.yandex.ru, Port: 993, SSL: Да</div>
-                <div><strong>Mail.ru:</strong> imap.mail.ru, Port: 993, SSL: Да</div>
-              </div>
+          <div style={{ marginBottom: '40px' }}>
+            <h3 style={{ color: 'var(--neon-cyan)', marginBottom: '20px' }}>Письмо подтверждения</h3>
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                Тема письма
+              </label>
+              <input
+                type="text"
+                value={settings.confirmationSubject}
+                onChange={(e) => setSettings({ ...settings, confirmationSubject: e.target.value })}
+                className="cyber-input"
+                placeholder="Подтверждение регистрации в VIBECODING"
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-cyan)',
+                fontWeight: 600
+              }}>
+                HTML шаблон
+                <span style={{ fontSize: '12px', opacity: 0.7, marginLeft: '10px', fontWeight: 400 }}>
+                  (Переменные: {'\{\{ .ConfirmationURL \}\}'}, {'\{\{ .SiteURL \}\}'})
+                </span>
+              </label>
+              <textarea
+                value={settings.confirmationTemplate}
+                onChange={(e) => setSettings({ ...settings, confirmationTemplate: e.target.value })}
+                className="cyber-input"
+                style={{
+                  minHeight: '300px',
+                  fontFamily: 'monospace',
+                  fontSize: '12px',
+                  lineHeight: '1.5'
+                }}
+                placeholder="<!DOCTYPE html>..."
+              />
             </div>
           </div>
+
+          <div>
+            <h3 style={{ color: 'var(--neon-pink)', marginBottom: '20px' }}>Приветственное письмо</h3>
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-pink)',
+                fontWeight: 600
+              }}>
+                Тема письма
+              </label>
+              <input
+                type="text"
+                value={settings.welcomeSubject}
+                onChange={(e) => setSettings({ ...settings, welcomeSubject: e.target.value })}
+                className="cyber-input"
+                placeholder="Добро пожаловать в VIBECODING!"
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontSize: '14px',
+                color: 'var(--neon-pink)',
+                fontWeight: 600
+              }}>
+                HTML шаблон
+                <span style={{ fontSize: '12px', opacity: 0.7, marginLeft: '10px', fontWeight: 400 }}>
+                  (Переменные: {'\{\{ .UserName \}\}'}, {'\{\{ .DashboardURL \}\}'})
+                </span>
+              </label>
+              <textarea
+                value={settings.welcomeTemplate}
+                onChange={(e) => setSettings({ ...settings, welcomeTemplate: e.target.value })}
+                className="cyber-input"
+                style={{
+                  minHeight: '300px',
+                  fontFamily: 'monospace',
+                  fontSize: '12px',
+                  lineHeight: '1.5'
+                }}
+                placeholder="<!DOCTYPE html>..."
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'analytics' && (
+        <div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px'
+          }}>
+            <h3 style={{ color: 'var(--neon-green)', margin: 0 }}>История отправок</h3>
+            <button
+              onClick={loadEmailLogs}
+              className="cyber-button"
+              disabled={loadingLogs}
+              style={{
+                padding: '8px 20px',
+                fontSize: '14px',
+                opacity: loadingLogs ? 0.5 : 1
+              }}
+            >
+              {loadingLogs ? 'Загрузка...' : 'Обновить'}
+            </button>
+          </div>
+
+          {loadingLogs ? (
+            <div style={{ textAlign: 'center', padding: '40px' }}>Загрузка...</div>
+          ) : emailLogs.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '60px 20px',
+              background: 'rgba(0, 255, 100, 0.05)',
+              borderRadius: '8px',
+              border: '1px solid rgba(0, 255, 100, 0.2)'
+            }}>
+              <p style={{ fontSize: '16px', opacity: 0.8 }}>Нет отправленных писем</p>
+              <p style={{ fontSize: '14px', opacity: 0.6 }}>Отправьте тестовое письмо для проверки</p>
+            </div>
+          ) : (
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: '8px',
+              overflow: 'hidden'
+            }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ background: 'rgba(0, 255, 249, 0.1)' }}>
+                    <th style={{ padding: '12px 15px', textAlign: 'left', color: 'var(--neon-cyan)', fontWeight: 600 }}>Получатель</th>
+                    <th style={{ padding: '12px 15px', textAlign: 'left', color: 'var(--neon-cyan)', fontWeight: 600 }}>Тема</th>
+                    <th style={{ padding: '12px 15px', textAlign: 'center', color: 'var(--neon-cyan)', fontWeight: 600 }}>Статус</th>
+                    <th style={{ padding: '12px 15px', textAlign: 'center', color: 'var(--neon-cyan)', fontWeight: 600 }}>Открыто</th>
+                    <th style={{ padding: '12px 15px', textAlign: 'right', color: 'var(--neon-cyan)', fontWeight: 600 }}>Дата</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {emailLogs.map((log) => (
+                    <tr key={log.id} style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                      <td style={{ padding: '12px 15px', fontSize: '14px' }}>{log.recipient_email}</td>
+                      <td style={{ padding: '12px 15px', fontSize: '14px', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{log.subject}</td>
+                      <td style={{ padding: '12px 15px', textAlign: 'center' }}>
+                        <span style={{
+                          display: 'inline-block',
+                          padding: '4px 12px',
+                          borderRadius: '12px',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          background: `${getStatusColor(log.status)}20`,
+                          color: getStatusColor(log.status),
+                          border: `1px solid ${getStatusColor(log.status)}50`
+                        }}>
+                          {getStatusText(log.status)}
+                        </span>
+                      </td>
+                      <td style={{ padding: '12px 15px', textAlign: 'center', fontSize: '14px' }}>
+                        {log.opened_at ? (
+                          <span style={{ color: '#00ff64' }}>
+                            {new Date(log.opened_at).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        ) : (
+                          <span style={{ opacity: 0.4 }}>-</span>
+                        )}
+                      </td>
+                      <td style={{ padding: '12px 15px', textAlign: 'right', fontSize: '13px', opacity: 0.7 }}>
+                        {new Date(log.created_at).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
