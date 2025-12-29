@@ -15,16 +15,27 @@ interface InboundEmailPayload {
     from: string;
     to: string[];
     subject: string;
-    text?: string;
-    html?: string;
-    headers?: Record<string, string>;
+    message_id?: string;
+    cc?: string[];
+    bcc?: string[];
     attachments?: Array<{
+      id: string;
       filename: string;
-      content: string;
       content_type: string;
-      size: number;
+      content_disposition?: string;
+      content_id?: string;
     }>;
   };
+}
+
+interface ResendEmailContent {
+  id: string;
+  from: string;
+  to: string[];
+  subject: string;
+  html: string;
+  text: string;
+  headers?: Record<string, string>;
 }
 
 Deno.serve(async (req: Request) => {
@@ -35,11 +46,12 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const resendApiKey = Deno.env.get('RESEND_API_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const payload: InboundEmailPayload = await req.json();
 
-    console.log('Received inbound email:', JSON.stringify(payload, null, 2));
+    console.log('Received inbound email webhook:', JSON.stringify(payload, null, 2));
 
     if (payload.type !== 'email.received') {
       console.log('Not an email.received event, skipping');
@@ -50,6 +62,24 @@ Deno.serve(async (req: Request) => {
     }
 
     const emailData = payload.data;
+
+    console.log(`Fetching email content for email_id: ${emailData.email_id}`);
+
+    const resendResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!resendResponse.ok) {
+      console.error('Failed to fetch email content from Resend:', resendResponse.status, await resendResponse.text());
+      throw new Error(`Resend API error: ${resendResponse.status}`);
+    }
+
+    const emailContent: ResendEmailContent = await resendResponse.json();
+    console.log('Successfully fetched email content from Resend');
 
     const fromMatch = emailData.from.match(/^(.+?)\s*<(.+?)>$/) || [null, null, emailData.from];
     const fromName = fromMatch[1]?.trim() || null;
@@ -67,8 +97,21 @@ Deno.serve(async (req: Request) => {
 
       for (const attachment of emailData.attachments) {
         try {
-          const base64Data = attachment.content;
-          const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+          const attachmentResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}/attachments/${attachment.id}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${resendApiKey}`
+            }
+          });
+
+          if (!attachmentResponse.ok) {
+            console.error(`Failed to fetch attachment ${attachment.filename}:`, attachmentResponse.status);
+            continue;
+          }
+
+          const attachmentBlob = await attachmentResponse.blob();
+          const attachmentBuffer = await attachmentBlob.arrayBuffer();
+          const binaryData = new Uint8Array(attachmentBuffer);
 
           const timestamp = Date.now();
           const randomStr = Math.random().toString(36).substring(2, 8);
@@ -87,7 +130,7 @@ Deno.serve(async (req: Request) => {
             attachmentsMetadata.push({
               filename: attachment.filename,
               content_type: attachment.content_type,
-              size: attachment.size,
+              size: binaryData.length,
               storage_path: storagePath
             });
             console.log(`Uploaded attachment: ${attachment.filename}`);
@@ -106,9 +149,9 @@ Deno.serve(async (req: Request) => {
         from_name: fromName,
         to_email: emailData.to[0],
         subject: emailData.subject || '(No subject)',
-        text_content: emailData.text || null,
-        html_content: emailData.html || null,
-        headers: emailData.headers || {},
+        text_content: emailContent.text || null,
+        html_content: emailContent.html || null,
+        headers: emailContent.headers || {},
         attachments: attachmentsMetadata,
         is_read: false,
         is_archived: false
