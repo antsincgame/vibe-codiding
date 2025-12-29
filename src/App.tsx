@@ -22,6 +22,9 @@ import StudentAuth from './pages/StudentAuth';
 import StudentDashboard from './pages/StudentDashboard';
 import EmailConfirmation from './pages/EmailConfirmation';
 import AuthCallback from './pages/AuthCallback';
+import VerifyEmail from './pages/VerifyEmail';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -57,6 +60,30 @@ function App() {
               <Header />
               <main className="app-content">
                 <EmailConfirmation />
+              </main>
+            </div>
+          } />
+          <Route path="/student/verify" element={
+            <div className="app-layout">
+              <Header />
+              <main className="app-content">
+                <VerifyEmail />
+              </main>
+            </div>
+          } />
+          <Route path="/student/forgot-password" element={
+            <div className="app-layout">
+              <Header />
+              <main className="app-content">
+                <ForgotPassword />
+              </main>
+            </div>
+          } />
+          <Route path="/student/reset-password" element={
+            <div className="app-layout">
+              <Header />
+              <main className="app-content">
+                <ResetPassword />
               </main>
             </div>
           } />

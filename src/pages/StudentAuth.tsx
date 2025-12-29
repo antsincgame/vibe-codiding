@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function StudentAuth() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, signUp, signIn, signInWithGoogle, loading: authLoading } = useAuth();
+  const { user, sendVerificationEmail, signIn, signInWithGoogle, loading: authLoading } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -25,33 +26,45 @@ export default function StudentAuth() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
-      let result;
       if (isLogin) {
-        result = await signIn(formData.email, formData.password);
+        const result = await signIn(formData.email, formData.password);
+        if (result.error) {
+          if (result.error.message.includes('Invalid login credentials')) {
+            setError('Неверный email или пароль');
+          } else if (result.error.message.includes('Email not confirmed')) {
+            setError('Email не подтвержден. Проверьте почту.');
+          } else {
+            setError(result.error.message);
+          }
+        }
       } else {
         if (!formData.fullName) {
           setError('Пожалуйста, введите имя');
           setLoading(false);
           return;
         }
-        result = await signUp(formData.email, formData.password, formData.fullName);
-      }
-
-      if (result.error) {
-        if (result.error.message.includes('Invalid login credentials')) {
-          setError('Неверный email или пароль');
-        } else if (result.error.message.includes('already registered')) {
-          setError('Этот email уже зарегистрирован');
-        } else {
-          setError(result.error.message);
+        if (formData.password.length < 6) {
+          setError('Пароль должен содержать минимум 6 символов');
+          setLoading(false);
+          return;
         }
-      } else if (!isLogin) {
-        setError('');
-        alert('Регистрация успешна! Проверьте свою почту для подтверждения email. После подтверждения вы сможете войти в систему.');
-        setIsLogin(true);
+
+        const result = await sendVerificationEmail(formData.email, formData.fullName);
+
+        if (result.error) {
+          if (result.error.message.includes('user_already_exists') || result.error.message.includes('already registered')) {
+            setError('Этот email уже зарегистрирован');
+          } else {
+            setError(result.error.message);
+          }
+        } else {
+          setSuccess('Письмо для подтверждения отправлено на вашу почту. Проверьте входящие и папку спам.');
+          setFormData({ email: '', password: '', fullName: '' });
+        }
       }
     } catch (err) {
       setError('Произошла ошибка. Попробуйте еще раз.');
@@ -171,31 +184,46 @@ export default function StudentAuth() {
               />
             </div>
 
-            <div style={{ marginBottom: '30px' }}>
-              <label htmlFor="password" style={{
-                display: 'block',
-                marginBottom: '10px',
-                fontSize: '16px',
-                color: 'var(--neon-cyan)',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                fontWeight: 600
-              }}>
-                Пароль *
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-                className="cyber-input"
-                placeholder={isLogin ? 'Введите пароль' : 'Минимум 6 символов'}
-                minLength={6}
-                autoComplete="current-password"
-              />
-            </div>
+            {isLogin && (
+              <div style={{ marginBottom: '30px' }}>
+                <label htmlFor="password" style={{
+                  display: 'block',
+                  marginBottom: '10px',
+                  fontSize: '16px',
+                  color: 'var(--neon-cyan)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  fontWeight: 600
+                }}>
+                  Пароль *
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  required
+                  className="cyber-input"
+                  placeholder="Введите пароль"
+                  minLength={6}
+                  autoComplete="current-password"
+                />
+                <div style={{ marginTop: '10px', textAlign: 'right' }}>
+                  <Link
+                    to="/student/forgot-password"
+                    style={{
+                      color: 'var(--neon-cyan)',
+                      fontSize: '14px',
+                      textDecoration: 'none',
+                      opacity: 0.8
+                    }}
+                  >
+                    Забыли пароль?
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {error && (
               <div style={{
@@ -212,6 +240,21 @@ export default function StudentAuth() {
               </div>
             )}
 
+            {success && (
+              <div style={{
+                marginBottom: '20px',
+                padding: '15px',
+                background: 'rgba(0, 255, 100, 0.1)',
+                border: '1px solid #00ff64',
+                borderRadius: '4px',
+                color: '#00ff64',
+                fontSize: '14px',
+                textAlign: 'center'
+              }}>
+                {success}
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading}
@@ -224,7 +267,7 @@ export default function StudentAuth() {
                 cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
-              {loading ? 'ЗАГРУЗКА...' : (isLogin ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ')}
+              {loading ? 'ЗАГРУЗКА...' : (isLogin ? 'ВОЙТИ' : 'ОТПРАВИТЬ ПИСЬМО')}
             </button>
           </form>
 
@@ -292,6 +335,7 @@ export default function StudentAuth() {
                   onClick={() => {
                     setIsLogin(false);
                     setError('');
+                    setSuccess('');
                   }}
                   style={{
                     background: 'none',
@@ -313,6 +357,7 @@ export default function StudentAuth() {
                   onClick={() => {
                     setIsLogin(true);
                     setError('');
+                    setSuccess('');
                   }}
                   style={{
                     background: 'none',
