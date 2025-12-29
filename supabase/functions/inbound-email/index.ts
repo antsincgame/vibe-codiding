@@ -73,27 +73,57 @@ Deno.serve(async (req: Request) => {
     if (!htmlContent && !textContent) {
       console.log(`No content in payload, fetching from Resend inbound API for email_id: ${emailData.email_id}`);
 
-      try {
-        const resendResponse = await fetch(`https://api.resend.com/emails/receiving/${emailData.email_id}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${resendApiKey}`,
-            'Content-Type': 'application/json'
+      const maxRetries = 3;
+      const retryDelay = 2000;
+
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          if (attempt > 1) {
+            console.log(`Retry attempt ${attempt}, waiting ${retryDelay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
           }
-        });
 
-        console.log('Resend inbound API response status:', resendResponse.status);
-        const responseText = await resendResponse.text();
-        console.log('Resend inbound API response:', responseText);
+          const resendResponse = await fetch(`https://api.resend.com/emails/receiving/${emailData.email_id}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${resendApiKey}`,
+              'Content-Type': 'application/json'
+            }
+          });
 
-        if (resendResponse.ok) {
-          const emailContent = JSON.parse(responseText);
-          htmlContent = emailContent.html || null;
-          textContent = emailContent.text || null;
-          console.log('Fetched content:', { hasHtml: !!htmlContent, hasText: !!textContent });
+          const responseText = await resendResponse.text();
+
+          await supabase.from('webhook_logs').insert({
+            payload: {
+              type: 'resend_api_response',
+              attempt,
+              email_id: emailData.email_id,
+              status: resendResponse.status,
+              response: responseText.substring(0, 5000)
+            }
+          });
+
+          console.log(`Resend API attempt ${attempt} - status: ${resendResponse.status}`);
+          console.log('Response:', responseText);
+
+          if (resendResponse.ok) {
+            const emailContent = JSON.parse(responseText);
+            htmlContent = emailContent.html || emailContent.body || null;
+            textContent = emailContent.text || emailContent.plain_text || null;
+
+            console.log('Parsed content:', {
+              hasHtml: !!htmlContent,
+              hasText: !!textContent,
+              allKeys: Object.keys(emailContent)
+            });
+
+            if (htmlContent || textContent) {
+              break;
+            }
+          }
+        } catch (error) {
+          console.error(`Error on attempt ${attempt}:`, error);
         }
-      } catch (error) {
-        console.error('Error fetching email content:', error);
       }
     }
 
