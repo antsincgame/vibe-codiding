@@ -45,14 +45,29 @@ function App() {
         <div className="scan-line" />
 
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/login" element={
+            <div className="app-layout">
+              <main className="app-content">
+                <Login />
+              </main>
+              <Footer />
+            </div>
+          } />
+          <Route path="/admin" element={
+            <div className="app-layout">
+              <main className="app-content">
+                <Admin />
+              </main>
+              <Footer />
+            </div>
+          } />
           <Route path="/student/login" element={
             <div className="app-layout">
               <Header />
               <main className="app-content">
                 <StudentAuth />
               </main>
+              <Footer />
             </div>
           } />
           <Route path="/student/confirm" element={
@@ -61,6 +76,7 @@ function App() {
               <main className="app-content">
                 <EmailConfirmation />
               </main>
+              <Footer />
             </div>
           } />
           <Route path="/student/verify" element={
@@ -69,6 +85,7 @@ function App() {
               <main className="app-content">
                 <VerifyEmail />
               </main>
+              <Footer />
             </div>
           } />
           <Route path="/student/forgot-password" element={
@@ -77,6 +94,7 @@ function App() {
               <main className="app-content">
                 <ForgotPassword />
               </main>
+              <Footer />
             </div>
           } />
           <Route path="/student/reset-password" element={
@@ -85,6 +103,7 @@ function App() {
               <main className="app-content">
                 <ResetPassword />
               </main>
+              <Footer />
             </div>
           } />
           <Route path="/auth/callback" element={<AuthCallback />} />
@@ -96,6 +115,7 @@ function App() {
                   <StudentDashboard />
                 </ProtectedRoute>
               </main>
+              <Footer />
             </div>
           } />
           <Route

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const validatePassword = (password: string) => {
@@ -18,6 +18,7 @@ const isPasswordValid = (password: string) => {
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const { resetPassword } = useAuth();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -25,6 +26,7 @@ export default function ResetPassword() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showRequirements, setShowRequirements] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   const token = searchParams.get('token');
   const email = searchParams.get('email');
@@ -63,10 +65,12 @@ export default function ResetPassword() {
       if (result.error) {
         const errorMsg = result.error.message.toLowerCase();
 
-        if (errorMsg.includes('invalid_token') || errorMsg.includes('invalid')) {
-          setError('Ссылка недействительна или уже была использована. Запросите новую ссылку для сброса пароля.');
-        } else if (errorMsg.includes('token_expired') || errorMsg.includes('expired')) {
-          setError('Срок действия ссылки истек. Запросите новую ссылку для сброса пароля.');
+        if (errorMsg.includes('token_expired') || errorMsg.includes('expired')) {
+          setTokenExpired(true);
+          setError('Срок действия ссылки истек.');
+        } else if (errorMsg.includes('invalid_token') || errorMsg.includes('invalid')) {
+          setTokenExpired(true);
+          setError('Ссылка недействительна или уже была использована.');
         } else if (errorMsg.includes('weak_password') || errorMsg.includes('weak') || errorMsg.includes('password')) {
           setError('Пароль не прошел проверку безопасности. Убедитесь, что пароль содержит минимум 8 символов, заглавные и строчные буквы, а также цифры.');
           setShowRequirements(true);
@@ -85,6 +89,50 @@ export default function ResetPassword() {
   };
 
   const passwordValidation = validatePassword(password);
+
+  if (tokenExpired) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        paddingTop: '120px',
+        paddingBottom: '60px',
+        paddingLeft: '20px',
+        paddingRight: '20px'
+      }}>
+        <div style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}>
+          <div className="cyber-card" style={{ padding: '40px' }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              margin: '0 auto 30px',
+              borderRadius: '50%',
+              background: 'rgba(255, 165, 0, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffa500" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <h2 style={{ color: '#ffa500', marginBottom: '20px', fontSize: '24px' }}>Ссылка устарела</h2>
+            <p style={{ marginBottom: '20px', opacity: 0.9, fontSize: '16px', lineHeight: '1.6' }}>
+              {error}
+            </p>
+            <p style={{ marginBottom: '30px', opacity: 0.7, fontSize: '14px' }}>
+              Для безопасности ссылки сброса пароля действительны ограниченное время.
+              Пожалуйста, запросите новую ссылку для сброса пароля.
+            </p>
+            <Link to="/student/forgot-password" className="cyber-button" style={{ display: 'inline-block' }}>
+              ОТПРАВИТЬ НОВУЮ ССЫЛКУ
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!token || !email) {
     return (
