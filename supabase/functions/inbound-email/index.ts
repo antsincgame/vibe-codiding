@@ -41,7 +41,12 @@ Deno.serve(async (req: Request) => {
     const resendApiKey = Deno.env.get('RESEND_API_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const payload: InboundEmailPayload = await req.json();
+    const rawPayload = await req.text();
+    console.log('Raw webhook payload:', rawPayload);
+
+    const payload = JSON.parse(rawPayload);
+
+    await supabase.from('webhook_logs').insert({ payload });
 
     console.log('Received inbound email webhook:', JSON.stringify(payload, null, 2));
 
@@ -55,34 +60,40 @@ Deno.serve(async (req: Request) => {
 
     const emailData = payload.data;
 
-    let htmlContent = null;
-    let textContent = null;
+    let htmlContent = emailData.html || null;
+    let textContent = emailData.text || null;
 
-    console.log(`Fetching full email content for email_id: ${emailData.email_id}`);
+    console.log('Content from webhook payload:', {
+      hasHtml: !!htmlContent,
+      hasText: !!textContent,
+      htmlLength: htmlContent?.length,
+      textLength: textContent?.length
+    });
 
-    try {
-      const resendResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${resendApiKey}`,
-          'Content-Type': 'application/json'
-        }
-      });
+    if (!htmlContent && !textContent) {
+      console.log(`No content in payload, trying to fetch from Resend API for email_id: ${emailData.email_id}`);
 
-      if (resendResponse.ok) {
-        const emailContent = await resendResponse.json();
-        htmlContent = emailContent.html || null;
-        textContent = emailContent.text || null;
-        console.log('Successfully fetched email content from Resend API', {
-          hasHtml: !!htmlContent,
-          hasText: !!textContent
+      try {
+        const resendResponse = await fetch(`https://api.resend.com/emails/${emailData.email_id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json'
+          }
         });
-      } else {
-        const errorText = await resendResponse.text();
-        console.error('Failed to fetch email content from Resend:', resendResponse.status, errorText);
+
+        console.log('Resend API response status:', resendResponse.status);
+        const responseText = await resendResponse.text();
+        console.log('Resend API response:', responseText);
+
+        if (resendResponse.ok) {
+          const emailContent = JSON.parse(responseText);
+          htmlContent = emailContent.html || emailContent.body || null;
+          textContent = emailContent.text || null;
+        }
+      } catch (error) {
+        console.error('Error fetching email content:', error);
       }
-    } catch (error) {
-      console.error('Error fetching email content:', error);
     }
 
     const fromMatch = emailData.from.match(/^(.+?)\s*<(.+?)>$/) || [null, null, emailData.from];
