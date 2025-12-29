@@ -2,6 +2,19 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
+const validatePassword = (password: string) => {
+  const hasMinLength = password.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  return { hasMinLength, hasUpperCase, hasLowerCase, hasNumber };
+};
+
+const isPasswordValid = (password: string) => {
+  const { hasMinLength, hasUpperCase, hasLowerCase, hasNumber } = validatePassword(password);
+  return hasMinLength && hasUpperCase && hasLowerCase && hasNumber;
+};
+
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const { resetPassword } = useAuth();
@@ -11,6 +24,7 @@ export default function ResetPassword() {
   const [success, setSuccess] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showRequirements, setShowRequirements] = useState(false);
 
   const token = searchParams.get('token');
   const email = searchParams.get('email');
@@ -25,8 +39,9 @@ export default function ResetPassword() {
     e.preventDefault();
     setError('');
 
-    if (password.length < 6) {
-      setError('Пароль должен содержать минимум 6 символов');
+    if (!isPasswordValid(password)) {
+      setError('Пароль не соответствует требованиям безопасности');
+      setShowRequirements(true);
       return;
     }
 
@@ -45,6 +60,9 @@ export default function ResetPassword() {
           setError('Ссылка недействительна. Запросите новую ссылку для сброса пароля.');
         } else if (result.error.message.includes('token_expired') || result.error.message.includes('expired')) {
           setError('Срок действия ссылки истек. Запросите новую ссылку для сброса пароля.');
+        } else if (result.error.message.includes('update_failed') || result.error.message.includes('weak')) {
+          setError('Пароль слишком простой. Используйте более сложный пароль.');
+          setShowRequirements(true);
         } else {
           setError(result.error.message);
         }
@@ -57,6 +75,8 @@ export default function ResetPassword() {
       setLoading(false);
     }
   };
+
+  const passwordValidation = validatePassword(password);
 
   if (!token || !email) {
     return (
@@ -189,13 +209,67 @@ export default function ResetPassword() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setShowRequirements(true);
+                }}
+                onFocus={() => setShowRequirements(true)}
                 required
                 className="cyber-input"
-                placeholder="Минимум 6 символов"
-                minLength={6}
+                placeholder="Введите надежный пароль"
+                minLength={8}
                 autoComplete="new-password"
               />
+              {showRequirements && (
+                <div style={{
+                  marginTop: '12px',
+                  padding: '12px',
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '6px',
+                  fontSize: '13px'
+                }}>
+                  <div style={{ marginBottom: '8px', opacity: 0.8 }}>Требования к паролю:</div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '4px',
+                    color: passwordValidation.hasMinLength ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                  }}>
+                    <span>{passwordValidation.hasMinLength ? '+' : '-'}</span>
+                    <span>Минимум 8 символов</span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '4px',
+                    color: passwordValidation.hasUpperCase ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                  }}>
+                    <span>{passwordValidation.hasUpperCase ? '+' : '-'}</span>
+                    <span>Заглавная буква (A-Z)</span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '4px',
+                    color: passwordValidation.hasLowerCase ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                  }}>
+                    <span>{passwordValidation.hasLowerCase ? '+' : '-'}</span>
+                    <span>Строчная буква (a-z)</span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    color: passwordValidation.hasNumber ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                  }}>
+                    <span>{passwordValidation.hasNumber ? '+' : '-'}</span>
+                    <span>Цифра (0-9)</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div style={{ marginBottom: '30px' }}>
@@ -218,7 +292,7 @@ export default function ResetPassword() {
                 required
                 className="cyber-input"
                 placeholder="Повторите пароль"
-                minLength={6}
+                minLength={8}
                 autoComplete="new-password"
               />
             </div>

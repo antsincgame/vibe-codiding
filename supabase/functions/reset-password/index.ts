@@ -7,6 +7,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
+const validatePassword = (password: string) => {
+  const hasMinLength = password.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  return hasMinLength && hasUpperCase && hasLowerCase && hasNumber;
+};
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, {
@@ -31,9 +39,12 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (newPassword.length < 6) {
+    if (!validatePassword(newPassword)) {
       return new Response(
-        JSON.stringify({ error: 'Password must be at least 6 characters' }),
+        JSON.stringify({ 
+          error: 'weak_password', 
+          message: 'Password must be at least 8 characters and contain uppercase, lowercase letters and numbers' 
+        }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -96,6 +107,12 @@ Deno.serve(async (req: Request) => {
 
     if (updateError) {
       console.error('Password update error:', updateError);
+      if (updateError.message.includes('weak') || updateError.message.includes('password')) {
+        return new Response(
+          JSON.stringify({ error: 'weak_password', message: 'Password is too weak. Please use a stronger password.' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       return new Response(
         JSON.stringify({ error: 'update_failed', message: `Failed to update password: ${updateError.message}` }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
