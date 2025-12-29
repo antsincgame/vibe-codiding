@@ -44,7 +44,12 @@ export default function ResetPassword() {
         return;
       }
 
+      console.log('Verifying token:', token);
+      console.log('For email:', email);
+
       const result = await verifyResetToken(token, email);
+
+      console.log('Token verification result:', result);
 
       if (!result.valid) {
         setTokenExpired(true);
@@ -83,6 +88,9 @@ export default function ResetPassword() {
       const result = await resetPassword(token!, email!, password);
 
       if (result.error) {
+        console.log('Reset password error:', result.error);
+        console.log('Error message:', result.error.message);
+
         const errorMsg = result.error.message.toLowerCase();
 
         if (errorMsg.includes('token_expired') || errorMsg.includes('expired')) {
