@@ -7,12 +7,17 @@ const validatePassword = (password: string) => {
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
   const hasNumber = /[0-9]/.test(password);
-  return { hasMinLength, hasUpperCase, hasLowerCase, hasNumber };
+
+  const hasRepeatingChars = /(.)\1{2,}/.test(password);
+  const hasSequentialNumbers = /012|123|234|345|456|567|678|789|987|876|765|654|543|432|321|210/.test(password);
+  const noSimplePattern = !hasRepeatingChars && !hasSequentialNumbers;
+
+  return { hasMinLength, hasUpperCase, hasLowerCase, hasNumber, noSimplePattern };
 };
 
 const isPasswordValid = (password: string) => {
-  const { hasMinLength, hasUpperCase, hasLowerCase, hasNumber } = validatePassword(password);
-  return hasMinLength && hasUpperCase && hasLowerCase && hasNumber;
+  const { hasMinLength, hasUpperCase, hasLowerCase, hasNumber, noSimplePattern } = validatePassword(password);
+  return hasMinLength && hasUpperCase && hasLowerCase && hasNumber && noSimplePattern;
 };
 
 export default function ResetPassword() {
@@ -73,8 +78,11 @@ export default function ResetPassword() {
         } else if (errorMsg.includes('invalid_token') || errorMsg.includes('invalid')) {
           setTokenExpired(true);
           setError('Ссылка недействительна или уже была использована.');
-        } else if (errorMsg.includes('weak_password') || errorMsg.includes('weak') || errorMsg.includes('password')) {
-          setError('Пароль не прошел проверку безопасности. Убедитесь, что пароль содержит минимум 8 символов, заглавные и строчные буквы, а также цифры.');
+        } else if (errorMsg.includes('weak_password') || errorMsg.includes('weak') || errorMsg.includes('too weak')) {
+          setError('Пароль слишком простой. Попробуйте использовать менее предсказуемую комбинацию символов (избегайте повторяющихся цифр, последовательностей и распространенных паттернов).');
+          setShowRequirements(true);
+        } else if (errorMsg.includes('password')) {
+          setError(result.error.message);
           setShowRequirements(true);
         } else {
           setError(`Ошибка: ${result.error.message}`);
@@ -359,10 +367,20 @@ export default function ResetPassword() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
+                    marginBottom: '4px',
                     color: passwordValidation.hasNumber ? '#00ff64' : 'rgba(255,255,255,0.5)'
                   }}>
                     <span>{passwordValidation.hasNumber ? '+' : '-'}</span>
                     <span>Цифра (0-9)</span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    color: passwordValidation.noSimplePattern ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                  }}>
+                    <span>{passwordValidation.noSimplePattern ? '+' : '-'}</span>
+                    <span>Без повторов и последовательностей (aaa, 123)</span>
                   </div>
                 </div>
               )}
