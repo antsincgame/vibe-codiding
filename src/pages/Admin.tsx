@@ -5,6 +5,7 @@ import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../l
 import { renderMarkdown, stripMarkdown } from '../lib/markdown';
 import EmailSettingsManager from '../components/EmailSettingsManager';
 import EmailLogsManager from '../components/EmailLogsManager';
+import InboxManager from '../components/InboxManager';
 import AdminFormField from '../components/AdminFormField';
 import CourseLessonsManager from '../components/CourseLessonsManager';
 import VideoTestimonialsManager from '../components/VideoTestimonialsManager';
@@ -22,7 +23,7 @@ interface UserProfile {
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'email-logs' | 'users'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'email-logs' | 'inbox' | 'users'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -514,6 +515,17 @@ export default function Admin() {
             }}
           >
             Логи Email
+          </button>
+          <button
+            onClick={() => setActiveTab('inbox')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'inbox' ? 1 : 0.5,
+              borderColor: '#ec4899',
+              color: '#ec4899'
+            }}
+          >
+            Входящие письма
           </button>
           <button
             onClick={() => setActiveTab('users')}
@@ -1045,6 +1057,10 @@ export default function Admin() {
 
         {activeTab === 'email-logs' && (
           <EmailLogsManager />
+        )}
+
+        {activeTab === 'inbox' && (
+          <InboxManager />
         )}
 
         {activeTab === 'users' && (
