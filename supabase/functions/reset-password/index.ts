@@ -7,12 +7,28 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const validatePassword = (password: string) => {
-  const hasMinLength = password.length >= 8;
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-  return hasMinLength && hasUpperCase && hasLowerCase && hasNumber;
+const validatePassword = (password: string): { valid: boolean; message?: string } => {
+  if (!password || typeof password !== 'string') {
+    return { valid: false, message: 'Password is required' };
+  }
+
+  if (password.length < 8) {
+    return { valid: false, message: 'Password must be at least 8 characters long' };
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return { valid: false, message: 'Password must contain at least one uppercase letter (A-Z)' };
+  }
+
+  if (!/[a-z]/.test(password)) {
+    return { valid: false, message: 'Password must contain at least one lowercase letter (a-z)' };
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return { valid: false, message: 'Password must contain at least one number (0-9)' };
+  }
+
+  return { valid: true };
 };
 
 Deno.serve(async (req: Request) => {
@@ -31,7 +47,7 @@ Deno.serve(async (req: Request) => {
     });
 
     const { token, email, newPassword } = await req.json();
-    
+
     if (!token || !email || !newPassword) {
       return new Response(
         JSON.stringify({ error: 'Token, email and new password are required' }),
@@ -39,11 +55,13 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (!validatePassword(newPassword)) {
+    const passwordValidation = validatePassword(newPassword);
+    if (!passwordValidation.valid) {
+      console.log('Password validation failed:', passwordValidation.message);
       return new Response(
-        JSON.stringify({ 
-          error: 'weak_password', 
-          message: 'Password must be at least 8 characters and contain uppercase, lowercase letters and numbers' 
+        JSON.stringify({
+          error: 'weak_password',
+          message: passwordValidation.message || 'Password does not meet security requirements'
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

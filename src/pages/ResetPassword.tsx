@@ -39,8 +39,13 @@ export default function ResetPassword() {
     e.preventDefault();
     setError('');
 
+    if (password.trim() !== password || confirmPassword.trim() !== confirmPassword) {
+      setError('Пароль не должен содержать пробелы в начале или конце');
+      return;
+    }
+
     if (!isPasswordValid(password)) {
-      setError('Пароль не соответствует требованиям безопасности');
+      setError('Пароль не соответствует требованиям безопасности. Проверьте все требования ниже.');
       setShowRequirements(true);
       return;
     }
@@ -56,20 +61,23 @@ export default function ResetPassword() {
       const result = await resetPassword(token!, email!, password);
 
       if (result.error) {
-        if (result.error.message.includes('invalid_token') || result.error.message.includes('Invalid')) {
-          setError('Ссылка недействительна. Запросите новую ссылку для сброса пароля.');
-        } else if (result.error.message.includes('token_expired') || result.error.message.includes('expired')) {
+        const errorMsg = result.error.message.toLowerCase();
+
+        if (errorMsg.includes('invalid_token') || errorMsg.includes('invalid')) {
+          setError('Ссылка недействительна или уже была использована. Запросите новую ссылку для сброса пароля.');
+        } else if (errorMsg.includes('token_expired') || errorMsg.includes('expired')) {
           setError('Срок действия ссылки истек. Запросите новую ссылку для сброса пароля.');
-        } else if (result.error.message.includes('update_failed') || result.error.message.includes('weak')) {
-          setError('Пароль слишком простой. Используйте более сложный пароль.');
+        } else if (errorMsg.includes('weak_password') || errorMsg.includes('weak') || errorMsg.includes('password')) {
+          setError('Пароль не прошел проверку безопасности. Убедитесь, что пароль содержит минимум 8 символов, заглавные и строчные буквы, а также цифры.');
           setShowRequirements(true);
         } else {
-          setError(result.error.message);
+          setError(`Ошибка: ${result.error.message}`);
         }
       } else {
         setSuccess(true);
       }
     } catch (err) {
+      console.error('Reset password error:', err);
       setError('Произошла ошибка. Попробуйте еще раз.');
     } finally {
       setLoading(false);
