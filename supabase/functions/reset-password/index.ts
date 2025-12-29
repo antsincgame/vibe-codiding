@@ -47,7 +47,15 @@ Deno.serve(async (req: Request) => {
       .is('used_at', null)
       .maybeSingle();
 
-    if (tokenError || !tokenData) {
+    if (tokenError) {
+      console.error('Token lookup error:', tokenError);
+      return new Response(
+        JSON.stringify({ error: 'invalid_token', message: 'Error looking up token' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!tokenData) {
       return new Response(
         JSON.stringify({ error: 'invalid_token', message: 'Invalid or expired reset link' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -64,7 +72,19 @@ Deno.serve(async (req: Request) => {
 
     if (!tokenData.user_id) {
       return new Response(
-        JSON.stringify({ error: 'invalid_token', message: 'Invalid reset token' }),
+        JSON.stringify({ error: 'invalid_token', message: 'Invalid reset token - no user associated' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Attempting to update password for user:', tokenData.user_id);
+
+    const { data: userData, error: userError } = await supabase.auth.admin.getUserById(tokenData.user_id);
+    
+    if (userError || !userData.user) {
+      console.error('User lookup error:', userError);
+      return new Response(
+        JSON.stringify({ error: 'user_not_found', message: 'User not found in system' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -77,7 +97,7 @@ Deno.serve(async (req: Request) => {
     if (updateError) {
       console.error('Password update error:', updateError);
       return new Response(
-        JSON.stringify({ error: 'update_failed', message: updateError.message }),
+        JSON.stringify({ error: 'update_failed', message: `Failed to update password: ${updateError.message}` }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -93,6 +113,8 @@ Deno.serve(async (req: Request) => {
       .eq('email', email)
       .eq('token_type', 'password_reset')
       .is('used_at', null);
+
+    console.log('Password updated successfully for user:', tokenData.user_id);
 
     return new Response(
       JSON.stringify({ success: true, message: 'Password updated successfully' }),
