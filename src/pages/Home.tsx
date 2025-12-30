@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
 import type { Course, HomePageSettings, VideoTestimonial } from '../types';
 import CourseProgram from '../components/CourseProgram';
+import TargetAudienceSection from '../components/TargetAudienceSection';
 
 const defaultSettings: HomePageSettings = {
   title: 'VIBECODING',
@@ -187,6 +188,8 @@ export default function Home() {
             Это означает, что программирование теперь доступно каждому — <strong>обучение вайб кодингу</strong> и <strong>курсы Cursor AI</strong> помогут вам начать путь в IT независимо от возраста, образования или предыдущего опыта.
           </p>
         </div>
+
+        <TargetAudienceSection />
 
         <h2 style={{
           fontSize: 'clamp(32px, 5vw, 48px)',
