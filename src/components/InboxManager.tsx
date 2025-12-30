@@ -33,6 +33,8 @@ export default function InboxManager() {
   const [showReplyEditor, setShowReplyEditor] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [sending, setSending] = useState(false);
+  const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
+  const [selectionMode, setSelectionMode] = useState(false);
 
   useEffect(() => {
     fetchEmails();
@@ -111,6 +113,66 @@ export default function InboxManager() {
       }
     } catch (error) {
       console.error('Error deleting email:', error);
+    }
+  };
+
+  const toggleEmailSelection = (emailId: string) => {
+    const newSelection = new Set(selectedEmails);
+    if (newSelection.has(emailId)) {
+      newSelection.delete(emailId);
+    } else {
+      newSelection.add(emailId);
+    }
+    setSelectedEmails(newSelection);
+  };
+
+  const selectAllEmails = () => {
+    if (selectedEmails.size === emails.length) {
+      setSelectedEmails(new Set());
+    } else {
+      setSelectedEmails(new Set(emails.map(e => e.id)));
+    }
+  };
+
+  const bulkArchive = async () => {
+    if (selectedEmails.size === 0) return;
+
+    try {
+      const isArchived = filter === 'archived';
+      await supabase
+        .from('inbox')
+        .update({ is_archived: !isArchived, updated_at: new Date().toISOString() })
+        .in('id', Array.from(selectedEmails));
+
+      setSelectedEmails(new Set());
+      setSelectionMode(false);
+      fetchEmails();
+    } catch (error) {
+      console.error('Error archiving emails:', error);
+      alert('Ошибка при архивировании писем');
+    }
+  };
+
+  const bulkDelete = async () => {
+    if (selectedEmails.size === 0) return;
+
+    if (!confirm(`Удалить выбранные письма (${selectedEmails.size})?`)) return;
+
+    try {
+      await supabase
+        .from('inbox')
+        .delete()
+        .in('id', Array.from(selectedEmails));
+
+      setSelectedEmails(new Set());
+      setSelectionMode(false);
+      if (selectedEmail && selectedEmails.has(selectedEmail.id)) {
+        setSelectedEmail(null);
+      }
+      fetchEmails();
+    } catch (error) {
+      console.error('Error deleting emails:', error);
+      alert('Ошибка при удалении писем');
     }
   };
 
@@ -226,6 +288,21 @@ export default function InboxManager() {
           ))}
         </div>
         <button
+          onClick={() => {
+            setSelectionMode(!selectionMode);
+            setSelectedEmails(new Set());
+          }}
+          className="cyber-button"
+          style={{
+            padding: '8px 20px',
+            background: selectionMode ? 'var(--neon-cyan)' : undefined,
+            color: selectionMode ? '#000' : undefined,
+            borderColor: selectionMode ? 'var(--neon-cyan)' : undefined
+          }}
+        >
+          {selectionMode ? 'ОТМЕНИТЬ ВЫБОР' : 'ВЫБРАТЬ'}
+        </button>
+        <button
           onClick={fetchEmails}
           className="cyber-button"
           style={{ marginLeft: 'auto', padding: '8px 20px' }}
@@ -233,6 +310,64 @@ export default function InboxManager() {
           ОБНОВИТЬ
         </button>
       </div>
+
+      {selectionMode && (
+        <div style={{
+          marginBottom: '20px',
+          padding: '15px',
+          background: 'rgba(0, 255, 255, 0.1)',
+          border: '1px solid var(--neon-cyan)',
+          borderRadius: '8px',
+          display: 'flex',
+          gap: '15px',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ color: 'var(--neon-cyan)', fontSize: '14px' }}>
+            Выбрано: {selectedEmails.size} из {emails.length}
+          </div>
+          <button
+            onClick={selectAllEmails}
+            className="cyber-button"
+            style={{
+              padding: '6px 16px',
+              fontSize: '13px',
+              borderColor: 'var(--neon-cyan)',
+              color: 'var(--neon-cyan)'
+            }}
+          >
+            {selectedEmails.size === emails.length ? 'СНЯТЬ ВСЕ' : 'ВЫБРАТЬ ВСЕ'}
+          </button>
+          {selectedEmails.size > 0 && (
+            <>
+              <button
+                onClick={bulkArchive}
+                className="cyber-button"
+                style={{
+                  padding: '6px 16px',
+                  fontSize: '13px',
+                  borderColor: 'var(--neon-green)',
+                  color: 'var(--neon-green)'
+                }}
+              >
+                {filter === 'archived' ? 'РАЗАРХИВИРОВАТЬ' : 'В АРХИВ'}
+              </button>
+              <button
+                onClick={bulkDelete}
+                className="cyber-button"
+                style={{
+                  padding: '6px 16px',
+                  fontSize: '13px',
+                  borderColor: 'var(--neon-pink)',
+                  color: 'var(--neon-pink)'
+                }}
+              >
+                УДАЛИТЬ
+              </button>
+            </>
+          )}
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: selectedEmail ? '350px 1fr' : '1fr', gap: '20px', minHeight: '600px' }}>
         <div style={{
@@ -258,16 +393,26 @@ export default function InboxManager() {
               {emails.map((email) => (
                 <div
                   key={email.id}
-                  onClick={() => selectEmail(email)}
+                  onClick={() => {
+                    if (selectionMode) {
+                      toggleEmailSelection(email.id);
+                    } else {
+                      selectEmail(email);
+                    }
+                  }}
                   style={{
                     padding: '15px',
-                    background: selectedEmail?.id === email.id
+                    background: selectionMode && selectedEmails.has(email.id)
+                      ? 'rgba(0, 255, 255, 0.15)'
+                      : selectedEmail?.id === email.id
                       ? 'rgba(0, 255, 100, 0.2)'
                       : email.is_read
                       ? 'rgba(0, 255, 100, 0.05)'
                       : 'rgba(0, 255, 100, 0.1)',
                     border: `1px solid ${
-                      selectedEmail?.id === email.id
+                      selectionMode && selectedEmails.has(email.id)
+                        ? 'var(--neon-cyan)'
+                        : selectedEmail?.id === email.id
                         ? 'var(--neon-green)'
                         : email.is_read
                         ? 'rgba(0, 255, 100, 0.2)'
@@ -279,19 +424,36 @@ export default function InboxManager() {
                   }}
                   onMouseEnter={(e) => {
                     if (selectedEmail?.id !== email.id) {
-                      e.currentTarget.style.borderColor = 'var(--neon-green)';
+                      e.currentTarget.style.borderColor = selectionMode ? 'var(--neon-cyan)' : 'var(--neon-green)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedEmail?.id !== email.id) {
-                      e.currentTarget.style.borderColor = email.is_read
+                      e.currentTarget.style.borderColor = selectionMode && selectedEmails.has(email.id)
+                        ? 'var(--neon-cyan)'
+                        : email.is_read
                         ? 'rgba(0, 255, 100, 0.2)'
                         : 'var(--neon-green)';
                     }
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
-                    {!email.is_read && (
+                    {selectionMode && (
+                      <input
+                        type="checkbox"
+                        checked={selectedEmails.has(email.id)}
+                        onChange={() => toggleEmailSelection(email.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                          cursor: 'pointer',
+                          accentColor: 'var(--neon-cyan)',
+                          flexShrink: 0
+                        }}
+                      />
+                    )}
+                    {!email.is_read && !selectionMode && (
                       <span style={{
                         width: '6px',
                         height: '6px',
@@ -302,7 +464,7 @@ export default function InboxManager() {
                       }} />
                     )}
                     <strong style={{
-                      color: 'var(--neon-green)',
+                      color: selectionMode && selectedEmails.has(email.id) ? 'var(--neon-cyan)' : 'var(--neon-green)',
                       fontSize: '14px',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
