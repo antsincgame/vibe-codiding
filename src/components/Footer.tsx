@@ -185,6 +185,21 @@ export default function Footer() {
                 {settings.phone || '+375 (29) 282-88-78'}
               </a>
             </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ flexShrink: 0 }}>✉️</span>
+              <a
+                href="mailto:info@vibe-coding.by"
+                style={{
+                  color: 'inherit',
+                  textDecoration: 'none',
+                  transition: 'color 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--neon-cyan)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
+              >
+                info@vibe-coding.by
+              </a>
+            </div>
             <div style={{ display: 'flex', gap: '15px', marginTop: '5px', alignItems: 'center' }}>
               <a
                 href="https://t.me/dzmitryarlou"
