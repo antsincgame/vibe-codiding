@@ -38,20 +38,39 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const resendApiKey = Deno.env.get('RESEND_API_KEY')!;
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    console.log('[DEBUG] Environment check:', {
+      hasSupabaseUrl: !!supabaseUrl,
+      hasServiceKey: !!supabaseServiceKey,
+      hasResendKey: !!resendApiKey,
+      resendKeyPrefix: resendApiKey?.substring(0, 8) || 'NOT_SET'
+    });
+
     const rawPayload = await req.text();
-    console.log('Raw webhook payload:', rawPayload);
+    console.log('[DEBUG] Raw webhook payload received, length:', rawPayload.length);
+    console.log('[DEBUG] Raw payload content:', rawPayload.substring(0, 1000));
 
     const payload = JSON.parse(rawPayload);
 
-    await supabase.from('webhook_logs').insert({ payload });
+    await supabase.from('webhook_logs').insert({
+      payload: {
+        ...payload,
+        debug_info: {
+          timestamp: new Date().toISOString(),
+          has_resend_key: !!resendApiKey,
+          payload_keys: Object.keys(payload),
+          data_keys: payload.data ? Object.keys(payload.data) : []
+        }
+      }
+    });
 
-    console.log('Received inbound email webhook:', JSON.stringify(payload, null, 2));
+    console.log('[DEBUG] Webhook event type:', payload.type);
+    console.log('[DEBUG] Full payload structure:', JSON.stringify(payload, null, 2));
 
     if (payload.type !== 'email.received') {
-      console.log('Not an email.received event, skipping');
+      console.log('[DEBUG] Not an email.received event, skipping');
       return new Response(
         JSON.stringify({ success: true, message: 'Event type not handled' }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -59,11 +78,22 @@ Deno.serve(async (req: Request) => {
     }
 
     const emailData = payload.data;
+    console.log('[DEBUG] Email data structure:', {
+      email_id: emailData.email_id,
+      from: emailData.from,
+      to: emailData.to,
+      subject: emailData.subject,
+      hasHtml: !!emailData.html,
+      hasText: !!emailData.text,
+      htmlLength: emailData.html?.length || 0,
+      textLength: emailData.text?.length || 0,
+      allKeys: Object.keys(emailData)
+    });
 
     let htmlContent = emailData.html || null;
     let textContent = emailData.text || null;
 
-    console.log('Content from webhook payload:', {
+    console.log('[DEBUG] Content from webhook payload:', {
       hasHtml: !!htmlContent,
       hasText: !!textContent,
       htmlLength: htmlContent?.length,
@@ -71,60 +101,102 @@ Deno.serve(async (req: Request) => {
     });
 
     if (!htmlContent && !textContent) {
-      console.log(`No content in payload, fetching from Resend inbound API for email_id: ${emailData.email_id}`);
+      console.log(`[DEBUG] No content in payload, will fetch from Resend API`);
+      console.log(`[DEBUG] Email ID: ${emailData.email_id}`);
+      console.log(`[DEBUG] Has Resend API key: ${!!resendApiKey}`);
 
-      const maxRetries = 3;
-      const retryDelay = 2000;
-
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          if (attempt > 1) {
-            console.log(`Retry attempt ${attempt}, waiting ${retryDelay}ms...`);
-            await new Promise(resolve => setTimeout(resolve, retryDelay));
+      if (!resendApiKey) {
+        console.error('[ERROR] RESEND_API_KEY not found in environment variables!');
+        await supabase.from('webhook_logs').insert({
+          payload: {
+            type: 'error',
+            message: 'RESEND_API_KEY not configured',
+            email_id: emailData.email_id
           }
+        });
+      } else {
+        const maxRetries = 3;
+        const retryDelay = 2000;
 
-          const resendResponse = await fetch(`https://api.resend.com/emails/received/${emailData.email_id}`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${resendApiKey}`,
-              'Content-Type': 'application/json'
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            if (attempt > 1) {
+              console.log(`[DEBUG] Retry attempt ${attempt}, waiting ${retryDelay}ms...`);
+              await new Promise(resolve => setTimeout(resolve, retryDelay));
             }
-          });
 
-          const responseText = await resendResponse.text();
+            const apiUrl = `https://api.resend.com/emails/${emailData.email_id}`;
+            console.log(`[DEBUG] Fetching from: ${apiUrl}`);
+            console.log(`[DEBUG] Using API key prefix: ${resendApiKey.substring(0, 8)}...`);
 
-          await supabase.from('webhook_logs').insert({
-            payload: {
-              type: 'resend_api_response',
-              attempt,
-              email_id: emailData.email_id,
-              status: resendResponse.status,
-              response: responseText.substring(0, 5000)
-            }
-          });
-
-          console.log(`Resend API attempt ${attempt} - status: ${resendResponse.status}`);
-          console.log('Response:', responseText);
-
-          if (resendResponse.ok) {
-            const emailContent = JSON.parse(responseText);
-            htmlContent = emailContent.html || emailContent.body || null;
-            textContent = emailContent.text || emailContent.plain_text || null;
-
-            console.log('Parsed content:', {
-              hasHtml: !!htmlContent,
-              hasText: !!textContent,
-              allKeys: Object.keys(emailContent)
+            const resendResponse = await fetch(apiUrl, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${resendApiKey}`,
+                'Content-Type': 'application/json'
+              }
             });
 
-            if (htmlContent || textContent) {
-              break;
+            const responseText = await resendResponse.text();
+
+            console.log(`[DEBUG] API Response status: ${resendResponse.status}`);
+            console.log(`[DEBUG] API Response headers:`, Object.fromEntries(resendResponse.headers.entries()));
+            console.log(`[DEBUG] API Response body (first 500 chars):`, responseText.substring(0, 500));
+
+            await supabase.from('webhook_logs').insert({
+              payload: {
+                type: 'resend_api_response',
+                attempt,
+                email_id: emailData.email_id,
+                status: resendResponse.status,
+                url: apiUrl,
+                response_preview: responseText.substring(0, 1000),
+                response_full_length: responseText.length
+              }
+            });
+
+            if (resendResponse.ok) {
+              const emailContent = JSON.parse(responseText);
+              console.log(`[DEBUG] Parsed response keys:`, Object.keys(emailContent));
+
+              htmlContent = emailContent.html || emailContent.body || null;
+              textContent = emailContent.text || emailContent.plain_text || null;
+
+              console.log('[DEBUG] Extracted content:', {
+                hasHtml: !!htmlContent,
+                hasText: !!textContent,
+                htmlLength: htmlContent?.length || 0,
+                textLength: textContent?.length || 0
+              });
+
+              if (htmlContent || textContent) {
+                console.log('[DEBUG] Content successfully retrieved!');
+                break;
+              } else {
+                console.log('[WARN] API returned OK but no content found');
+              }
+            } else {
+              console.error(`[ERROR] API returned status ${resendResponse.status}:`, responseText);
             }
+          } catch (error) {
+            console.error(`[ERROR] Exception on attempt ${attempt}:`, error);
+            await supabase.from('webhook_logs').insert({
+              payload: {
+                type: 'error',
+                attempt,
+                email_id: emailData.email_id,
+                error: error instanceof Error ? error.message : String(error)
+              }
+            });
           }
-        } catch (error) {
-          console.error(`Error on attempt ${attempt}:`, error);
+        }
+
+        if (!htmlContent && !textContent) {
+          console.error('[ERROR] Failed to retrieve content after all retries');
         }
       }
+    } else {
+      console.log('[DEBUG] Content found in webhook payload, no API call needed');
     }
 
     const fromMatch = emailData.from.match(/^(.+?)\s*<(.+?)>$/) || [null, null, emailData.from];
@@ -187,31 +259,45 @@ Deno.serve(async (req: Request) => {
       }
     }
 
+    const emailToInsert = {
+      message_id: emailData.email_id,
+      from_email: fromEmail,
+      from_name: fromName,
+      to_email: emailData.to[0],
+      subject: emailData.subject || '(No subject)',
+      text_content: textContent,
+      html_content: htmlContent,
+      headers: {},
+      attachments: attachmentsMetadata,
+      is_read: false,
+      is_archived: false
+    };
+
+    console.log('[DEBUG] Inserting into inbox:', {
+      message_id: emailToInsert.message_id,
+      from_email: emailToInsert.from_email,
+      to_email: emailToInsert.to_email,
+      subject: emailToInsert.subject,
+      has_text: !!emailToInsert.text_content,
+      has_html: !!emailToInsert.html_content,
+      text_length: emailToInsert.text_content?.length || 0,
+      html_length: emailToInsert.html_content?.length || 0,
+      attachments_count: emailToInsert.attachments.length
+    });
+
     const { error: insertError } = await supabase
       .from('inbox')
-      .insert({
-        message_id: emailData.email_id,
-        from_email: fromEmail,
-        from_name: fromName,
-        to_email: emailData.to[0],
-        subject: emailData.subject || '(No subject)',
-        text_content: textContent,
-        html_content: htmlContent,
-        headers: {},
-        attachments: attachmentsMetadata,
-        is_read: false,
-        is_archived: false
-      });
+      .insert(emailToInsert);
 
     if (insertError) {
-      console.error('Error inserting email into inbox:', insertError);
+      console.error('[ERROR] Failed to insert into inbox:', insertError);
       return new Response(
         JSON.stringify({ error: 'Failed to store email', details: insertError.message }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Successfully stored email ${emailData.email_id} with ${attachmentsMetadata.length} attachments`);
+    console.log(`[SUCCESS] Email ${emailData.email_id} stored successfully with ${attachmentsMetadata.length} attachments and ${htmlContent || textContent ? 'WITH' : 'WITHOUT'} content`);
 
     return new Response(
       JSON.stringify({
