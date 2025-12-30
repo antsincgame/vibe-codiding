@@ -125,7 +125,7 @@ Deno.serve(async (req: Request) => {
               await new Promise(resolve => setTimeout(resolve, retryDelay));
             }
 
-            const apiUrl = `https://api.resend.com/emails/${emailData.email_id}`;
+            const apiUrl = `https://api.resend.com/emails/receiving/${emailData.email_id}`;
             console.log(`[DEBUG] Fetching from: ${apiUrl}`);
             console.log(`[DEBUG] Using API key prefix: ${resendApiKey.substring(0, 8)}...`);
 
@@ -157,23 +157,38 @@ Deno.serve(async (req: Request) => {
 
             if (resendResponse.ok) {
               const emailContent = JSON.parse(responseText);
-              console.log(`[DEBUG] Parsed response keys:`, Object.keys(emailContent));
+              console.log(`[DEBUG] Parsed response - all keys:`, Object.keys(emailContent));
+              console.log(`[DEBUG] Full API response:`, JSON.stringify(emailContent, null, 2));
 
-              htmlContent = emailContent.html || emailContent.body || null;
-              textContent = emailContent.text || emailContent.plain_text || null;
+              await supabase.from('webhook_logs').insert({
+                payload: {
+                  type: 'resend_api_parsed_response',
+                  email_id: emailData.email_id,
+                  all_keys: Object.keys(emailContent),
+                  html_exists: 'html' in emailContent,
+                  text_exists: 'text' in emailContent,
+                  body_exists: 'body' in emailContent,
+                  content_sample: JSON.stringify(emailContent).substring(0, 2000)
+                }
+              });
+
+              htmlContent = emailContent.html || emailContent.body || emailContent.html_body || null;
+              textContent = emailContent.text || emailContent.plain_text || emailContent.text_body || null;
 
               console.log('[DEBUG] Extracted content:', {
                 hasHtml: !!htmlContent,
                 hasText: !!textContent,
                 htmlLength: htmlContent?.length || 0,
-                textLength: textContent?.length || 0
+                textLength: textContent?.length || 0,
+                htmlPreview: htmlContent?.substring(0, 200) || 'null',
+                textPreview: textContent?.substring(0, 200) || 'null'
               });
 
               if (htmlContent || textContent) {
                 console.log('[DEBUG] Content successfully retrieved!');
                 break;
               } else {
-                console.log('[WARN] API returned OK but no content found');
+                console.log('[WARN] API returned OK but no content found in expected fields');
               }
             } else {
               console.error(`[ERROR] API returned status ${resendResponse.status}:`, responseText);
@@ -215,7 +230,7 @@ Deno.serve(async (req: Request) => {
 
       for (const attachment of emailData.attachments) {
         try {
-          const attachmentResponse = await fetch(`https://api.resend.com/emails/received/${emailData.email_id}/attachments/${attachment.id}`, {
+          const attachmentResponse = await fetch(`https://api.resend.com/emails/receiving/${emailData.email_id}/attachments/${attachment.id}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${resendApiKey}`
