@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
 import type { Course } from '../types';
+import FounderQuestionForm from '../components/FounderQuestionForm';
 
 const SEO = {
   title: 'Курсы вайбкодинга 2025 | Cursor AI и Bolt.new - цены и программа',
@@ -235,32 +236,35 @@ export default function Courses() {
           </div>
         )}
 
+        <FounderQuestionForm />
+
         <div style={{
-          marginTop: '80px',
-          padding: '60px 30px',
-          background: 'rgba(19, 19, 26, 0.8)',
-          border: '1px solid var(--neon-cyan)',
+          marginTop: '60px',
+          padding: '40px 30px',
+          background: 'rgba(19, 19, 26, 0.6)',
+          border: '1px solid rgba(0, 255, 249, 0.3)',
+          borderRadius: '12px',
           textAlign: 'center'
         }}>
           <h3 style={{
-            fontSize: '32px',
-            marginBottom: '20px',
+            fontSize: '24px',
+            marginBottom: '15px',
             color: 'var(--neon-cyan)'
           }}>
-            ЕСТЬ ВОПРОСЫ О КУРСАХ?
+            ИЛИ НАПИШИТЕ НАМ НАПРЯМУЮ
           </h3>
           <p style={{
-            fontSize: '18px',
-            opacity: 0.8,
-            marginBottom: '30px',
-            maxWidth: '600px',
-            margin: '0 auto 30px'
+            fontSize: '16px',
+            opacity: 0.7,
+            marginBottom: '20px',
+            maxWidth: '500px',
+            margin: '0 auto 20px'
           }}>
-            Свяжитесь с нами, и мы поможем выбрать подходящий курс и ответим на все вопросы.
+            Быстрый ответ в мессенджере
           </p>
           <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
             <button className="cyber-button" style={{
-              fontSize: '18px',
+              fontSize: '16px',
               padding: '12px 30px'
             }}>
               WhatsApp

@@ -9,6 +9,7 @@ import InboxManager from '../components/InboxManager';
 import AdminFormField from '../components/AdminFormField';
 import CourseLessonsManager from '../components/CourseLessonsManager';
 import VideoTestimonialsManager from '../components/VideoTestimonialsManager';
+import FounderQuestionsManager from '../components/FounderQuestionsManager';
 import type { Course, FAQ, TrialRegistration, StudentWork, BlogPost, HomePageSettings } from '../types';
 
 interface UserProfile {
@@ -23,7 +24,7 @@ interface UserProfile {
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'email-logs' | 'inbox' | 'users'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'email-logs' | 'inbox' | 'questions' | 'users'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -526,6 +527,17 @@ export default function Admin() {
             }}
           >
             Входящие письма
+          </button>
+          <button
+            onClick={() => setActiveTab('questions')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'questions' ? 1 : 0.5,
+              borderColor: 'var(--neon-pink)',
+              color: 'var(--neon-pink)'
+            }}
+          >
+            Вопросы основателю
           </button>
           <button
             onClick={() => setActiveTab('users')}
@@ -1061,6 +1073,10 @@ export default function Admin() {
 
         {activeTab === 'inbox' && (
           <InboxManager />
+        )}
+
+        {activeTab === 'questions' && (
+          <FounderQuestionsManager />
         )}
 
         {activeTab === 'users' && (
