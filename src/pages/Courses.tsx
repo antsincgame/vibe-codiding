@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
 import type { Course } from '../types';
-import FounderQuestionForm from '../components/FounderQuestionForm';
 
 const SEO = {
   title: 'Курсы вайбкодинга 2025 | Cursor AI и Bolt.new - цены и программа',
@@ -235,42 +234,6 @@ export default function Courses() {
             ))}
           </div>
         )}
-
-        <FounderQuestionForm />
-
-        <div style={{
-          marginTop: '60px',
-          padding: '40px 30px',
-          background: 'rgba(19, 19, 26, 0.6)',
-          border: '1px solid rgba(0, 255, 249, 0.3)',
-          borderRadius: '12px',
-          textAlign: 'center'
-        }}>
-          <h3 style={{
-            fontSize: '24px',
-            marginBottom: '15px',
-            color: 'var(--neon-cyan)'
-          }}>
-            ИЛИ НАПИШИТЕ НАМ НАПРЯМУЮ
-          </h3>
-          <p style={{
-            fontSize: '16px',
-            opacity: 0.7,
-            marginBottom: '20px',
-            maxWidth: '500px',
-            margin: '0 auto 20px'
-          }}>
-            Быстрый ответ в мессенджере
-          </p>
-          <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
-            <button className="cyber-button" style={{
-              fontSize: '16px',
-              padding: '12px 30px'
-            }}>
-              WhatsApp
-            </button>
-          </a>
-        </div>
       </div>
     </div>
   );

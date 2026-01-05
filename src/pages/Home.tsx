@@ -5,6 +5,7 @@ import { stripMarkdown } from '../lib/markdown';
 import type { Course, HomePageSettings, VideoTestimonial } from '../types';
 import CourseProgram from '../components/CourseProgram';
 import TargetAudienceSection from '../components/TargetAudienceSection';
+import FounderQuestionForm from '../components/FounderQuestionForm';
 
 const defaultSettings: HomePageSettings = {
   title: 'VIBECODING',
@@ -619,6 +620,14 @@ export default function Home() {
             }
           }
         `}</style>
+      </section>
+
+      <section style={{
+        padding: '40px 16px 60px',
+        maxWidth: '1800px',
+        margin: '0 auto'
+      }}>
+        <FounderQuestionForm />
       </section>
 
       <section style={{
