@@ -368,6 +368,10 @@ export default function Home() {
                       <img
                         src={course.image_url}
                         alt={course.title}
+                        width={400}
+                        height={120}
+                        loading="lazy"
+                        decoding="async"
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     ) : (
@@ -821,6 +825,8 @@ export default function Home() {
                     }}>
                       <iframe
                         src={testimonial.video_url}
+                        title={`Отзыв ${testimonial.student_name}`}
+                        loading="lazy"
                         style={{
                           position: 'absolute',
                           top: 0,
@@ -853,6 +859,10 @@ export default function Home() {
                           <img
                             src={testimonial.thumbnail_url}
                             alt={testimonial.student_name}
+                            width={80}
+                            height={80}
+                            loading="lazy"
+                            decoding="async"
                             style={{
                               width: '100%',
                               height: '100%',

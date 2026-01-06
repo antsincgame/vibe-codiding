@@ -37,6 +37,8 @@ body {
   background-size: 50px 50px;
   z-index: 0;
   pointer-events: none;
+  contain: strict;
+  content-visibility: auto;
 }
 
 .scan-line {
@@ -49,6 +51,21 @@ body {
   z-index: 9999;
   pointer-events: none;
   opacity: 0.5;
+  will-change: top;
+  contain: layout style;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-line {
+    animation: none;
+    display: none;
+  }
+  .glitch {
+    animation: none;
+  }
+  .cyber-card::before {
+    animation: none;
+  }
 }
 
 @keyframes scan {

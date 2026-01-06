@@ -1,30 +1,58 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, Suspense, lazy } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
 import ProtectedRoute from './components/ProtectedRoute';
-import Home from './pages/Home';
-import Courses from './pages/Courses';
-import About from './pages/About';
-import Trial from './pages/Trial';
-import FAQ from './pages/FAQ';
-import Login from './pages/Login';
-import Admin from './pages/Admin';
-import CourseDetail from './pages/CourseDetail';
-import StudentWorks from './pages/StudentWorks';
-import Blog from './pages/Blog';
-import BlogPostPage from './pages/BlogPostPage';
-import Privacy from './pages/Privacy';
-import ProgrammingHistory from './pages/ProgrammingHistory';
-import StudentAuth from './pages/StudentAuth';
-import StudentDashboard from './pages/StudentDashboard';
-import EmailConfirmation from './pages/EmailConfirmation';
-import AuthCallback from './pages/AuthCallback';
-import VerifyEmail from './pages/VerifyEmail';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
+
+const Home = lazy(() => import('./pages/Home'));
+const Courses = lazy(() => import('./pages/Courses'));
+const About = lazy(() => import('./pages/About'));
+const Trial = lazy(() => import('./pages/Trial'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Login = lazy(() => import('./pages/Login'));
+const Admin = lazy(() => import('./pages/Admin'));
+const CourseDetail = lazy(() => import('./pages/CourseDetail'));
+const StudentWorks = lazy(() => import('./pages/StudentWorks'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const ProgrammingHistory = lazy(() => import('./pages/ProgrammingHistory'));
+const StudentAuth = lazy(() => import('./pages/StudentAuth'));
+const StudentDashboard = lazy(() => import('./pages/StudentDashboard'));
+const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
+const AuthCallback = lazy(() => import('./pages/AuthCallback'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+
+function PageLoader() {
+  return (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '50vh',
+      color: 'var(--neon-cyan)'
+    }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        border: '3px solid rgba(0, 255, 249, 0.3)',
+        borderTop: '3px solid var(--neon-cyan)',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite'
+      }} />
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -44,6 +72,7 @@ function App() {
         <div className="cyber-grid" />
         <div className="scan-line" />
 
+        <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/login" element={
             <div className="app-layout">
@@ -143,6 +172,7 @@ function App() {
             }
           />
         </Routes>
+        </Suspense>
         <CookieConsent />
       </AuthProvider>
     </Router>
