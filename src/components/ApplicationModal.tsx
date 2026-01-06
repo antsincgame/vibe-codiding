@@ -45,6 +45,12 @@ export default function ApplicationModal({ isOpen, onClose }: ApplicationModalPr
     setError('');
     setLoading(true);
 
+    if (!formData.phone || formData.phone.trim() === '') {
+      setError('Пожалуйста, введите номер телефона');
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data: existingProfile } = await supabase
         .from('profiles')
@@ -400,12 +406,13 @@ export default function ApplicationModal({ isOpen, onClose }: ApplicationModalPr
                     letterSpacing: '1px',
                     fontWeight: 600
                   }}>
-                    Телефон
+                    Телефон *
                   </label>
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    required
                     className="cyber-input"
                     placeholder="+375 29 123 45 67"
                     style={{ fontSize: '15px' }}
