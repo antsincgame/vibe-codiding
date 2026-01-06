@@ -699,7 +699,7 @@ export default function Home() {
               marginBottom: '20px',
               color: 'var(--neon-pink)'
             }}>
-              Ознакомиться с Vibe-Coding
+              Ознакомиться с Vibecoding
             </h3>
             <p style={{
               fontSize: '18px',
@@ -707,7 +707,7 @@ export default function Home() {
               marginBottom: '30px',
               lineHeight: '1.7'
             }}>
-              Посмотрите видео о том, что такое Vibe-Coding и как мы обучаем программированию
+              Посмотрите видео о том, что такое Vibecoding и как мы обучаем программированию
             </p>
             <a
               href="https://www.youtube.com/watch?v=w3K1EguBrTc"

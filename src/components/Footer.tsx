@@ -188,7 +188,7 @@ export default function Footer() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ flexShrink: 0 }}>✉️</span>
               <a
-                href="mailto:info@vibe-coding.by"
+                href="mailto:info@vibecoding.by"
                 style={{
                   color: 'inherit',
                   textDecoration: 'none',
@@ -197,7 +197,7 @@ export default function Footer() {
                 onMouseEnter={(e) => e.currentTarget.style.color = 'var(--neon-cyan)'}
                 onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
               >
-                info@vibe-coding.by
+                info@vibecoding.by
               </a>
             </div>
             <div style={{ display: 'flex', gap: '15px', marginTop: '5px', alignItems: 'center' }}>

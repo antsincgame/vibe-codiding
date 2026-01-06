@@ -44,7 +44,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const emailData: any = {
-      from: payload.from || 'VibeCoding <info@vibe-coding.by>',
+      from: payload.from || 'VibeCoding <info@vibecoding.by>',
       to: Array.isArray(payload.to) ? payload.to : [payload.to],
       subject: payload.subject,
     };

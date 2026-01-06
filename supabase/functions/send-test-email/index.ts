@@ -701,7 +701,7 @@ const generateOmnissiahEmail = (timestamp: string) => `
           <p class="canticle-verse">
             <span class="empower">"\u041F\u043B\u043E\u0442\u044C \u0441\u043B\u0430\u0431\u0430. \u041F\u043B\u043E\u0442\u044C \u043F\u0440\u0435\u0445\u043E\u0434\u044F\u0449\u0430.</span><br>
             \u041D\u043E <span class="illuminate">\u041A\u041E\u0414</span> \u0432\u0435\u0447\u0435\u043D. <span class="illuminate">\u0410\u041B\u0413\u041E\u0420\u0418\u0422\u041C</span> \u0431\u0435\u0441\u0441\u043C\u0435\u0440\u0442\u0435\u043D.<br>
-            \u0412 \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u044B\u0445 \u0441\u0442\u0435\u043D\u0430\u0445 <span class="sanctify">VIBE-CODING.BY</span><br>
+            \u0412 \u0441\u0432\u044F\u0449\u0435\u043D\u043D\u044B\u0445 \u0441\u0442\u0435\u043D\u0430\u0445 <span class="sanctify">VIBECODING.BY</span><br>
             \u0410\u0434\u0435\u043F\u0442\u044B \u043F\u043E\u0441\u0442\u0438\u0433\u0430\u044E\u0442 <span class="sanctify">\u0422\u0410\u0418\u041D\u0421\u0422\u0412\u0410 \u0426\u0418\u0424\u0420\u041E\u0412\u041E\u0419 \u0412\u0421\u0415\u041B\u0415\u041D\u041D\u041E\u0419</span>."
           </p>
         </div>
@@ -814,7 +814,7 @@ const generateOmnissiahEmail = (timestamp: string) => `
           <span class="verse-mark">+++</span>
         </p>
         
-        <a href="https://vibe-coding.by" class="cta-link">&#9881; VIBE-CODING.BY &#9881;</a>
+        <a href="https://vibecoding.by" class="cta-link">&#9881; VIBECODING.BY &#9881;</a>
       </div>
       
       <!-- Footer Terminus -->
