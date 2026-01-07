@@ -110,7 +110,7 @@ const pioneers = [
     year: '1843',
     name: 'Ada Lovelace',
     title: 'Первый программист в истории',
-    image: 'https://images.pexels.com/photos/3861958/pexels-photo-3861958.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: '/image copy copy copy copy copy copy copy.png',
     story: 'Дочь поэта Байрона. Работала с Чарльзом Бэббиджем над Analytical Engine. Написала первый в истории алгоритм, предназначенный для выполнения машиной - вычисление чисел Бернулли.',
     achievement: 'Первая компьютерная программа в истории человечества',
     legacy: 'Язык программирования Ada (1983) назван в её честь. День Ады Лавлейс отмечается ежегодно.',
