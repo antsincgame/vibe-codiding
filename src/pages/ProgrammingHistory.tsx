@@ -735,9 +735,63 @@ export default function ProgrammingHistory() {
       </section>
 
       <section className="history-seo-content">
+        <div className="seo-neural-bg">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="seo-neural-node"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${8 + Math.random() * 8}s`,
+              }}
+            />
+          ))}
+          {[...Array(15)].map((_, i) => (
+            <div
+              key={`line-${i}`}
+              className="seo-neural-line"
+              style={{
+                left: `${Math.random() * 80 + 10}%`,
+                top: `${Math.random() * 80 + 10}%`,
+                width: `${50 + Math.random() * 150}px`,
+                transform: `rotate(${Math.random() * 360}deg)`,
+                animationDelay: `${Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
         <div className="history-seo-container">
           <article className="seo-article">
+            <div className="seo-glow-orb seo-glow-orb-1" />
+            <div className="seo-glow-orb seo-glow-orb-2" />
+            <div className="seo-glow-orb seo-glow-orb-3" />
             <header className="seo-header">
+              <div className="seo-header-icon">
+                <svg viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="45" stroke="url(#seoGrad1)" strokeWidth="1" opacity="0.3" />
+                  <circle cx="50" cy="50" r="35" stroke="url(#seoGrad1)" strokeWidth="1" opacity="0.5" />
+                  <circle cx="50" cy="50" r="25" stroke="url(#seoGrad1)" strokeWidth="1.5" opacity="0.7" />
+                  <circle cx="50" cy="50" r="8" fill="url(#seoGrad1)" opacity="0.9" />
+                  <circle cx="50" cy="20" r="4" fill="rgba(0,200,255,0.8)" />
+                  <circle cx="80" cy="50" r="4" fill="rgba(255,100,150,0.8)" />
+                  <circle cx="50" cy="80" r="4" fill="rgba(0,255,200,0.8)" />
+                  <circle cx="20" cy="50" r="4" fill="rgba(255,200,100,0.8)" />
+                  <line x1="50" y1="28" x2="50" y2="42" stroke="rgba(0,200,255,0.5)" strokeWidth="1" />
+                  <line x1="72" y1="50" x2="58" y2="50" stroke="rgba(255,100,150,0.5)" strokeWidth="1" />
+                  <line x1="50" y1="72" x2="50" y2="58" stroke="rgba(0,255,200,0.5)" strokeWidth="1" />
+                  <line x1="28" y1="50" x2="42" y2="50" stroke="rgba(255,200,100,0.5)" strokeWidth="1" />
+                  <defs>
+                    <linearGradient id="seoGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="rgba(0,200,255,1)" />
+                      <stop offset="50%" stopColor="rgba(255,100,150,1)" />
+                      <stop offset="100%" stopColor="rgba(0,255,200,1)" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <span className="seo-header-badge">ПОЛНАЯ ИСТОРИЯ</span>
               <h2>История программирования: 2000 лет автоматизации от Антикитерского механизма до вайбкодинга</h2>
               <p className="seo-lead">
                 История программирования началась не с компьютеров, не с перфокарт и даже не с электричества.
