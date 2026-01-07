@@ -228,18 +228,26 @@ export default function Admin() {
   const saveFaq = async (faq: Partial<FAQ>) => {
     try {
       if (faq.id) {
-        const { id, created_at, ...faqData } = faq;
-        const { error } = await supabase
+        const { id, created_at, updated_at, ...faqData } = faq;
+        console.log('Updating FAQ:', { id, faqData });
+        const { data, error } = await supabase
           .from('faqs')
           .update({
             ...faqData,
             updated_at: new Date().toISOString()
           })
-          .eq('id', id);
+          .eq('id', id)
+          .select();
+
+        console.log('Update result:', { data, error });
+
         if (error) {
           alert(`Ошибка сохранения: ${error.message}`);
+          console.error('Update error:', error);
           return;
         }
+
+        console.log('FAQ updated successfully:', data);
       } else {
         const { id, created_at, updated_at, ...faqWithoutId } = faq;
         const { error } = await supabase.from('faqs').insert([faqWithoutId]);
