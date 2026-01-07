@@ -1012,6 +1012,85 @@ export default function ProgrammingHistory() {
                 Но идея та же самая: дать машине инструкции и позволить ей выполнить работу за человека.
               </p>
             </section>
+
+            <div className="seo-cosmic-finale">
+              <div className="seo-finale-stars">
+                {[...Array(30)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="seo-finale-star"
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`,
+                      animationDelay: `${Math.random() * 2}s`,
+                      animationDuration: `${1.5 + Math.random() * 1.5}s`,
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="seo-finale-icon">
+                <svg viewBox="0 0 200 200" fill="none">
+                  <circle cx="100" cy="100" r="90" stroke="url(#finaleGrad1)" strokeWidth="2" opacity="0.3" />
+                  <circle cx="100" cy="100" r="70" stroke="url(#finaleGrad1)" strokeWidth="2" opacity="0.5" />
+                  <circle cx="100" cy="100" r="50" stroke="url(#finaleGrad1)" strokeWidth="2" opacity="0.7" />
+                  <circle cx="100" cy="100" r="30" stroke="url(#finaleGrad1)" strokeWidth="3" opacity="0.9" />
+                  <circle cx="100" cy="100" r="15" fill="url(#finaleGrad1)" />
+                  <circle cx="100" cy="30" r="8" fill="rgba(0,220,255,1)">
+                    <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite" />
+                  </circle>
+                  <circle cx="170" cy="100" r="8" fill="rgba(255,120,180,1)">
+                    <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite" begin="0.5s" />
+                  </circle>
+                  <circle cx="100" cy="170" r="8" fill="rgba(0,255,200,1)">
+                    <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite" begin="1s" />
+                  </circle>
+                  <circle cx="30" cy="100" r="8" fill="rgba(255,220,100,1)">
+                    <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite" begin="1.5s" />
+                  </circle>
+                  <line x1="100" y1="38" x2="100" y2="70" stroke="rgba(0,220,255,0.6)" strokeWidth="2">
+                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" />
+                  </line>
+                  <line x1="162" y1="100" x2="130" y2="100" stroke="rgba(255,120,180,0.6)" strokeWidth="2">
+                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="0.5s" />
+                  </line>
+                  <line x1="100" y1="162" x2="100" y2="130" stroke="rgba(0,255,200,0.6)" strokeWidth="2">
+                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="1s" />
+                  </line>
+                  <line x1="38" y1="100" x2="70" y2="100" stroke="rgba(255,220,100,0.6)" strokeWidth="2">
+                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="1.5s" />
+                  </line>
+                  <defs>
+                    <linearGradient id="finaleGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="rgba(0,220,255,1)" />
+                      <stop offset="33%" stopColor="rgba(255,120,180,1)" />
+                      <stop offset="66%" stopColor="rgba(0,255,200,1)" />
+                      <stop offset="100%" stopColor="rgba(255,220,100,1)" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <h3 className="seo-finale-title">
+                Мы - часть великой вселенной разума
+              </h3>
+              <p className="seo-finale-subtitle">
+                Каждая строка кода - это послание в будущее
+              </p>
+              <p className="seo-finale-text">
+                От древних механизмов до нейронных сетей, от бронзовых шестеренок до квантовых битов -
+                человечество всегда стремилось расширить границы возможного. Сегодня мы создаем не просто
+                программы - мы создаем новые формы интеллекта, которые будут помогать всем существам на Земле.
+              </p>
+              <p className="seo-finale-text">
+                Вайбкодинг - это не конец истории программирования. Это начало новой главы, где каждый человек
+                может стать творцом цифровых миров, где идеи материализуются в код силой мысли и намерения,
+                где технологии служат благу всех живых существ.
+              </p>
+              <blockquote className="seo-finale-quote">
+                "Настоящая магия технологий - не в том, чтобы заменить человека, а в том, чтобы усилить
+                его способность творить, мечтать и воплощать невозможное в реальность."
+                <span className="seo-finale-author">- Философия вайбкодинга</span>
+              </blockquote>
+            </div>
           </article>
         </div>
       </section>
