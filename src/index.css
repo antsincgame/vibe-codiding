@@ -2565,14 +2565,78 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
 }
 
 .antikythera-category-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease-out;
+  padding: 20px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 193, 7, 0.1);
+  animation: fadeIn 0.3s ease-out;
 }
 
-.antikythera-category.expanded .antikythera-category-content {
-  max-height: 1000px;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
+.antikythera-item {
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border-left: 3px solid rgba(255, 193, 7, 0.4);
+  transition: all 0.3s ease;
+}
+
+.antikythera-item:hover {
+  background: rgba(255, 193, 7, 0.08);
+  transform: translateX(5px);
+  border-left-color: #ffc107;
+}
+
+.antikythera-item-name {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffc107;
+  margin-bottom: 8px;
+}
+
+.antikythera-item-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 8px;
+}
+
+.antikythera-item-detail {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.antikythera-category-gold .antikythera-item { border-left-color: rgba(255, 193, 7, 0.4); }
+.antikythera-category-gold .antikythera-item:hover { border-left-color: #ffc107; }
+.antikythera-category-gold .antikythera-item-name { color: #ffc107; }
+
+.antikythera-category-cyan .antikythera-item { border-left-color: rgba(0, 255, 255, 0.4); }
+.antikythera-category-cyan .antikythera-item:hover { border-left-color: var(--neon-cyan); }
+.antikythera-category-cyan .antikythera-item-name { color: var(--neon-cyan); }
+
+.antikythera-category-pink .antikythera-item { border-left-color: rgba(255, 0, 128, 0.4); }
+.antikythera-category-pink .antikythera-item:hover { border-left-color: var(--neon-pink); }
+.antikythera-category-pink .antikythera-item-name { color: var(--neon-pink); }
+
+.antikythera-category-green .antikythera-item { border-left-color: rgba(57, 255, 20, 0.4); }
+.antikythera-category-green .antikythera-item:hover { border-left-color: var(--neon-green); }
+.antikythera-category-green .antikythera-item-name { color: var(--neon-green); }
+
+.antikythera-category-orange .antikythera-item { border-left-color: rgba(255, 152, 0, 0.4); }
+.antikythera-category-orange .antikythera-item:hover { border-left-color: #ff9800; }
+.antikythera-category-orange .antikythera-item-name { color: #ff9800; }
 
 .antikythera-category-items {
   padding: 20px 25px;
