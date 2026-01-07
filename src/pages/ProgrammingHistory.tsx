@@ -520,7 +520,7 @@ function AIEvolutionSection() {
         <div className="ai-evolution-karpathy">
           <div className="karpathy-portrait">
             <img
-              src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400"
+              src="/image copy copy copy copy copy copy copy copy copy copy copy copy.png"
               alt="Andrej Karpathy"
               className="karpathy-image"
             />
