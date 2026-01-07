@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import SuccessModal from '../components/SuccessModal';
 import ApplicationModal from '../components/ApplicationModal';
+import HeroButton from '../components/HeroButton';
 
 const SEO = {
   title: 'Пробный урок вайбкодинга бесплатно | Записаться - Vibecoding',
@@ -371,16 +372,15 @@ export default function Trial() {
           }}>
             Оставьте заявку на консультацию по курсам вайб-кодинга
           </p>
-          <button
+          <HeroButton
             onClick={() => setIsApplicationModalOpen(true)}
-            className="cyber-button"
             style={{
               fontSize: '18px',
               padding: '15px 35px'
             }}
           >
             Получить консультацию
-          </button>
+          </HeroButton>
         </div>
       </div>
 

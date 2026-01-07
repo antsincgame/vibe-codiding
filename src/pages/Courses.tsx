@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
 import type { Course } from '../types';
+import HeroButton from '../components/HeroButton';
 
 const SEO = {
   title: 'Курсы вайбкодинга 2025 | Cursor AI и Bolt.new - цены и программа',
@@ -11,6 +12,7 @@ const SEO = {
 };
 
 export default function Courses() {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -222,14 +224,16 @@ export default function Courses() {
                   </div>
                 </div>
                 
-                <Link to={`/course/${course.slug}`} style={{ width: '100%', display: 'block' }}>
-                  <button className="cyber-button" style={{
+                <HeroButton
+                  onClick={() => navigate(`/course/${course.slug}`)}
+                  style={{
                     width: '100%',
-                    fontSize: '16px'
-                  }}>
-                    Подробнее о курсе
-                  </button>
-                </Link>
+                    fontSize: '16px',
+                    padding: '16px'
+                  }}
+                >
+                  Подробнее о курсе
+                </HeroButton>
               </div>
             ))}
           </div>

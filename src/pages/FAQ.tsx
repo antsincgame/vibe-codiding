@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import type { FAQ as FAQType } from '../types';
 import ApplicationModal from '../components/ApplicationModal';
+import HeroButton from '../components/HeroButton';
 
 const SEO = {
   title: 'FAQ вайбкодинг | Вопросы и ответы о курсах Vibecoding',
@@ -336,12 +337,9 @@ export default function FAQ() {
           }}>
             Оставьте заявку - ответим на все вопросы и поможем выбрать подходящий курс
           </p>
-          <button
-            onClick={() => setIsApplicationModalOpen(true)}
-            className="cyber-button"
-          >
+          <HeroButton onClick={() => setIsApplicationModalOpen(true)}>
             Оставить заявку
-          </button>
+          </HeroButton>
         </div>
       </div>
 
