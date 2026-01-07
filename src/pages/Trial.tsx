@@ -17,10 +17,7 @@ export default function Trial() {
   const [showModal, setShowModal] = useState(false);
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    age_group: 'child',
     parent_name: '',
-    child_name: '',
-    child_age: '',
     email: '',
     phone: '',
     message: ''
@@ -45,24 +42,15 @@ export default function Trial() {
       return;
     }
 
-    // Prepare data based on age_group
     const registrationData: any = {
-      age_group: formData.age_group,
+      age_group: 'adult',
       parent_name: formData.parent_name,
       email: formData.email,
       phone: formData.phone,
-      message: formData.message || ''
+      message: formData.message || '',
+      child_name: null,
+      child_age: null
     };
-
-    // Add child-specific data only for child group
-    if (formData.age_group === 'child') {
-      registrationData.child_name = formData.child_name;
-      registrationData.child_age = parseInt(formData.child_age);
-    } else {
-      // For adults, set child fields to null
-      registrationData.child_name = null;
-      registrationData.child_age = null;
-    }
 
     const { error } = await supabase
       .from('trial_registrations')
@@ -79,30 +67,12 @@ export default function Trial() {
     setShowModal(true);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-
-    // If changing age_group, clear child-specific fields when switching to adult
-    if (name === 'age_group') {
-      if (value === 'adult') {
-        setFormData({
-          ...formData,
-          age_group: value,
-          child_name: '',
-          child_age: ''
-        });
-      } else {
-        setFormData({
-          ...formData,
-          age_group: value
-        });
-      }
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
+    setFormData({
+      ...formData,
+      [name]: value
+    });
   };
 
   const handleModalClose = () => {
@@ -197,34 +167,7 @@ export default function Trial() {
                 letterSpacing: '1px',
                 fontWeight: 600
               }}>
-                Возрастная группа *
-              </label>
-              <select
-                name="age_group"
-                value={formData.age_group}
-                onChange={handleChange}
-                required
-                className="cyber-input"
-                style={{
-                  cursor: 'pointer'
-                }}
-              >
-                <option value="child">Подросток (16-18 лет)</option>
-                <option value="adult">Взрослый (18+)</option>
-              </select>
-            </div>
-
-            <div style={{ marginBottom: '25px' }}>
-              <label style={{
-                display: 'block',
-                marginBottom: '10px',
-                fontSize: '16px',
-                color: 'var(--neon-cyan)',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                fontWeight: 600
-              }}>
-                {formData.age_group === 'child' ? 'Контактное имя *' : 'Ваше имя *'}
+                Ваше имя *
               </label>
               <input
                 type="text"
@@ -233,61 +176,9 @@ export default function Trial() {
                 onChange={handleChange}
                 required
                 className="cyber-input"
-                placeholder={formData.age_group === 'child' ? 'Введите контактное имя' : 'Введите ваше имя'}
+                placeholder="Введите ваше имя"
               />
             </div>
-
-            {formData.age_group === 'child' && (
-              <>
-                <div style={{ marginBottom: '25px' }}>
-                  <label style={{
-                    display: 'block',
-                    marginBottom: '10px',
-                    fontSize: '16px',
-                    color: 'var(--neon-cyan)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    fontWeight: 600
-                  }}>
-                    Имя подростка *
-                  </label>
-                  <input
-                    type="text"
-                    name="child_name"
-                    value={formData.child_name}
-                    onChange={handleChange}
-                    required={formData.age_group === 'child'}
-                    className="cyber-input"
-                    placeholder="Введите имя подростка"
-                  />
-                </div>
-
-                <div style={{ marginBottom: '25px' }}>
-                  <label style={{
-                    display: 'block',
-                    marginBottom: '10px',
-                    fontSize: '16px',
-                    color: 'var(--neon-cyan)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    fontWeight: 600
-                  }}>
-                    Возраст *
-                  </label>
-                  <input
-                    type="number"
-                    name="child_age"
-                    value={formData.child_age}
-                    onChange={handleChange}
-                    required={formData.age_group === 'child'}
-                    className="cyber-input"
-                    min="16"
-                    max="18"
-                    placeholder="16"
-                  />
-                </div>
-              </>
-            )}
 
             <div style={{ marginBottom: '25px' }}>
               <label style={{
@@ -353,7 +244,7 @@ export default function Trial() {
                 onChange={handleChange}
                 rows={4}
                 className="cyber-input"
-                placeholder={formData.age_group === 'child' ? 'Расскажите об интересах, предпочитаемом времени занятий или задайте вопрос' : 'Расскажите о своих интересах, предпочитаемом времени занятий или задайте вопрос'}
+                placeholder="Расскажите о своих интересах, предпочитаемом времени занятий или задайте вопрос"
                 style={{ resize: 'vertical' }}
               />
             </div>
