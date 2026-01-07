@@ -1740,9 +1740,6 @@ function FaqModal({
   const [formData, setFormData] = useState(faq);
 
   const handleSave = () => {
-    console.log('FaqModal handleSave called');
-    console.log('formData:', formData);
-    console.log('formData.id:', formData.id);
     onSave(formData);
   };
 

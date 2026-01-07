@@ -4,9 +4,10 @@ import { supabase } from '../lib/supabase';
 interface ApplicationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  preselectedCourse?: string;
 }
 
-export default function ApplicationModal({ isOpen, onClose }: ApplicationModalProps) {
+export default function ApplicationModal({ isOpen, onClose, preselectedCourse }: ApplicationModalProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -23,13 +24,16 @@ export default function ApplicationModal({ isOpen, onClose }: ApplicationModalPr
     if (isOpen) {
       loadCourses();
       document.body.style.overflow = 'hidden';
+      if (preselectedCourse) {
+        setFormData(prev => ({ ...prev, course: preselectedCourse }));
+      }
     } else {
       document.body.style.overflow = '';
     }
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen]);
+  }, [isOpen, preselectedCourse]);
 
   const loadCourses = async () => {
     const { data } = await supabase

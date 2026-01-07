@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Course } from '../types';
 import CourseDescription from '../components/CourseDescription';
+import ApplicationModal from '../components/ApplicationModal';
+import HeroButton from '../components/HeroButton';
 
 const setSEO = (course: Course) => {
   document.title = `${course.title} | Курс вайбкодинга - цена ${course.price}`;
@@ -17,6 +19,7 @@ export default function CourseDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
 
   useEffect(() => {
     loadCourse();
@@ -335,9 +338,50 @@ export default function CourseDetail() {
                 ))}
               </div>
             </div>
+
+            <div style={{
+              padding: '50px',
+              background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.08) 0%, rgba(255, 0, 110, 0.05) 100%)',
+              border: '2px solid var(--neon-cyan)',
+              borderRadius: '16px',
+              textAlign: 'center',
+              boxShadow: '0 0 40px rgba(0, 255, 249, 0.15)'
+            }}>
+              <h3 style={{
+                fontSize: '28px',
+                marginBottom: '20px',
+                color: 'var(--neon-cyan)'
+              }}>
+                Готовы начать обучение?
+              </h3>
+              <p style={{
+                fontSize: '18px',
+                opacity: 0.9,
+                marginBottom: '30px',
+                maxWidth: '600px',
+                margin: '0 auto 30px'
+              }}>
+                Оставьте заявку и мы свяжемся с вами для уточнения деталей и подбора удобного времени занятий
+              </p>
+              <HeroButton
+                onClick={() => setIsApplicationModalOpen(true)}
+                style={{
+                  fontSize: '18px',
+                  padding: '18px 50px'
+                }}
+              >
+                Записаться на курс
+              </HeroButton>
+            </div>
           </section>
         </div>
       </div>
+
+      <ApplicationModal
+        isOpen={isApplicationModalOpen}
+        onClose={() => setIsApplicationModalOpen(false)}
+        preselectedCourse={course?.title}
+      />
     </div>
   );
 }

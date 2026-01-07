@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import ApplicationModal from '../components/ApplicationModal';
+import HeroButton from '../components/HeroButton';
 
 const SEO = {
   title: 'Преподаватели вайбкодинга | Эксперты Cursor AI и Bolt.new - Vibecoding',
@@ -15,6 +17,7 @@ export default function About() {
   const [quoteIgor, setQuoteIgor] = useState<string>('');
   const [loadingDmitry, setLoadingDmitry] = useState(true);
   const [loadingIgor, setLoadingIgor] = useState(true);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
 
   useEffect(() => {
     document.title = SEO.title;
@@ -600,6 +603,52 @@ export default function About() {
           </p>
         </div>
       </section>
+
+      <section style={{
+        padding: '60px 20px 80px',
+        maxWidth: '900px',
+        margin: '0 auto'
+      }}>
+        <div style={{
+          padding: '50px',
+          background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.08) 0%, rgba(255, 0, 110, 0.05) 100%)',
+          border: '2px solid var(--neon-cyan)',
+          borderRadius: '16px',
+          textAlign: 'center',
+          boxShadow: '0 0 40px rgba(0, 255, 249, 0.15)'
+        }}>
+          <h3 style={{
+            fontSize: '28px',
+            marginBottom: '20px',
+            color: 'var(--neon-cyan)'
+          }}>
+            Учитесь у практикующих экспертов
+          </h3>
+          <p style={{
+            fontSize: '18px',
+            opacity: 0.9,
+            marginBottom: '30px',
+            maxWidth: '600px',
+            margin: '0 auto 30px'
+          }}>
+            Оставьте заявку на обучение и начните путь в IT вместе с нашими преподавателями
+          </p>
+          <HeroButton
+            onClick={() => setIsApplicationModalOpen(true)}
+            style={{
+              fontSize: '18px',
+              padding: '18px 50px'
+            }}
+          >
+            Записаться на обучение
+          </HeroButton>
+        </div>
+      </section>
+
+      <ApplicationModal
+        isOpen={isApplicationModalOpen}
+        onClose={() => setIsApplicationModalOpen(false)}
+      />
     </div>
   );
 }
