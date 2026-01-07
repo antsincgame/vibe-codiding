@@ -21,6 +21,7 @@ export default function Trial() {
     parent_name: '',
     child_name: '',
     child_age: '',
+    email: '',
     phone: '',
     message: ''
   });
@@ -37,10 +38,18 @@ export default function Trial() {
     e.preventDefault();
     setLoading(true);
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert('Пожалуйста, введите корректный email адрес');
+      setLoading(false);
+      return;
+    }
+
     // Prepare data based on age_group
     const registrationData: any = {
       age_group: formData.age_group,
       parent_name: formData.parent_name,
+      email: formData.email,
       phone: formData.phone,
       message: formData.message || ''
     };
@@ -279,6 +288,29 @@ export default function Trial() {
                 </div>
               </>
             )}
+
+            <div style={{ marginBottom: '25px' }}>
+              <label style={{
+                display: 'block',
+                marginBottom: '10px',
+                fontSize: '16px',
+                color: 'var(--neon-cyan)',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                fontWeight: 600
+              }}>
+                Email *
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="cyber-input"
+                placeholder="example@email.com"
+              />
+            </div>
 
             <div style={{ marginBottom: '25px' }}>
               <label style={{
