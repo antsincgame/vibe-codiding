@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import type { FAQ as FAQType } from '../types';
+import ApplicationModal from '../components/ApplicationModal';
 
 const SEO = {
   title: 'FAQ вайбкодинг | Вопросы и ответы о курсах Vibecoding',
@@ -130,6 +131,7 @@ export default function FAQ() {
   const [activeIndex, setActiveIndex] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [useDatabase, setUseDatabase] = useState(true);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
 
   useEffect(() => {
     document.title = SEO.title;
@@ -332,15 +334,21 @@ export default function FAQ() {
             opacity: 0.8,
             marginBottom: '30px'
           }}>
-            Свяжитесь с нами - ответим на все вопросы и поможем выбрать подходящий курс
+            Оставьте заявку - ответим на все вопросы и поможем выбрать подходящий курс
           </p>
-          <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
-            <button className="cyber-button">
-              Написать в WhatsApp
-            </button>
-          </a>
+          <button
+            onClick={() => setIsApplicationModalOpen(true)}
+            className="cyber-button"
+          >
+            Оставить заявку
+          </button>
         </div>
       </div>
+
+      <ApplicationModal
+        isOpen={isApplicationModalOpen}
+        onClose={() => setIsApplicationModalOpen(false)}
+      />
     </div>
   );
 }

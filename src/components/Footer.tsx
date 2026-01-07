@@ -171,9 +171,7 @@ export default function Footer() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ flexShrink: 0 }}>📞</span>
               <a
-                href="https://wa.me/375292828878"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="tel:+375292828878"
                 style={{
                   color: 'inherit',
                   textDecoration: 'none',

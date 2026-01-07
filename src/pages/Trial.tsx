@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import SuccessModal from '../components/SuccessModal';
+import ApplicationModal from '../components/ApplicationModal';
 
 const SEO = {
   title: 'Пробный урок вайбкодинга бесплатно | Записаться - Vibecoding',
@@ -13,6 +14,7 @@ export default function Trial() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     age_group: 'child',
     parent_name: '',
@@ -360,33 +362,32 @@ export default function Trial() {
             marginBottom: '15px',
             color: 'var(--neon-pink)'
           }}>
-            ОСТАЛИСЬ ВОПРОСЫ?
+            ХОТИТЕ УЗНАТЬ БОЛЬШЕ?
           </h3>
           <p style={{
             fontSize: '18px',
-            marginBottom: '20px',
+            marginBottom: '30px',
             opacity: 0.8
           }}>
-            Позвони нам или напиши в мессенджер
+            Оставьте заявку на консультацию по курсам вайб-кодинга
           </p>
-          <a
-            href="https://wa.me/375292828878"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => setIsApplicationModalOpen(true)}
+            className="cyber-button"
             style={{
-              fontSize: '24px',
-              fontWeight: 700,
-              color: 'var(--neon-cyan)',
-              textDecoration: 'none',
-              transition: 'color 0.3s'
+              fontSize: '18px',
+              padding: '15px 35px'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--neon-green)'}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--neon-cyan)'}
           >
-            +375 (29) 282-88-78
-          </a>
+            Получить консультацию
+          </button>
         </div>
       </div>
+
+      <ApplicationModal
+        isOpen={isApplicationModalOpen}
+        onClose={() => setIsApplicationModalOpen(false)}
+      />
     </div>
     </>
   );

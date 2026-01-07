@@ -651,9 +651,11 @@ export default function Home() {
                     </div>
                   )}
 
-                  <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginBottom: '12px' }}>
-                    {isMiddle ? (
-                      <button className="cyber-button" style={{
+                  {isMiddle ? (
+                    <button
+                      onClick={() => setIsApplicationModalOpen(true)}
+                      className="cyber-button"
+                      style={{
                         width: '100%',
                         padding: '16px',
                         fontSize: '14px',
@@ -661,12 +663,15 @@ export default function Home() {
                         textTransform: 'uppercase',
                         letterSpacing: '1px',
                         background: 'linear-gradient(90deg, rgba(0, 255, 249, 0.2), rgba(0, 255, 65, 0.1))',
-                        boxShadow: '0 0 20px rgba(0, 255, 249, 0.3)'
+                        boxShadow: '0 0 20px rgba(0, 255, 249, 0.3)',
+                        marginBottom: '12px'
                       }}>
-                        Начать обучение
-                      </button>
-                    ) : (
-                      <button style={{
+                      Начать обучение
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setIsApplicationModalOpen(true)}
+                      style={{
                         width: '100%',
                         padding: '14px',
                         background: 'transparent',
@@ -678,12 +683,12 @@ export default function Home() {
                         borderRadius: '8px',
                         transition: 'all 0.3s ease',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
+                        letterSpacing: '0.5px',
+                        marginBottom: '12px'
                       }}>
-                        Записаться
-                      </button>
-                    )}
-                  </a>
+                      Записаться
+                    </button>
+                  )}
 
                   <CourseProgram
                     isExpanded={expandedCourseProgram === course.id}
@@ -836,16 +841,17 @@ export default function Home() {
               marginBottom: '30px',
               lineHeight: '1.7'
             }}>
-              Свяжитесь с нами, чтобы записаться на <strong>обучение Cursor AI</strong> и <strong>Bolt.ai</strong> и узнать расписание онлайн-занятий
+              Оставьте заявку, чтобы записаться на <strong>обучение Cursor AI</strong> и <strong>Bolt.ai</strong> и узнать расписание онлайн-занятий
             </p>
-            <a href="https://wa.me/375292828878" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center' }}>
-              <button className="cyber-button" style={{
+            <button
+              onClick={() => setIsApplicationModalOpen(true)}
+              className="cyber-button"
+              style={{
                 fontSize: '18px',
                 padding: '15px 35px'
               }}>
-                WhatsApp
-              </button>
-            </a>
+              Записаться на курс
+            </button>
           </div>
         </div>
       </section>
