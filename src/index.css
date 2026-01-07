@@ -2459,3 +2459,337 @@ input[type="number"].cyber-input::-webkit-outer-spin-button {
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 15px;
 }
+
+.antikythera-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 50px;
+}
+
+.antikythera-spec-card {
+  background: rgba(255, 193, 7, 0.08);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 16px;
+  padding: 25px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.antikythera-spec-card:hover {
+  background: rgba(255, 193, 7, 0.15);
+  border-color: rgba(255, 193, 7, 0.5);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(255, 193, 7, 0.2);
+}
+
+.antikythera-spec-card-value {
+  display: block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffc107;
+  margin-bottom: 8px;
+  text-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+}
+
+.antikythera-spec-card-label {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.antikythera-spec-card-detail {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.5;
+}
+
+.antikythera-categories {
+  margin-bottom: 50px;
+}
+
+.antikythera-categories-title {
+  text-align: center;
+  font-size: 28px;
+  color: #ffc107;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.antikythera-category {
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.antikythera-category:hover {
+  border-color: rgba(255, 193, 7, 0.4);
+}
+
+.antikythera-category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.antikythera-category-header:hover {
+  background: rgba(255, 193, 7, 0.1);
+}
+
+.antikythera-category-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  transition: color 0.3s;
+}
+
+.antikythera-category-toggle {
+  font-size: 20px;
+  transition: transform 0.3s;
+}
+
+.antikythera-category.expanded .antikythera-category-toggle {
+  transform: rotate(180deg);
+}
+
+.antikythera-category-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out;
+}
+
+.antikythera-category.expanded .antikythera-category-content {
+  max-height: 1000px;
+}
+
+.antikythera-category-items {
+  padding: 20px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.antikythera-category-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.antikythera-category-item:hover {
+  background: rgba(255, 193, 7, 0.08);
+  transform: translateX(5px);
+}
+
+.antikythera-item-bullet {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  background: #ffc107;
+  border-radius: 50%;
+  margin-top: 6px;
+}
+
+.antikythera-item-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.antikythera-item-text strong {
+  color: #ffc107;
+}
+
+.antikythera-timeline {
+  margin-bottom: 50px;
+}
+
+.antikythera-timeline-title {
+  text-align: center;
+  font-size: 28px;
+  color: #ffc107;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.antikythera-timeline-items {
+  position: relative;
+  padding-left: 30px;
+}
+
+.antikythera-timeline-items::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #ffc107, rgba(255, 193, 7, 0.2));
+}
+
+.antikythera-timeline-item {
+  position: relative;
+  padding: 20px 25px;
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.antikythera-timeline-item:hover {
+  background: rgba(255, 193, 7, 0.08);
+  border-color: rgba(255, 193, 7, 0.4);
+  transform: translateX(10px);
+}
+
+.antikythera-timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  top: 28px;
+  width: 12px;
+  height: 12px;
+  background: #ffc107;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+}
+
+.antikythera-timeline-year {
+  display: inline-block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffc107;
+  margin-bottom: 8px;
+}
+
+.antikythera-timeline-event {
+  display: block;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+}
+
+.antikythera-timeline-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+}
+
+.antikythera-precision {
+  margin-bottom: 50px;
+}
+
+.antikythera-precision-title {
+  text-align: center;
+  font-size: 28px;
+  color: #ffc107;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.antikythera-precision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.antikythera-precision-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-radius: 16px;
+  padding: 25px;
+  transition: all 0.3s;
+}
+
+.antikythera-precision-card:hover {
+  background: rgba(255, 193, 7, 0.08);
+  border-color: rgba(255, 193, 7, 0.4);
+  transform: translateY(-5px);
+}
+
+.antikythera-precision-label {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.antikythera-precision-value {
+  display: block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffc107;
+  margin-bottom: 8px;
+}
+
+.antikythera-precision-vs {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 12px;
+}
+
+.antikythera-precision-error {
+  display: inline-block;
+  padding: 6px 12px;
+  background: rgba(57, 255, 20, 0.2);
+  border: 1px solid rgba(57, 255, 20, 0.4);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neon-green);
+}
+
+.antikythera-color-gold .antikythera-category-name {
+  color: #ffc107;
+}
+.antikythera-color-cyan .antikythera-category-name {
+  color: var(--neon-cyan);
+}
+.antikythera-color-pink .antikythera-category-name {
+  color: var(--neon-pink);
+}
+.antikythera-color-green .antikythera-category-name {
+  color: var(--neon-green);
+}
+.antikythera-color-orange .antikythera-category-name {
+  color: #ff9800;
+}
+
+.antikythera-color-gold .antikythera-item-bullet {
+  background: #ffc107;
+}
+.antikythera-color-cyan .antikythera-item-bullet {
+  background: var(--neon-cyan);
+}
+.antikythera-color-pink .antikythera-item-bullet {
+  background: var(--neon-pink);
+}
+.antikythera-color-green .antikythera-item-bullet {
+  background: var(--neon-green);
+}
+.antikythera-color-orange .antikythera-item-bullet {
+  background: #ff9800;
+}

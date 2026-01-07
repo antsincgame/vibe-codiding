@@ -19,33 +19,6 @@ interface EraData {
 
 const erasData: EraData[] = [
   {
-    id: 'antikythera',
-    year: '100 до н.э.',
-    title: 'Антикитерский механизм: первый компьютер человечества',
-    image: 'https://images.pexels.com/photos/87009/earth-moon-ache-soil-87009.jpeg?auto=compress&cs=tinysrgb&w=800',
-    content: [
-      'За 2000 лет до появления электричества древние греки создали устройство, которое по всем современным определениям является компьютером. Антикитерский механизм - это аналоговый вычислитель размером с ноутбук (180 x 150 мм), содержащий от 37 до 82 бронзовых шестеренок с точнейшими зубцами.',
-      'Устройство было обнаружено в 1901 году среди обломков древнего кораблекрушения у острова Антикитера. Но только в 2005 году, благодаря CT-сканированию, ученые смогли разгадать его внутреннее устройство и поразиться его сложности.',
-      'Механизм мог: предсказывать солнечные и лунные затмения на десятилетия вперед (цикл Сарос - 18 лет 11 дней), отслеживать движение 5 известных планет (Меркурий, Венера, Марс, Юпитер, Сатурн), рассчитывать фазы Луны с точностью до 0.001% ошибки (29.53 дня против реальных 29.530589 дней).',
-      'Для моделирования неравномерного движения Луны использовался гениальный механизм "штифт-паз" (pin-and-slot), который имитировал ускорение Луны в перигее и замедление в апогее. Эта астрономическая аномалия была описана Гиппархом Родосским во II веке до н.э., но механизм реализовал её технически.',
-    ],
-    quote: {
-      text: 'Устройство, которое принимает входные данные, обрабатывает информацию и выводит результаты - это определение компьютера. Антикитерский механизм полностью ему соответствует.',
-      source: 'Определение аналогового компьютера',
-    },
-    skeptics: 'Никто не мог поверить, что древние греки обладали такими технологиями. 100 лет механизм считали простыми астрономическими часами.',
-    lesson: 'Технологии могут быть утеряны на тысячелетия. После Антикитерского механизма человечество не создавало ничего столь сложного еще 1700 лет - до часов XIV века.',
-    facts: [
-      '37-82 бронзовых шестеренок',
-      'Размер 180 x 150 мм',
-      'Точность расчета лунного месяца: 0.001% ошибки',
-      'Предсказание затмений на 54 года вперед (цикл Экселигмос)',
-      'Отслеживание Олимпийских игр (каждые 4 года)',
-      '365-дневный солнечный календарь',
-    ],
-    accentColor: 'gold',
-  },
-  {
     id: 'fortran',
     year: '1950-е',
     title: 'FORTRAN: когда машина стала умнее человека в оптимизации',
@@ -282,15 +255,77 @@ const practicalAdvice = [
   { text: 'Культура review, где человек отвечает за инварианты и архитектуру, а не за набивку шаблонного кода.' },
 ];
 
+const antikytheraSpecs = [
+  { label: 'Количество шестеренок', value: '37-82', detail: '27 идентифицированных, 10+ выведено математически' },
+  { label: 'Материал', value: 'Бронза', detail: 'Олово и медь, типичный сплав для эллинистического периода' },
+  { label: 'Дата создания', value: '100-50 до н.э.', detail: 'I век до нашей эры, эллинистическая Греция' },
+  { label: 'Размеры', value: '180 x 150 мм', detail: 'Главный фрагмент, размер современного ноутбука' },
+  { label: 'Способ работы', value: 'Ручной кривошип', detail: 'Поворот ручки + система зубчатых передач' },
+  { label: 'Фрагментов найдено', value: '82 куска', detail: '7 из них механически значимых' },
+];
+
 const antikytheraCapabilities = [
-  { name: 'Цикл Сарос', desc: 'Предсказание затмений на 18 лет 11 дней вперед', icon: 'eclipse' },
-  { name: 'Цикл Экселигмос', desc: 'Предсказание затмений в том же месте через 54 года', icon: 'globe' },
-  { name: 'Метонический цикл', desc: 'Синхронизация лунного и солнечного календарей (19 лет)', icon: 'moon' },
-  { name: 'Фазы Луны', desc: 'Точность 29.53 дня (ошибка менее 0.001%)', icon: 'phases' },
-  { name: 'Аномалия Луны', desc: 'Моделирование неравномерной орбиты механизмом штифт-паз', icon: 'orbit' },
-  { name: 'Планеты', desc: 'Отслеживание 5 классических планет: Меркурий, Венера, Марс, Юпитер, Сатурн', icon: 'planets' },
-  { name: 'Олимпийские игры', desc: 'Вспомогательный циферблат для 4-летнего цикла', icon: 'olymp' },
-  { name: 'Зодиак', desc: 'Движение Солнца через 12 знаков, 365-дневный год', icon: 'zodiac' },
+  {
+    category: 'ПРЕДСКАЗАНИЕ ЗАТМЕНИЙ',
+    items: [
+      { name: 'Цикл Сарос', desc: 'Предсказание солнечных и лунных затмений. Период: 18 лет 11 дней. Через каждые 18 лет затмения повторяются в том же порядке.', detail: 'Применение: предсказание дат затмений за десятилетия вперед' },
+      { name: 'Цикл Экселигмос', desc: 'Расширение Сарос цикла (3 x Saros = 54 года). Затмения происходят в одном и том же географическом месте.', detail: 'Точность: через 54 года затмение вернется на ту же широту' },
+      { name: 'Метонический цикл', desc: 'Фазы Луны повторяются на те же дни года через 19 лет. На механизме: спираль на задней панели с 235 ячейками (лунные месяцы).', detail: 'Применение: синхронизация лунного и солнечного календарей' },
+    ],
+    color: 'gold',
+  },
+  {
+    category: 'ОТСЛЕЖИВАНИЕ ЛУНЫ',
+    items: [
+      { name: 'Лунные фазы', desc: 'Визуализация: половинка бронзовой сферы (черная и белая). Механизм: система дифференциального привода, вращающая сферу.', detail: 'Точность: период синодического месяца = 29.53 дня (современное значение: 29.530589 дней). Ошибка менее 0.001%!' },
+      { name: 'Аномалистический месяц', desc: 'Проблема: Луна движется быстрее в перигее (ближе к Земле), медленнее в апогее (дальше от Земли).', detail: 'Решение: механизм с штифтом и пазом (pin-and-slot mechanism). Один зубец входит в паз другого, изменяя радиус вращения. Результат: ускорение и замедление, моделирующие реальное движение Луны.' },
+    ],
+    color: 'cyan',
+  },
+  {
+    category: 'ОТСЛЕЖИВАНИЕ СОЛНЦА',
+    items: [
+      { name: 'Положение в Зодиаке', desc: 'Отслеживает движение Солнца через 12 знаков зодиака. На циферблате: 365-дневный год.', detail: 'Это уже удивительная точность для того времени!' },
+      { name: 'Солнечная аномалия', desc: 'Проблема: Земля не движется с одинаковой скоростью вокруг Солнца.', detail: 'Решение: система из 3 шестерен с эксцентрическим приводом. Результат: точное отслеживание неправильности орбиты.' },
+      { name: 'Солнцестояния и равноденствия', desc: 'Отслеживает: дни летнего и зимнего солнцестояния, весеннего и осеннего равноденствия.', detail: 'Применение: критические дни для земледелия, религиозных обрядов, календаря' },
+    ],
+    color: 'orange',
+  },
+  {
+    category: 'ОТСЛЕЖИВАНИЕ ПЛАНЕТ',
+    items: [
+      { name: '5 классических планет', desc: 'Меркурий, Венера, Марс, Юпитер, Сатурн - все видимые невооруженным глазом планеты древности.', detail: 'Механизм отслеживал положение каждой планеты на небесной сфере' },
+      { name: 'Синодические циклы', desc: 'Периоды повторения положения планет относительно Солнца. Венера: 462 года. Сатурн: 442 года.', detail: 'Маркировки на корпусе: инструкции на задней крышке для расчета этих циклов' },
+      { name: 'Восхождения звезд', desc: 'Heliacal Rising/Setting - отслеживает, когда звезды появляются и исчезают на горизонте.', detail: 'Критически важно для древней навигации и религиозных ритуалов' },
+    ],
+    color: 'pink',
+  },
+  {
+    category: 'КАЛЕНДАРЬ И ИГРЫ',
+    items: [
+      { name: 'Египетский календарь', desc: 'День: указатель даты на передней панели. Дни года: 365 дней на кольцевом диске.', detail: 'Простой и практичный календарь для повседневного использования' },
+      { name: 'Олимпийский цикл', desc: 'Вспомогательный циферблат на задней панели. Отслеживает: Панеллинские игры (Олимпиада, каждые 4 года).', detail: 'Применение: спортивные и религиозные мероприятия всей Греции' },
+    ],
+    color: 'green',
+  },
+  {
+    category: 'КОСМИЧЕСКИЙ ПОРЯДОК',
+    items: [
+      { name: 'Греческий космос', desc: 'Кольцо из дисков, отображающее древнегреческое понимание устройства космоса.', detail: 'Система: планетарные кольца с индексными буквами, соответствующие текстам на передней панели (Front Cover Inscriptions - FCI)' },
+      { name: 'Концентрические кольца', desc: 'Все планеты одновременно отображаются на системе концентрических колец.', detail: 'Визуализация: механическая модель геоцентрической вселенной Птолемея' },
+    ],
+    color: 'cyan',
+  },
+];
+
+const researchHistory = [
+  { year: '1901', event: 'Обнаружение', desc: 'Ныряльщики за губками находят обломки древнего корабля у острова Антикитера. Среди амфор и статуй - покрытый коррозией механизм.' },
+  { year: '1902', event: 'Первое изучение', desc: 'Археолог Валериос Стаис замечает шестеренку в одном из фрагментов. Но находку считают просто астрономическими часами.' },
+  { year: '1951', event: 'Первая реконструкция', desc: 'Дерек Прайс начинает серьезное исследование. Выдвигает гипотезу о вычислительном устройстве.' },
+  { year: '1974', event: 'Публикация Прайса', desc: 'Выходит монография "Gears from the Greeks". Мир узнает о сложности механизма.' },
+  { year: '2005', event: 'CT-сканирование', desc: 'Прорыв! Команда Antikythera Mechanism Research Project использует рентгеновскую томографию. Обнаружено более 3000 символов надписей.' },
+  { year: '2006', event: 'Расшифровка', desc: 'Публикация в Nature. Подтверждено: это полноценный аналоговый компьютер для астрономических вычислений.' },
+  { year: '2021', event: 'Полная модель', desc: 'Ученые UCL публикуют первую полную гипотетическую модель механизма с объяснением работы всех шестеренок.' },
 ];
 
 function FloatingParticles() {
@@ -312,6 +347,8 @@ function FloatingParticles() {
 }
 
 function AntikytheraSection() {
+  const [activeCategory, setActiveCategory] = useState<number | null>(null);
+
   return (
     <section className="antikythera-section">
       <div className="antikythera-bg" />
@@ -332,56 +369,118 @@ function AntikytheraSection() {
               />
               <div className="antikythera-image-overlay" />
             </div>
-            <div className="antikythera-specs">
-              <div className="antikythera-spec">
-                <span className="antikythera-spec-value">37-82</span>
-                <span className="antikythera-spec-label">шестеренок</span>
-              </div>
-              <div className="antikythera-spec">
-                <span className="antikythera-spec-value">180x150</span>
-                <span className="antikythera-spec-label">мм размер</span>
-              </div>
-              <div className="antikythera-spec">
-                <span className="antikythera-spec-value">0.001%</span>
-                <span className="antikythera-spec-label">точность</span>
-              </div>
+            <div className="antikythera-specs-grid">
+              {antikytheraSpecs.map((spec, index) => (
+                <div key={index} className="antikythera-spec-card">
+                  <span className="antikythera-spec-value">{spec.value}</span>
+                  <span className="antikythera-spec-label">{spec.label}</span>
+                  <span className="antikythera-spec-detail">{spec.detail}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           <div className="antikythera-content">
             <p className="antikythera-text">
-              В 1901 году ныряльщики у острова Антикитера обнаружили обломки древнего корабля.
-              Среди амфор и статуй лежал покрытый коррозией механизм, который 100 лет считали
-              простыми астрономическими часами. Только CT-сканирование в 2005 году раскрыло правду:
-              это был <strong>аналоговый компьютер</strong>, созданный за 2000 лет до изобретения электричества.
+              В <strong>1901 году</strong> ныряльщики у острова Антикитера обнаружили обломки древнего корабля.
+              Среди амфор и статуй лежал покрытый коррозией механизм - <strong>82 фрагмента бронзы</strong>,
+              которые 100 лет считали простыми астрономическими часами.
+            </p>
+            <p className="antikythera-text">
+              Только <strong>CT-сканирование в 2005 году</strong> раскрыло правду: это был
+              <strong> аналоговый компьютер</strong>, созданный за 2000 лет до изобретения электричества.
+              Исследователи обнаружили более <strong>3000 символов</strong> надписей, скрытых под коркой морской соли.
             </p>
             <p className="antikythera-text">
               Поворотом ручки древний грек мог узнать положение Солнца, Луны и пяти планет
               на любую дату - в прошлом или будущем. Механизм предсказывал затмения на
-              десятилетия вперед и рассчитывал даты Олимпийских игр.
+              <strong> 54 года вперед</strong> и рассчитывал даты Олимпийских игр.
             </p>
             <div className="antikythera-definition">
               <div className="antikythera-definition-icon">?</div>
               <div>
                 <strong>Почему это компьютер?</strong>
-                <p>Компьютер - устройство, которое принимает входные данные, обрабатывает информацию
-                и выводит результаты. Антикитерский механизм: вход - поворот ручки на дату,
-                обработка - 37+ шестеренок с разными передаточными числами,
-                выход - положение небесных тел на циферблатах.</p>
+                <p><strong>Определение:</strong> "Устройство, которое принимает входные данные, обрабатывает информацию и выводит результаты"</p>
+                <ul className="antikythera-definition-list">
+                  <li><strong>Вход:</strong> поворот ручки (кривошипа) на определенную дату</li>
+                  <li><strong>Обработка:</strong> система 37+ шестерен с разными передаточными числами</li>
+                  <li><strong>Выход:</strong> положение Солнца, Луны, 5 планет, фазы, затмения на циферблатах</li>
+                </ul>
+                <p>Это аналоговый компьютер, как логарифмическая линейка или механический калькулятор XIX века.</p>
               </div>
             </div>
           </div>
         </div>
 
+        <div className="antikythera-precision">
+          <h3 className="antikythera-precision-title">Невероятная точность</h3>
+          <div className="antikythera-precision-grid">
+            <div className="antikythera-precision-card">
+              <span className="antikythera-precision-value">29.53</span>
+              <span className="antikythera-precision-label">дня - расчет механизма</span>
+              <span className="antikythera-precision-detail">Лунный (синодический) месяц</span>
+            </div>
+            <div className="antikythera-precision-card">
+              <span className="antikythera-precision-value">29.530589</span>
+              <span className="antikythera-precision-label">дней - реальное значение</span>
+              <span className="antikythera-precision-detail">Современные измерения</span>
+            </div>
+            <div className="antikythera-precision-card antikythera-precision-highlight">
+              <span className="antikythera-precision-value">&lt;0.001%</span>
+              <span className="antikythera-precision-label">ошибка</span>
+              <span className="antikythera-precision-detail">Такая точность была недостижима до XVII века!</span>
+            </div>
+          </div>
+          <p className="antikythera-precision-note">
+            <strong>Гиппарх Родосский (II век до н.э.)</strong> изучал лунную аномалию.
+            Древние греки измерили неравномерность движения Луны и механизм это реализовал механически.
+            Такая точность была недостижима до изобретения телескопов и открытия законов Кеплера в XVII веке.
+          </p>
+        </div>
+
         <div className="antikythera-capabilities">
-          <h3 className="antikythera-capabilities-title">Возможности механизма</h3>
-          <div className="antikythera-capabilities-grid">
-            {antikytheraCapabilities.map((cap, index) => (
-              <div key={index} className="antikythera-capability">
-                <div className="antikythera-capability-number">{String(index + 1).padStart(2, '0')}</div>
-                <div>
-                  <strong className="antikythera-capability-name">{cap.name}</strong>
-                  <p className="antikythera-capability-desc">{cap.desc}</p>
+          <h3 className="antikythera-capabilities-title">Полный список возможностей</h3>
+          <div className="antikythera-categories">
+            {antikytheraCapabilities.map((cat, catIndex) => (
+              <div
+                key={catIndex}
+                className={`antikythera-category antikythera-category-${cat.color} ${activeCategory === catIndex ? 'active' : ''}`}
+                onClick={() => setActiveCategory(activeCategory === catIndex ? null : catIndex)}
+              >
+                <div className="antikythera-category-header">
+                  <span className="antikythera-category-number">{String(catIndex + 1).padStart(2, '0')}</span>
+                  <h4 className="antikythera-category-title">{cat.category}</h4>
+                  <span className="antikythera-category-toggle">{activeCategory === catIndex ? '-' : '+'}</span>
+                </div>
+                {activeCategory === catIndex && (
+                  <div className="antikythera-category-content">
+                    {cat.items.map((item, itemIndex) => (
+                      <div key={itemIndex} className="antikythera-item">
+                        <strong className="antikythera-item-name">{item.name}</strong>
+                        <p className="antikythera-item-desc">{item.desc}</p>
+                        <p className="antikythera-item-detail">{item.detail}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="antikythera-research">
+          <h3 className="antikythera-research-title">История исследования</h3>
+          <p className="antikythera-research-intro">
+            <strong>Почему так долго разгадывали?</strong> Фрагментирована (только 82 куска, 7 механически значимых).
+            Корочка морской соли скрывала детали 100 лет. Много гипотез, мало фактов.
+          </p>
+          <div className="antikythera-timeline">
+            {researchHistory.map((item, index) => (
+              <div key={index} className="antikythera-timeline-item">
+                <span className="antikythera-timeline-year">{item.year}</span>
+                <div className="antikythera-timeline-content">
+                  <strong>{item.event}</strong>
+                  <p>{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -398,7 +497,8 @@ function AntikytheraSection() {
             <strong>Урок истории:</strong>
             <p>После Антикитерского механизма человечество не создавало ничего столь сложного
             <strong> 1700 лет</strong> - до механических часов XIV века. Технологии могут быть
-            утеряны на тысячелетия. Каждое поколение должно переоткрывать знания заново.</p>
+            утеряны на тысячелетия. Каждое поколение должно переоткрывать знания заново.
+            Это был не просто механизм - это был <strong>компьютер, который вычислял космос</strong>.</p>
           </div>
         </div>
       </div>
@@ -420,17 +520,7 @@ export default function ProgrammingHistory() {
 
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) {
-      metaKeywords.setAttribute('content', 'история программирования, антикитерский механизм компьютер, первый компьютер, вайбкодинг история, эволюция кода, от FORTRAN до вайбкодинга, Cursor AI история, AI-ассистенты программирование, история абстракций, Unix история, SQL история, Java GC, облачные вычисления история, React JSX');
-    }
-
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) {
-      ogTitle.setAttribute('content', 'История программирования: от Антикитерского механизма до вайбкодинга');
-    }
-
-    const ogDescription = document.querySelector('meta[property="og:description"]');
-    if (ogDescription) {
-      ogDescription.setAttribute('content', 'Как вайбкодинг стал следующим этапом эволюции после первого компьютера человечества, FORTRAN, Unix, SQL и облаков.');
+      metaKeywords.setAttribute('content', 'история программирования, антикитерский механизм компьютер, первый компьютер, вайбкодинг история, эволюция кода, от FORTRAN до вайбкодинга, Cursor AI история, AI-ассистенты программирование, история абстракций, Unix история, SQL история, Java GC, облачные вычисления история, React JSX, цикл Сарос, Метонический цикл, древнегреческий компьютер');
     }
 
     const handleScroll = () => {
@@ -490,8 +580,8 @@ export default function ProgrammingHistory() {
               <span className="history-hero-stat-label">переломных эпох</span>
             </div>
             <div className="history-hero-stat">
-              <span className="history-hero-stat-value">1</span>
-              <span className="history-hero-stat-label">паттерн развития</span>
+              <span className="history-hero-stat-value">82</span>
+              <span className="history-hero-stat-label">фрагмента первого компьютера</span>
             </div>
           </div>
 
@@ -540,7 +630,7 @@ export default function ProgrammingHistory() {
           <p className="history-timeline-subtitle">От FORTRAN до React: каждая эпоха учила нас доверять машине больше</p>
         </div>
 
-        {erasData.slice(1).map((era, index) => (
+        {erasData.map((era, index) => (
           <div
             key={era.id}
             className={`history-era ${index % 2 === 0 ? 'history-era-left' : 'history-era-right'} ${activeEra === era.id ? 'history-era-active' : ''} ${getAccentClass(era.accentColor)}`}
@@ -780,15 +870,21 @@ export default function ProgrammingHistory() {
             История программирования и вычислительной техники насчитывает более 2000 лет.
             Антикитерский механизм, созданный древними греками около 100 года до нашей эры,
             является первым известным аналоговым компьютером. Этот бронзовый механизм
-            с 37-82 шестеренками мог предсказывать затмения, отслеживать движение планет
-            и рассчитывать фазы Луны с точностью, которая поражает современных ученых.
+            с 37-82 шестеренками мог предсказывать затмения по циклу Сарос (18 лет 11 дней),
+            отслеживать движение планет и рассчитывать фазы Луны с точностью менее 0.001% ошибки.
+          </p>
+          <p>
+            Механизм использовал систему дифференциального привода для визуализации лунных фаз,
+            механизм штифт-паз для моделирования неравномерной орбиты Луны, и эксцентрический
+            привод для отслеживания солнечной аномалии. Спираль на задней панели с 235 ячейками
+            реализовывала Метонический цикл (19 лет) для синхронизации лунного и солнечного календарей.
           </p>
           <p>
             Современная эра программирования началась с появления FORTRAN в 1950-х годах -
             первого коммерчески успешного языка высокого уровня. Затем последовали
-            структурное программирование (отказ от GOTO), переход Unix на язык C (1973),
+            структурное программирование (отказ от GOTO, 1968), переход Unix на язык C (1973),
             реляционные базы данных и SQL (1970-е), автоматическое управление памятью
-            в Java (1990-е), облачные вычисления (2006) и компонентный подход React (2013).
+            в Java (1990-е), облачные вычисления AWS (2006) и компонентный подход React (2013).
           </p>
           <p>
             Сегодня мы наблюдаем новую революцию - вайбкодинг с использованием ИИ-ассистентов.
