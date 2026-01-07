@@ -136,7 +136,7 @@ const pioneers = [
     year: '1930',
     name: 'Vannevar Bush',
     title: 'Создатель Differential Analyzer',
-    image: 'https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: '/image copy copy copy copy copy copy copy copy copy.png',
     story: 'Американский инженер из MIT, создавший первый аналоговый компьютер XX века. Огромная машина с шестернями и трубками автоматически решала дифференциальные уравнения.',
     achievement: 'Первый практический аналоговый компьютер',
     legacy: 'Позже предложил концепцию Memex - прообраз гипертекста и World Wide Web.',
