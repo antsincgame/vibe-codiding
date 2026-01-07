@@ -149,7 +149,7 @@ const pioneers = [
     year: '1942',
     name: 'Hedy Lamarr',
     title: 'Мать Wi-Fi, Bluetooth и GPS',
-    image: 'https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: '/image copy copy copy copy copy copy copy copy copy copy.png',
     story: 'Голливудская актриса 1940-х, которую называли "самой красивой женщиной в мире". Днём снималась в фильмах, ночью изобретала оружие. Вместе с композитором George Antheil создала систему Frequency Hopping Spread Spectrum.',
     achievement: 'Патент US 2,292,387 на систему управления торпедами',
     legacy: 'Технология стала основой для Wi-Fi, Bluetooth, GPS, 4G/5G. Pioneer Award в 83 года (1997).',
