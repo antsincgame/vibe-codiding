@@ -265,13 +265,20 @@ export default function Admin() {
   const saveWork = async (work: Partial<StudentWork>) => {
     try {
       if (work.id) {
-        const { error } = await supabase.from('student_works').update(work).eq('id', work.id);
+        const { id, created_at, ...workData } = work;
+        const { error } = await supabase
+          .from('student_works')
+          .update({
+            ...workData,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
         if (error) {
           alert(`Ошибка сохранения: ${error.message}`);
           return;
         }
       } else {
-        const { id, ...workWithoutId } = work;
+        const { id, created_at, updated_at, ...workWithoutId } = work;
         const { error } = await supabase.from('student_works').insert([workWithoutId]);
         if (error) {
           alert(`Ошибка создания: ${error.message}`);
@@ -282,6 +289,7 @@ export default function Admin() {
       loadData();
     } catch (err) {
       alert('Произошла ошибка при сохранении');
+      console.error('Error saving work:', err);
     }
   };
 
@@ -294,16 +302,20 @@ export default function Admin() {
   const saveBlogPost = async (post: Partial<BlogPost>) => {
     try {
       if (post.id) {
-        const { error } = await supabase.from('blog_posts').update({
-          ...post,
-          updated_at: new Date().toISOString()
-        }).eq('id', post.id);
+        const { id, created_at, ...postData } = post;
+        const { error } = await supabase
+          .from('blog_posts')
+          .update({
+            ...postData,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
         if (error) {
           alert(`Ошибка сохранения: ${error.message}`);
           return;
         }
       } else {
-        const { id, ...postWithoutId } = post;
+        const { id, created_at, updated_at, ...postWithoutId } = post;
         const { error } = await supabase.from('blog_posts').insert([postWithoutId]);
         if (error) {
           alert(`Ошибка создания: ${error.message}`);
@@ -314,6 +326,7 @@ export default function Admin() {
       loadData();
     } catch (err) {
       alert('Произошла ошибка при сохранении');
+      console.error('Error saving blog post:', err);
     }
   };
 
