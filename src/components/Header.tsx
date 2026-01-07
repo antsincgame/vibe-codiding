@@ -26,6 +26,7 @@ export default function Header() {
     { to: '/about', label: 'Преподаватели' },
     { to: '/q-a', label: 'FAQ' },
     { to: '/blog', label: 'Блог' },
+    { to: '/history', label: 'История' },
   ];
 
   const isAdmin = profile?.role === 'admin';
