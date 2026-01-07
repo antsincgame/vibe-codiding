@@ -123,7 +123,7 @@ const pioneers = [
     year: '1912-1914',
     name: 'Leonardo Torres Quevedo',
     title: 'Создатель первой "думающей" машины',
-    image: 'https://images.pexels.com/photos/3165335/pexels-photo-3165335.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: '/image copy copy copy copy copy copy copy copy.png',
     story: 'Испанский инженер, создавший "El Ajedrecista" - автоматического шахматного игрока. Это была первая машина, которая сама принимала решения на основе логики, а не просто выполняла заранее запрограммированные действия.',
     achievement: 'Первая машина с искусственным интеллектом',
     legacy: 'Показал, что машины могут "думать" и принимать решения. Предтеча всех современных AI-систем.',
