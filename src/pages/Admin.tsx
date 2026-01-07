@@ -1739,6 +1739,13 @@ function FaqModal({
 }) {
   const [formData, setFormData] = useState(faq);
 
+  const handleSave = () => {
+    console.log('FaqModal handleSave called');
+    console.log('formData:', formData);
+    console.log('formData.id:', formData.id);
+    onSave(formData);
+  };
+
   return (
     <div style={{
       position: 'fixed',
@@ -1793,7 +1800,7 @@ function FaqModal({
 
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
-            onClick={() => onSave(formData)}
+            onClick={handleSave}
             className="cyber-button"
             style={{ flex: 1 }}
           >
