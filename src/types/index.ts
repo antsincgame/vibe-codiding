@@ -10,6 +10,11 @@ export interface Course {
   is_active: boolean;
   order_index: number;
   slug?: string;
+  meta_title?: string;
+  meta_description?: string;
+  meta_keywords?: string;
+  seo_text?: string;
+  canonical_url?: string;
   created_at: string;
   updated_at: string;
 }

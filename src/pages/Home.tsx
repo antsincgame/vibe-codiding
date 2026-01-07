@@ -41,7 +41,100 @@ export default function Home() {
     if (metaKeywords) {
       metaKeywords.setAttribute('content', settings.meta_keywords || defaultSettings.meta_keywords);
     }
-  }, [settings]);
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', settings.meta_title || defaultSettings.meta_title);
+    }
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) {
+      ogDesc.setAttribute('content', settings.meta_description || defaultSettings.meta_description);
+    }
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      canonical.setAttribute('href', 'https://vibecoding.by/');
+    }
+
+    let existingSchema = document.querySelector('script[type="application/ld+json"][data-page="home"]');
+    if (existingSchema) existingSchema.remove();
+
+    const organizationSchema = {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Vibecoding",
+      "alternateName": "Школа вайбкодинга",
+      "url": "https://vibecoding.by",
+      "logo": "https://vibecoding.by/bolt-new-logo.jpg",
+      "description": settings.meta_description || defaultSettings.meta_description,
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "BY",
+        "addressLocality": "Минск"
+      },
+      "sameAs": [
+        "https://t.me/vibecoding_by"
+      ],
+      "areaServed": {
+        "@type": "Country",
+        "name": "Belarus"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Курсы вайбкодинга",
+        "itemListElement": courses.map((course, index) => ({
+          "@type": "Offer",
+          "position": index + 1,
+          "itemOffered": {
+            "@type": "Course",
+            "name": course.title,
+            "description": course.description.substring(0, 150),
+            "provider": {
+              "@type": "Organization",
+              "name": "Vibecoding"
+            },
+            "url": `https://vibecoding.by/course/${course.slug}`
+          }
+        }))
+      }
+    };
+
+    const websiteSchema = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Vibecoding",
+      "alternateName": "Школа вайбкодинга",
+      "url": "https://vibecoding.by",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://vibecoding.by/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    };
+
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Главная",
+        "item": "https://vibecoding.by/"
+      }]
+    };
+
+    const schemaScript = document.createElement('script');
+    schemaScript.type = 'application/ld+json';
+    schemaScript.setAttribute('data-page', 'home');
+    schemaScript.textContent = JSON.stringify([organizationSchema, websiteSchema, breadcrumbSchema]);
+    document.head.appendChild(schemaScript);
+
+    return () => {
+      const schema = document.querySelector('script[type="application/ld+json"][data-page="home"]');
+      if (schema) schema.remove();
+    };
+  }, [settings, courses]);
 
   const loadData = async () => {
     await loadSettings();

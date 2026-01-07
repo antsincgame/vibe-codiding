@@ -1691,6 +1691,86 @@ function CourseModal({
           </div>
         </div>
 
+        <div style={{
+          background: 'rgba(0, 100, 255, 0.05)',
+          padding: '20px',
+          borderRadius: '8px',
+          marginBottom: '20px',
+          border: '1px solid rgba(0, 100, 255, 0.3)'
+        }}>
+          <h3 style={{
+            color: 'var(--neon-cyan)',
+            marginBottom: '20px',
+            fontSize: '18px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            SEO настройки
+            <span style={{ fontSize: '12px', opacity: 0.7, fontWeight: 400 }}>
+              (для поисковых систем)
+            </span>
+          </h3>
+
+          <AdminFormField label="SEO заголовок (meta title)" hint="Отображается в результатах поиска. Рекомендуемая длина: 50-60 символов">
+            <input
+              type="text"
+              className="admin-form-input"
+              value={formData.meta_title || ''}
+              onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
+              placeholder="Курс вайбкодинга: создание сайтов с ИИ | Vibecoding"
+              maxLength={70}
+            />
+            <div style={{ fontSize: '11px', opacity: 0.6, marginTop: '4px' }}>
+              {(formData.meta_title || '').length}/70 символов
+            </div>
+          </AdminFormField>
+
+          <AdminFormField label="SEO описание (meta description)" hint="Описание для поисковых систем. Рекомендуемая длина: 150-160 символов">
+            <textarea
+              className="admin-form-textarea"
+              value={formData.meta_description || ''}
+              onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
+              placeholder="Научитесь создавать сайты и приложения с помощью ИИ за 2 месяца. Практический курс вайбкодинга с Cursor AI и Bolt.new. 7+ проектов в портфолио."
+              style={{ minHeight: '80px' }}
+              maxLength={200}
+            />
+            <div style={{ fontSize: '11px', opacity: 0.6, marginTop: '4px' }}>
+              {(formData.meta_description || '').length}/200 символов
+            </div>
+          </AdminFormField>
+
+          <AdminFormField label="Ключевые слова (meta keywords)" hint="Ключевые слова через запятую для Яндекса">
+            <input
+              type="text"
+              className="admin-form-input"
+              value={formData.meta_keywords || ''}
+              onChange={(e) => setFormData({ ...formData, meta_keywords: e.target.value })}
+              placeholder="вайбкодинг курс, обучение Cursor AI, Bolt.new обучение, создание сайтов с ИИ"
+            />
+          </AdminFormField>
+
+          <AdminFormField label="SEO текст для страницы курса" hint="Дополнительный текст для индексации. Отображается внизу страницы курса. Поддерживает Markdown">
+            <textarea
+              className="admin-form-textarea"
+              value={formData.seo_text || ''}
+              onChange={(e) => setFormData({ ...formData, seo_text: e.target.value })}
+              placeholder="Подробный текст о курсе для поисковых систем..."
+              style={{ minHeight: '150px', fontFamily: 'monospace', fontSize: '14px' }}
+            />
+          </AdminFormField>
+
+          <AdminFormField label="Canonical URL (необязательно)" hint="Укажите канонический URL, если страница доступна по нескольким адресам">
+            <input
+              type="url"
+              className="admin-form-input"
+              value={formData.canonical_url || ''}
+              onChange={(e) => setFormData({ ...formData, canonical_url: e.target.value })}
+              placeholder="https://vibecoding.by/course/your-course"
+            />
+          </AdminFormField>
+        </div>
+
         <div style={{ marginBottom: '25px' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
             <input

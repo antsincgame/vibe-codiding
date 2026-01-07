@@ -5,14 +5,75 @@ import type { Course } from '../types';
 import CourseDescription from '../components/CourseDescription';
 import ApplicationModal from '../components/ApplicationModal';
 import HeroButton from '../components/HeroButton';
+import { renderMarkdown } from '../lib/markdown';
 
 const setSEO = (course: Course) => {
-  document.title = `${course.title} | Курс вайбкодинга - цена ${course.price}`;
-  const metaDesc = document.querySelector('meta[name="description"]');
   const shortDesc = course.description.substring(0, 80).replace(/\n/g, ' ').trim();
-  if (metaDesc) metaDesc.setAttribute('content', `Курс вайбкодинга "${course.title}": ${shortDesc}... Стоимость ${course.price}, длительность ${course.duration}. Обучение вайбкодингу онлайн с практикой. Записаться!`);
+  const defaultTitle = `${course.title} | Курс вайбкодинга - цена ${course.price}`;
+  const defaultDescription = `Курс вайбкодинга "${course.title}": ${shortDesc}... Стоимость ${course.price}, длительность ${course.duration}. Обучение вайбкодингу онлайн с практикой. Записаться!`;
+  const defaultKeywords = `${course.title} курс вайбкодинга, обучение вайбкодингу, Cursor AI курс, Bolt.new курс, вайбкодинг онлайн`;
+
+  document.title = course.meta_title || defaultTitle;
+
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', course.meta_description || defaultDescription);
+
   const metaKeywords = document.querySelector('meta[name="keywords"]');
-  if (metaKeywords) metaKeywords.setAttribute('content', `${course.title} курс вайбкодинга, обучение вайбкодингу, Cursor AI курс, Bolt.new курс, вайбкодинг онлайн`);
+  if (metaKeywords) metaKeywords.setAttribute('content', course.meta_keywords || defaultKeywords);
+
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', course.meta_title || defaultTitle);
+
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', course.meta_description || defaultDescription);
+
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonical);
+  }
+  canonical.setAttribute('href', course.canonical_url || `https://vibecoding.by/course/${course.slug}`);
+
+  let existingSchema = document.querySelector('script[type="application/ld+json"][data-page="course"]');
+  if (existingSchema) existingSchema.remove();
+
+  const schemaScript = document.createElement('script');
+  schemaScript.type = 'application/ld+json';
+  schemaScript.setAttribute('data-page', 'course');
+  schemaScript.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": course.title,
+    "description": course.meta_description || defaultDescription,
+    "provider": {
+      "@type": "Organization",
+      "name": "Vibecoding",
+      "sameAs": "https://vibecoding.by",
+      "url": "https://vibecoding.by"
+    },
+    "url": `https://vibecoding.by/course/${course.slug}`,
+    "image": course.image_url || "https://vibecoding.by/bolt-new-logo.jpg",
+    "offers": {
+      "@type": "Offer",
+      "price": course.price.replace(/[^0-9]/g, '') || "0",
+      "priceCurrency": "BYN",
+      "availability": "https://schema.org/InStock",
+      "url": `https://vibecoding.by/course/${course.slug}`
+    },
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "online",
+      "duration": course.duration
+    },
+    "audience": {
+      "@type": "Audience",
+      "audienceType": course.age_group
+    },
+    "teaches": (course.features as string[]).slice(0, 5).join(", "),
+    "inLanguage": "ru"
+  });
+  document.head.appendChild(schemaScript);
 };
 
 export default function CourseDetail() {
@@ -374,6 +435,34 @@ export default function CourseDetail() {
               </HeroButton>
             </div>
           </section>
+
+          {course.seo_text && (
+            <section style={{
+              marginTop: '60px',
+              padding: '40px',
+              background: 'rgba(19, 19, 26, 0.6)',
+              border: '1px solid rgba(0, 255, 249, 0.15)',
+              borderRadius: '12px'
+            }}>
+              <h2 style={{
+                fontSize: '28px',
+                marginBottom: '25px',
+                color: 'var(--neon-cyan)',
+                borderBottom: '1px solid rgba(0, 255, 249, 0.2)',
+                paddingBottom: '15px'
+              }}>
+                Подробнее о курсе
+              </h2>
+              <div
+                style={{
+                  fontSize: '16px',
+                  lineHeight: '1.8',
+                  opacity: 0.9
+                }}
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(course.seo_text) }}
+              />
+            </section>
+          )}
         </div>
       </div>
 
