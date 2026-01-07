@@ -273,7 +273,7 @@ function AntikytheraSection() {
           <div className="antikythera-image-block">
             <div className="antikythera-image-frame">
               <img
-                src="https://images.pexels.com/photos/2098427/pexels-photo-2098427.jpeg?auto=compress&cs=tinysrgb&w=800"
+                src="/image copy copy copy copy copy.png"
                 alt="Антикитерский механизм - древний аналоговый компьютер"
                 className="antikythera-image"
               />
