@@ -228,13 +228,20 @@ export default function Admin() {
   const saveFaq = async (faq: Partial<FAQ>) => {
     try {
       if (faq.id) {
-        const { error } = await supabase.from('faqs').update(faq).eq('id', faq.id);
+        const { id, created_at, ...faqData } = faq;
+        const { error } = await supabase
+          .from('faqs')
+          .update({
+            ...faqData,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
         if (error) {
           alert(`Ошибка сохранения: ${error.message}`);
           return;
         }
       } else {
-        const { id, ...faqWithoutId } = faq;
+        const { id, created_at, updated_at, ...faqWithoutId } = faq;
         const { error } = await supabase.from('faqs').insert([faqWithoutId]);
         if (error) {
           alert(`Ошибка создания: ${error.message}`);
@@ -245,6 +252,7 @@ export default function Admin() {
       loadData();
     } catch (err) {
       alert('Произошла ошибка при сохранении');
+      console.error('Error saving FAQ:', err);
     }
   };
 
