@@ -99,14 +99,8 @@ export default function ResetPassword() {
         } else if (errorMsg.includes('invalid_token') || errorMsg.includes('invalid')) {
           setTokenExpired(true);
           setError('Ссылка недействительна или уже была использована.');
-        } else if (errorMsg.includes('weak_password') || errorMsg.includes('weak') || errorMsg.includes('too weak')) {
-          setError('Пароль не соответствует требованиям безопасности. Проверьте все требования ниже.');
-          setShowRequirements(true);
-        } else if (errorMsg.includes('password')) {
-          setError(result.error.message);
-          setShowRequirements(true);
         } else {
-          setError(`Ошибка: ${result.error.message}`);
+          setError(result.error.message);
         }
       } else {
         setSuccess(true);
