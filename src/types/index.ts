@@ -155,11 +155,18 @@ export interface LessonProgress {
   updated_at: string;
 }
 
+export interface HomeworkAttachment {
+  type: 'image' | 'link';
+  url: string;
+  name?: string;
+}
+
 export interface HomeworkSubmission {
   id: string;
   lesson_id: string;
   student_id: string;
   answer_text: string;
+  attachments: HomeworkAttachment[];
   submitted_at: string;
   status: 'pending' | 'approved' | 'rejected';
   teacher_id: string | null;

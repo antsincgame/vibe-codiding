@@ -582,6 +582,90 @@ export default function TeacherPanel() {
               </div>
             </div>
 
+            {selectedHomework.attachments && selectedHomework.attachments.length > 0 && (
+              <div style={{ marginBottom: '24px' }}>
+                <p style={{
+                  fontSize: '13px',
+                  opacity: 0.7,
+                  marginBottom: '12px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px'
+                }}>
+                  Приложения ({selectedHomework.attachments.length})
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                  {selectedHomework.attachments.map((att, idx) => (
+                    <a
+                      key={idx}
+                      href={att.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'block',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 255, 249, 0.2)',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        textDecoration: 'none',
+                        color: 'var(--text-primary)',
+                        transition: 'border-color 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--neon-cyan)'}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(0, 255, 249, 0.2)'}
+                    >
+                      {att.type === 'image' ? (
+                        <div>
+                          <img
+                            src={att.url}
+                            alt={att.name || 'Screenshot'}
+                            style={{
+                              width: '180px',
+                              height: '120px',
+                              objectFit: 'cover',
+                              display: 'block'
+                            }}
+                          />
+                          <div style={{
+                            padding: '8px 10px',
+                            fontSize: '12px',
+                            opacity: 0.8,
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '180px'
+                          }}>
+                            {att.name || 'Скриншот'}
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{
+                          padding: '14px 16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          maxWidth: '250px'
+                        }}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon-cyan)" strokeWidth="2">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                          </svg>
+                          <span style={{
+                            color: 'var(--neon-cyan)',
+                            fontSize: '14px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}>
+                            {att.name || att.url}
+                          </span>
+                        </div>
+                      )}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div style={{ marginBottom: '24px' }}>
               <label style={{
                 display: 'block',
