@@ -338,7 +338,6 @@ export default function CourseLessonsManager({ courseId, courseTitle, onClose }:
         padding: '40px 20px',
         overflowY: 'auto',
       }}
-      onClick={onClose}
     >
       <div
         style={{
@@ -353,7 +352,6 @@ export default function CourseLessonsManager({ courseId, courseTitle, onClose }:
           flexDirection: 'column',
           boxShadow: '0 0 60px rgba(0, 255, 249, 0.2)',
         }}
-        onClick={e => e.stopPropagation()}
       >
         <div style={{
           padding: '24px 30px',
@@ -629,7 +627,6 @@ export default function CourseLessonsManager({ courseId, courseTitle, onClose }:
             justifyContent: 'center',
             zIndex: 1001,
           }}
-          onClick={() => setEditingModule(null)}
         >
           <div
             style={{
@@ -640,7 +637,6 @@ export default function CourseLessonsManager({ courseId, courseTitle, onClose }:
               maxWidth: '500px',
               width: '100%',
             }}
-            onClick={e => e.stopPropagation()}
           >
             <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '18px', marginBottom: '20px' }}>
               {editingModule.id ? 'Редактировать модуль' : 'Новый модуль'}
@@ -686,7 +682,6 @@ export default function CourseLessonsManager({ courseId, courseTitle, onClose }:
             padding: '40px 20px',
             overflowY: 'auto',
           }}
-          onClick={() => setEditingLesson(null)}
         >
           <div
             style={{
@@ -697,7 +692,6 @@ export default function CourseLessonsManager({ courseId, courseTitle, onClose }:
               maxWidth: '700px',
               width: '100%',
             }}
-            onClick={e => e.stopPropagation()}
           >
             <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '18px', marginBottom: '20px' }}>
               {editingLesson.lesson.id ? 'Редактировать урок' : 'Новый урок'}
