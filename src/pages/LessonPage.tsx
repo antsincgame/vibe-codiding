@@ -342,13 +342,13 @@ export default function LessonPage() {
           borderRadius: '12px',
           overflow: 'hidden',
           marginBottom: '30px',
-          aspectRatio: '16/9',
+          aspectRatio: lesson.kinescope_embed ? undefined : '16/9',
           border: '2px solid rgba(0, 255, 249, 0.2)'
         }}>
           {lesson.kinescope_embed ? (
             <div
               dangerouslySetInnerHTML={{ __html: lesson.kinescope_embed }}
-              style={{ width: '100%', height: '100%' }}
+              style={{ width: '100%' }}
             />
           ) : lesson.youtube_url ? (
             <iframe
