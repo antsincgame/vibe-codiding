@@ -30,6 +30,8 @@ export default function Header() {
   ];
 
   const isAdmin = profile?.role === 'admin';
+  const isTeacher = profile?.role === 'teacher';
+  const canAccessTeacherPanel = isAdmin || isTeacher;
 
   return (
     <>
@@ -57,6 +59,16 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {canAccessTeacherPanel && (
+              <Link to="/teacher" className="nav-link" style={{
+                background: 'rgba(57, 255, 20, 0.1)',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                border: '1px solid var(--neon-green)'
+              }}>
+                Работы учеников
+              </Link>
+            )}
             {isAdmin && (
               <Link to="/admin" className="nav-link" style={{
                 background: 'rgba(255, 87, 51, 0.1)',
@@ -103,6 +115,20 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          {canAccessTeacherPanel && (
+            <Link
+              to="/teacher"
+              className="mobile-menu-link"
+              onClick={closeMenu}
+              style={{
+                background: 'rgba(57, 255, 20, 0.1)',
+                border: '1px solid var(--neon-green)',
+                marginTop: '10px'
+              }}
+            >
+              Работы учеников
+            </Link>
+          )}
           {isAdmin && (
             <Link
               to="/admin"
