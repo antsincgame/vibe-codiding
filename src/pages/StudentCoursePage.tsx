@@ -38,7 +38,7 @@ export default function StudentCoursePage() {
     const { data: courseData } = await supabase
       .from('courses')
       .select('*')
-      .or(`slug.eq.${slug},id.eq.${slug}`)
+      .eq('slug', slug)
       .maybeSingle();
 
     if (!courseData) {
