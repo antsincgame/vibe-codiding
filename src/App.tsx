@@ -26,6 +26,9 @@ const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const StudentCoursePage = lazy(() => import('./pages/StudentCoursePage'));
+const LessonPage = lazy(() => import('./pages/LessonPage'));
+const TeacherPanel = lazy(() => import('./pages/TeacherPanel'));
 
 function PageLoader() {
   return (
@@ -142,6 +145,39 @@ function App() {
               <main className="app-content">
                 <ProtectedRoute>
                   <StudentDashboard />
+                </ProtectedRoute>
+              </main>
+              <Footer />
+            </div>
+          } />
+          <Route path="/student/course/:slug" element={
+            <div className="app-layout">
+              <Header />
+              <main className="app-content">
+                <ProtectedRoute>
+                  <StudentCoursePage />
+                </ProtectedRoute>
+              </main>
+              <Footer />
+            </div>
+          } />
+          <Route path="/student/lesson/:lessonId" element={
+            <div className="app-layout">
+              <Header />
+              <main className="app-content">
+                <ProtectedRoute>
+                  <LessonPage />
+                </ProtectedRoute>
+              </main>
+              <Footer />
+            </div>
+          } />
+          <Route path="/teacher" element={
+            <div className="app-layout">
+              <Header />
+              <main className="app-content">
+                <ProtectedRoute>
+                  <TeacherPanel />
                 </ProtectedRoute>
               </main>
               <Footer />

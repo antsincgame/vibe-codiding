@@ -125,9 +125,54 @@ export interface CourseLesson {
   title: string;
   duration: string;
   youtube_url: string;
+  kinescope_embed: string;
+  homework_description: string;
   order_index: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface StudentEnrollment {
+  id: string;
+  student_id: string;
+  course_id: string;
+  status: 'active' | 'completed';
+  enrolled_at: string;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+  course?: Course;
+}
+
+export interface LessonProgress {
+  id: string;
+  student_id: string;
+  lesson_id: string;
+  is_completed: boolean;
+  is_unlocked: boolean;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface HomeworkSubmission {
+  id: string;
+  lesson_id: string;
+  student_id: string;
+  answer_text: string;
+  submitted_at: string;
+  status: 'pending' | 'approved' | 'rejected';
+  teacher_id: string | null;
+  teacher_feedback: string;
+  reviewed_at: string | null;
+  created_at: string;
+  updated_at: string;
+  lesson?: CourseLesson;
+  student?: {
+    id: string;
+    email: string;
+    full_name: string | null;
+  };
 }
 
 export interface VideoTestimonial {
