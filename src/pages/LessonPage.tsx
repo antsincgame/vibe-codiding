@@ -106,9 +106,15 @@ export default function LessonPage() {
 
     setHomework(homeworkData);
     if (homeworkData) {
-      setHomeworkAnswer(homeworkData.answer_text);
-      setAttachments(homeworkData.attachments || []);
+      if (homeworkData.status === 'rejected') {
+        setHomeworkAnswer('');
+        setAttachments([]);
+      } else {
+        setHomeworkAnswer(homeworkData.answer_text);
+        setAttachments(homeworkData.attachments || []);
+      }
     } else {
+      setHomeworkAnswer('');
       setAttachments([]);
     }
 
@@ -272,7 +278,17 @@ export default function LessonPage() {
     setSubmitting(true);
 
     if (homework) {
-      await supabase
+      const oldAttachments = homework.attachments || [];
+      for (const att of oldAttachments) {
+        if (att.type === 'image' && att.url.includes('homework-attachments')) {
+          const pathMatch = att.url.match(/homework-attachments\/(.+)$/);
+          if (pathMatch) {
+            await supabase.storage.from('homework-attachments').remove([pathMatch[1]]);
+          }
+        }
+      }
+
+      const { error } = await supabase
         .from('homework_submissions')
         .update({
           answer_text: homeworkAnswer,
@@ -280,17 +296,26 @@ export default function LessonPage() {
           status: 'pending',
           submitted_at: new Date().toISOString(),
           teacher_feedback: '',
+          teacher_id: null,
           reviewed_at: null
         })
         .eq('id', homework.id);
+
+      if (error) {
+        console.error('Failed to update homework:', error);
+      }
     } else {
-      await supabase.from('homework_submissions').insert({
+      const { error } = await supabase.from('homework_submissions').insert({
         student_id: profile.id,
         lesson_id: lessonId,
         answer_text: homeworkAnswer,
         attachments: attachments,
         status: 'pending'
       });
+
+      if (error) {
+        console.error('Failed to insert homework:', error);
+      }
     }
 
     setSubmitting(false);
