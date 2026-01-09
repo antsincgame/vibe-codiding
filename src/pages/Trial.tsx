@@ -22,6 +22,7 @@ export default function Trial() {
     phone: '',
     message: ''
   });
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
     document.title = SEO.title;
@@ -34,6 +35,12 @@ export default function Trial() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    if (!agreedToTerms) {
+      alert('Необходимо согласиться с обработкой персональных данных и публичной офертой');
+      setLoading(false);
+      return;
+    }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
@@ -247,6 +254,53 @@ export default function Trial() {
                 placeholder="Расскажите о своих интересах, предпочитаемом времени занятий или задайте вопрос"
                 style={{ resize: 'vertical' }}
               />
+            </div>
+
+            <div style={{
+              marginBottom: '30px',
+              padding: '12px',
+              background: 'rgba(0, 255, 249, 0.08)',
+              border: '1px solid rgba(0, 255, 249, 0.2)',
+              borderRadius: '8px'
+            }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '10px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                lineHeight: '1.4'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    marginTop: '2px',
+                    accentColor: 'var(--neon-cyan)',
+                    cursor: 'pointer',
+                    flexShrink: 0
+                  }}
+                  required
+                />
+                <span style={{ opacity: 0.85 }}>
+                  Я согласен на обработку персональных данных и принимаю условия{' '}
+                  <a
+                    href="/offer"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: 'var(--neon-cyan)',
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    публичной оферты
+                  </a>
+                  <span style={{ color: 'var(--neon-pink)' }}> *</span>
+                </span>
+              </label>
             </div>
 
             <button

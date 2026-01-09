@@ -18,6 +18,7 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
     course: '',
     message: ''
   });
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [courses, setCourses] = useState<{ id: string; title: string; slug: string }[]>([]);
 
   useEffect(() => {
@@ -51,6 +52,12 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
 
     if (!formData.phone || formData.phone.trim() === '') {
       setError('Пожалуйста, введите номер телефона');
+      setLoading(false);
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setError('Необходимо согласиться с обработкой персональных данных и публичной офертой');
       setLoading(false);
       return;
     }
@@ -470,6 +477,53 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
                     rows={3}
                     style={{ fontSize: '15px', resize: 'vertical', minHeight: '80px' }}
                   />
+                </div>
+
+                <div style={{
+                  marginBottom: '20px',
+                  padding: '12px',
+                  background: 'rgba(0, 255, 249, 0.08)',
+                  border: '1px solid rgba(0, 255, 249, 0.2)',
+                  borderRadius: '8px'
+                }}>
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '10px',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    lineHeight: '1.4'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={(e) => setAgreedToTerms(e.target.checked)}
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        marginTop: '2px',
+                        accentColor: 'var(--neon-cyan)',
+                        cursor: 'pointer',
+                        flexShrink: 0
+                      }}
+                      required
+                    />
+                    <span style={{ opacity: 0.85 }}>
+                      Я согласен на обработку персональных данных и принимаю условия{' '}
+                      <a
+                        href="/offer"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color: 'var(--neon-cyan)',
+                          textDecoration: 'underline'
+                        }}
+                      >
+                        публичной оферты
+                      </a>
+                      <span style={{ color: 'var(--neon-pink)' }}> *</span>
+                    </span>
+                  </label>
                 </div>
 
                 {error && (

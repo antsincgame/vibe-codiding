@@ -15,6 +15,7 @@ export default function FounderQuestionForm({ onSuccess }: FounderQuestionFormPr
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +24,12 @@ export default function FounderQuestionForm({ onSuccess }: FounderQuestionFormPr
 
     if (!formData.name.trim() || !formData.email.trim() || !formData.question.trim()) {
       setError('Пожалуйста, заполните все обязательные поля');
+      setLoading(false);
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setError('Необходимо согласиться с обработкой персональных данных и публичной офертой');
       setLoading(false);
       return;
     }
@@ -345,6 +352,53 @@ export default function FounderQuestionForm({ onSuccess }: FounderQuestionFormPr
                   minHeight: '120px'
                 }}
               />
+            </div>
+
+            <div style={{
+              marginBottom: '20px',
+              padding: '12px',
+              background: 'rgba(0, 255, 249, 0.08)',
+              border: '1px solid rgba(0, 255, 249, 0.2)',
+              borderRadius: '8px'
+            }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '10px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                lineHeight: '1.4'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    marginTop: '2px',
+                    accentColor: 'var(--neon-cyan)',
+                    cursor: 'pointer',
+                    flexShrink: 0
+                  }}
+                  required
+                />
+                <span style={{ opacity: 0.85 }}>
+                  Я согласен на обработку персональных данных и принимаю условия{' '}
+                  <a
+                    href="/offer"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: 'var(--neon-cyan)',
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    публичной оферты
+                  </a>
+                  <span style={{ color: 'var(--neon-pink)' }}> *</span>
+                </span>
+              </label>
             </div>
 
             <button
