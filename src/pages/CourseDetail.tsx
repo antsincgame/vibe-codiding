@@ -5,6 +5,7 @@ import type { Course } from '../types';
 import ApplicationModal from '../components/ApplicationModal';
 import HeroButton from '../components/HeroButton';
 import InteractiveBackground from '../components/InteractiveBackground';
+import { courseContentMap, type CourseContentType } from '../data/courseContent';
 
 interface ModuleData {
   id: string;
@@ -82,287 +83,6 @@ const setSEO = (course: Course) => {
   document.head.appendChild(schemaScript);
 };
 
-const boltCourseContent = {
-  hero: {
-    title: 'Bolt.new',
-    subtitle: 'Полноценный курс по созданию веб-приложений с ИИ-ассистентом в браузере. От простого лендинга до SaaS-платформы с базой данных, авторизацией и приемом платежей.',
-    badge: 'ВАЙБКОДИНГ С ИИ'
-  },
-  whatIs: {
-    title: 'Bolt.new - ваша AI-среда разработки',
-    description: 'Bolt.new - это полнофункциональная среда разработки в браузере на базе Claude AI от Anthropic. Платформа объединяет редактор кода WebContainers, превью в реальном времени, встроенный терминал и интеграцию с Supabase для работы с базами данных. Вы пишете промпты на русском языке, а ИИ генерирует готовый код на React, TypeScript, Tailwind CSS, подключает базу данных и публикует проект в интернет - все в одном окне браузера без локальной установки.',
-    features: [
-      { icon: '>', title: 'WebContainers', desc: 'Полноценная Node.js среда прямо в браузере - npm install, vite, typescript работают мгновенно' },
-      { icon: '#', title: 'Claude AI Sonnet 3.5', desc: 'Самая продвинутая модель для программирования понимает контекст всего проекта' },
-      { icon: '@', title: 'Supabase интеграция', desc: 'База данных PostgreSQL, авторизация, хранилище файлов подключаются в один клик' },
-      { icon: '$', title: 'Netlify Deploy', desc: 'Публикация готового проекта на свой домен за 30 секунд' }
-    ]
-  },
-  problemSolution: {
-    title: 'Какую проблему решает курс',
-    problem: {
-      title: 'Без курса',
-      points: [
-        'Месяцы на изучение HTML, CSS, JavaScript с нуля',
-        'Годы до уровня full-stack разработчика',
-        'Сложная настройка окружения: Node.js, Git, IDE, базы данных',
-        'Высокий порог входа отсеивает 90% начинающих',
-        'Идеи остаются идеями - нет ресурсов на реализацию'
-      ]
-    },
-    solution: {
-      title: 'С Bolt.new',
-      points: [
-        'Первый работающий проект через 2 часа после старта',
-        'Full-stack приложения за дни вместо месяцев',
-        'Нулевая настройка - открыл браузер и пишешь код',
-        'AI-ассистент объясняет каждый шаг и исправляет ошибки',
-        'От идеи до работающего продукта за выходные'
-      ]
-    }
-  },
-  skills: [
-    'Генерировать полноценные веб-приложения через промпты на русском языке',
-    'Создавать React-компоненты с TypeScript и Tailwind CSS без ручного кода',
-    'Проектировать структуру базы данных PostgreSQL через Supabase',
-    'Настраивать авторизацию пользователей: email/пароль, Google OAuth',
-    'Реализовывать Row Level Security для защиты данных пользователей',
-    'Подключать Stripe для приема платежей картами и подписок',
-    'Загружать и хранить изображения, документы в Supabase Storage',
-    'Публиковать проекты на Netlify с SSL и собственным доменом',
-    'Отлаживать код через встроенный терминал и консоль браузера',
-    'Итерировать проект через диалог с AI: уточнять, дорабатывать, оптимизировать',
-    'Создавать админ-панели для управления контентом сайта',
-    'Интегрировать сторонние API: карты, погода, аналитика, email-рассылки'
-  ],
-  audience: [
-    { icon: '>', title: 'Предприниматели и стартаперы', desc: 'Проверяйте бизнес-гипотезы за выходные. Создавайте MVP без найма разработчиков. Экономьте от $5000 на каждом прототипе.' },
-    { icon: '#', title: 'Маркетологи и продакт-менеджеры', desc: 'Собирайте лендинги под рекламные кампании самостоятельно. A/B тесты, формы захвата, аналитика - все сами за вечер.' },
-    { icon: '@', title: 'Дизайнеры и UX-специалисты', desc: 'Превращайте макеты Figma в работающие интерактивные прототипы. Показывайте клиентам живой продукт, а не картинки.' },
-    { icon: '$', title: 'Начинающие разработчики', desc: 'Изучайте программирование на практике. AI объясняет каждую строчку кода. Собирайте портфолио реальных проектов.' },
-    { icon: '%', title: 'Фрилансеры и агентства', desc: 'Выполняйте типовые заказы в 5-10 раз быстрее. Берите больше проектов, зарабатывайте больше при меньших усилиях.' },
-    { icon: '^', title: 'No-code специалисты', desc: 'Переходите на следующий уровень. Bolt.new дает гибкость кода без необходимости его писать вручную.' }
-  ],
-  program: [
-    {
-      module: 'Модуль 0. Введение в BOLT.AI',
-      description: 'Создать первый проект за 10 минут и понять возможности платформы',
-      lessons: [
-        { title: 'Первое приложение за 10 минут', duration: '15 мин' },
-        { title: 'Вводная лекция', duration: '20 мин' },
-        { title: 'Что такое BOLT.AI', duration: '25 мин' },
-        { title: 'Регистрация и тарифы', duration: '15 мин' },
-        { title: 'OpenRouter — экономия на AI', duration: '20 мин' },
-        { title: 'Интерфейс платформы', duration: '25 мин' },
-        { title: 'Что можно создавать', duration: '20 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 1. Мастерство промптов',
-      description: 'Научиться формулировать запросы для получения идеального результата',
-      lessons: [
-        { title: 'Структура эффективного промпта', duration: '30 мин' },
-        { title: 'Enhance Prompt — автоулучшение промпта', duration: '20 мин' },
-        { title: 'Описание структуры сайта', duration: '25 мин' },
-        { title: 'Описание визуального стиля', duration: '25 мин' },
-        { title: 'Описание функциональности', duration: '25 мин' },
-        { title: 'Итеративная доработка', duration: '30 мин' },
-        { title: 'Работа с ошибками', duration: '25 мин' },
-        { title: 'Промпты для копирования стиля', duration: '20 мин' },
-        { title: 'Проектирование архитектуры с AI', duration: '35 мин' },
-        { title: 'Mind Map и структура проекта', duration: '25 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 2. Создание лендингов',
-      description: 'Создавать продающие одностраничники разных типов',
-      lessons: [
-        { title: 'Сайт-визитка', duration: '40 мин' },
-        { title: 'Продающий лендинг', duration: '50 мин' },
-        { title: 'Лендинг для услуг', duration: '45 мин' },
-        { title: 'Лендинг для мероприятия', duration: '40 мин' },
-        { title: 'Мультилендинг', duration: '35 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 3. Многостраничные сайты',
-      description: 'Создавать сайты с несколькими связанными страницами',
-      lessons: [
-        { title: 'Структура многостраничника', duration: '35 мин' },
-        { title: 'Навигация между страницами', duration: '30 мин' },
-        { title: 'Страница «О компании»', duration: '35 мин' },
-        { title: 'Страница услуг/каталога', duration: '40 мин' },
-        { title: 'Страница контактов', duration: '30 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 4. Адаптивный дизайн',
-      description: 'Создавать сайты которые отлично выглядят на любых устройствах',
-      lessons: [
-        { title: 'Принципы адаптивности', duration: '25 мин' },
-        { title: 'Мобильная навигация', duration: '30 мин' },
-        { title: 'Адаптивные сетки', duration: '30 мин' },
-        { title: 'Адаптивная типографика', duration: '25 мин' },
-        { title: 'Тестирование адаптивности', duration: '20 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 5. Публикация и деплой',
-      description: 'Выкладывать проекты в интернет с собственным адресом',
-      lessons: [
-        { title: 'Способы публикации', duration: '20 мин' },
-        { title: 'Автодеплой через BOLT', duration: '25 мин' },
-        { title: 'Экспорт проекта', duration: '20 мин' },
-        { title: 'Публикация на поддомене школы', duration: '30 мин' },
-        { title: 'Подключение домена', duration: '35 мин' },
-        { title: 'Vercel как альтернатива', duration: '25 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 6. База данных Supabase',
-      description: 'Хранить и получать данные для динамических сайтов',
-      lessons: [
-        { title: 'Зачем база данных', duration: '20 мин' },
-        { title: 'Создание проекта Supabase', duration: '25 мин' },
-        { title: 'Создание таблиц', duration: '35 мин' },
-        { title: 'Подключение к BOLT', duration: '30 мин' },
-        { title: 'Вывод данных', duration: '40 мин' },
-        { title: 'Добавление данных', duration: '35 мин' },
-        { title: 'Редактирование и удаление', duration: '35 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 7. Авторизация пользователей',
-      description: 'Добавлять регистрацию, вход и личные кабинеты',
-      lessons: [
-        { title: 'Supabase Auth', duration: '25 мин' },
-        { title: 'Форма регистрации', duration: '35 мин' },
-        { title: 'Форма входа', duration: '30 мин' },
-        { title: 'Вход через Google', duration: '40 мин' },
-        { title: 'Защита страниц', duration: '30 мин' },
-        { title: 'Личный кабинет', duration: '45 мин' },
-        { title: 'Clerk — альтернатива Supabase Auth', duration: '30 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 8. Основы API и интеграций',
-      description: 'Понять как сервисы общаются между собой',
-      lessons: [
-        { title: 'Что такое API', duration: '25 мин' },
-        { title: 'HTTP-методы', duration: '20 мин' },
-        { title: 'JSON — формат данных', duration: '20 мин' },
-        { title: 'Вебхуки — обратные вызовы', duration: '25 мин' },
-        { title: 'Безопасность вебхуков', duration: '25 мин' },
-        { title: 'Отладка API и вебхуков', duration: '30 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 9. Email-уведомления Resend',
-      description: 'Отправлять красивые письма клиентам',
-      lessons: [
-        { title: 'Обзор Resend', duration: '20 мин' },
-        { title: 'Получение API-ключа', duration: '15 мин' },
-        { title: 'Подключение домена', duration: '30 мин' },
-        { title: 'Отправка писем из BOLT', duration: '35 мин' },
-        { title: 'HTML-шаблоны писем', duration: '40 мин' },
-        { title: 'Автоматические письма', duration: '35 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 10. Telegram-уведомления',
-      description: 'Получать мгновенные уведомления о заявках и заказах',
-      lessons: [
-        { title: 'Создание бота', duration: '20 мин' },
-        { title: 'Получение chat_id', duration: '15 мин' },
-        { title: 'Отправка уведомлений', duration: '30 мин' },
-        { title: 'Форматирование сообщений', duration: '25 мин' },
-        { title: 'Уведомления о заказах', duration: '30 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 11. Платёжные системы',
-      description: 'Принимать онлайн-оплату картами и через ЕРИП',
-      lessons: [
-        { title: 'Обзор платёжных систем', duration: '25 мин' },
-        { title: 'Подключение WebPay', duration: '35 мин' },
-        { title: 'Интеграция оплаты', duration: '45 мин' },
-        { title: 'Обработка webhook оплаты', duration: '40 мин' },
-        { title: 'Оплата через ЕРИП', duration: '30 мин' },
-        { title: 'Stripe для международных', duration: '35 мин' },
-        { title: 'Подписки и регулярные платежи', duration: '45 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 12. Готовые проекты',
-      description: 'Собрать всё вместе в коммерческие проекты',
-      lessons: [
-        { title: 'Интернет-магазин: структура', duration: '40 мин' },
-        { title: 'Интернет-магазин: корзина', duration: '50 мин' },
-        { title: 'Интернет-магазин: оформление заказа', duration: '45 мин' },
-        { title: 'Сервис записи: структура', duration: '40 мин' },
-        { title: 'Сервис записи: календарь', duration: '50 мин' },
-        { title: 'Сервис записи: уведомления', duration: '35 мин' },
-        { title: 'Админ-панель для бизнеса', duration: '60 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 13. Безопасность',
-      description: 'Защитить сайт и данные пользователей',
-      lessons: [
-        { title: 'Основы веб-безопасности', duration: '25 мин' },
-        { title: 'HTTPS и SSL-сертификаты', duration: '20 мин' },
-        { title: 'Защита форм: reCAPTCHA', duration: '30 мин' },
-        { title: 'Защита форм: Honeypot', duration: '20 мин' },
-        { title: 'Cloudflare: защита от DDoS', duration: '30 мин' },
-        { title: 'Безопасность Supabase', duration: '35 мин' },
-        { title: 'Валидация данных', duration: '30 мин' },
-        { title: 'Чек-лист безопасности', duration: '20 мин' }
-      ]
-    },
-    {
-      module: 'Модуль 14. Монетизация',
-      description: 'Начать зарабатывать на своих навыках',
-      lessons: [
-        { title: 'Где искать клиентов', duration: '30 мин' },
-        { title: 'Ценообразование', duration: '25 мин' },
-        { title: 'Работа с клиентом', duration: '35 мин' },
-        { title: 'Портфолио', duration: '30 мин' },
-        { title: 'Дополнительные услуги', duration: '25 мин' },
-        { title: 'Масштабирование', duration: '30 мин' }
-      ]
-    }
-  ],
-  results: [
-    { icon: '>', text: 'Создадите 5+ полноценных проектов для портфолио: от лендинга до SaaS' },
-    { icon: '#', text: 'Освоите самый быстрорастущий стек: React, TypeScript, Tailwind, Supabase' },
-    { icon: '@', text: 'Научитесь зарабатывать: навык создания сайтов за часы востребован на фрилансе' },
-    { icon: '$', text: 'Сэкономите годы обучения: вместо 2-3 лет изучения программирования - недели практики' },
-    { icon: '%', text: 'Получите работающий инструмент: запускайте свои идеи без найма разработчиков' },
-    { icon: '^', text: 'Вступите в закрытое сообщество: поддержка, разборы проектов, нетворкинг' }
-  ],
-  courseIncludes: [
-    '14 модулей видеоуроков с пожизненным доступом',
-    '90+ практических уроков с заданиями',
-    'Готовые промпты и шаблоны для типовых задач',
-    'Исходный код всех проектов курса на GitHub',
-    'Сертификат о прохождении курса',
-    'Доступ в закрытый Telegram-чат выпускников',
-    'Еженедельные Q&A сессии с преподавателем',
-    'Персональный code review финального проекта'
-  ],
-  guarantee: {
-    title: 'Гарантия результата',
-    description: 'Если за 14 дней вы не создадите свой первый работающий проект - мы вернем 100% оплаты. Без вопросов и бюрократии.'
-  },
-  faq: [
-    { q: 'Нужен ли опыт программирования?', a: 'Нет. Курс подходит для полных новичков. AI-ассистент объясняет каждый шаг и генерирует код за вас.' },
-    { q: 'Какой компьютер нужен?', a: 'Любой с браузером Chrome/Edge. Bolt.new работает в облаке - вся нагрузка на серверах.' },
-    { q: 'Сколько стоит Bolt.new?', a: 'Есть бесплатный тариф. Pro-тариф $20/месяц. На курсе научим максимально эффективно использовать лимиты.' },
-    { q: 'Как долго будет доступ к курсу?', a: 'Пожизненный. Все обновления курса также будут доступны бесплатно.' },
-    { q: 'Можно ли создавать коммерческие проекты?', a: 'Да. Все проекты на Bolt.new полностью ваши. Код можно скачать и разместить где угодно.' }
-  ]
-};
-
 export default function CourseDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
@@ -422,7 +142,7 @@ export default function CourseDetail() {
     }
   };
 
-  const isBoltCourse = slug === 'vibecoding-bolt-new';
+  const content: CourseContentType | null = slug ? courseContentMap[slug] || null : null;
 
   if (loading) {
     return (
@@ -473,8 +193,6 @@ export default function CourseDetail() {
       </div>
     );
   }
-
-  const content = isBoltCourse ? boltCourseContent : null;
 
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0f' }}>
@@ -738,7 +456,7 @@ export default function CourseDetail() {
                 opacity: 0.8,
                 marginBottom: '60px'
               }}>
-                Bolt.new подходит для людей с разным опытом и целями
+                Курс подходит для людей с разным опытом и целями
               </p>
 
               <div style={{
@@ -809,7 +527,7 @@ export default function CourseDetail() {
                   fontWeight: 600,
                   textTransform: 'uppercase'
                 }}>
-                  BOLT.AI DEVELOPER
+                  {content.hero.badge}
                 </div>
 
                 <h2 style={{
@@ -831,7 +549,7 @@ export default function CourseDetail() {
                   lineHeight: 1.6,
                   opacity: 0.9
                 }}>
-                  От нуля до создателя веб-приложений
+                  {slug === 'architect-vibecode' ? 'Полный путь в AI-разработку' : 'От нуля до создателя веб-приложений'}
                 </p>
               </div>
 
@@ -841,12 +559,16 @@ export default function CourseDetail() {
                 gap: '20px',
                 marginBottom: '60px'
               }}>
-                {[
-                  { num: '14', label: 'модулей', color: '#ff006e', icon: '{ }' },
-                  { num: '90+', label: 'уроков', color: '#00fff9', icon: '</>' },
-                  { num: '50+', label: 'часов', color: '#39ff14', icon: '[ ]' },
-                  { num: '0', label: 'кода вручную', color: '#ff006e', icon: '///' }
-                ].map((stat, i) => (
+                {(() => {
+                  const totalModules = content.program.length;
+                  const totalLessons = content.program.reduce((acc, mod) => acc + mod.lessons.length, 0);
+                  return [
+                    { num: String(totalModules), label: 'модулей', color: '#ff006e', icon: '{ }' },
+                    { num: `${totalLessons}+`, label: 'уроков', color: '#00fff9', icon: '</>' },
+                    { num: slug === 'architect-vibecode' ? '100+' : '50+', label: 'часов', color: '#39ff14', icon: '[ ]' },
+                    { num: '0', label: 'кода вручную', color: '#ff006e', icon: '///' }
+                  ];
+                })().map((stat, i) => (
                   <div key={i} style={{
                     padding: '30px 20px',
                     background: 'rgba(0, 0, 0, 0.6)',
@@ -983,7 +705,7 @@ export default function CourseDetail() {
                 marginBottom: '35px',
                 textAlign: 'center'
               }}>
-                14 модулей с подробным описанием каждого урока
+                {content.program.length} модулей с подробным описанием каждого урока
               </h3>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -1358,7 +1080,7 @@ export default function CourseDetail() {
                 opacity: 0.7,
                 marginBottom: '50px'
               }}>
-                Все необходимое для освоения Bolt.new с нуля до профессионала
+                Все необходимое для освоения курса с нуля до профессионала
               </p>
 
               <div style={{
