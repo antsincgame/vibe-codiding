@@ -87,6 +87,9 @@ export default function VerifyEmail() {
           setError('Срок действия ссылки истек. Попробуйте зарегистрироваться заново.');
         } else if (result.error.message.includes('user_exists') || result.error.message.includes('already')) {
           setError('Этот email уже зарегистрирован. Попробуйте войти.');
+        } else if (result.error.message.includes('weak_password')) {
+          setError('Пароль не соответствует требованиям безопасности. Проверьте требования выше.');
+          setShowRequirements(true);
         } else {
           setError(result.error.message);
         }

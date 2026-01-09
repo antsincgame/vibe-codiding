@@ -113,6 +113,9 @@ export default function ResetPassword() {
         } else if (errorMsg.includes('invalid_token') || errorMsg.includes('invalid')) {
           setTokenExpired(true);
           setError('Ссылка недействительна или уже была использована.');
+        } else if (errorMsg.includes('weak_password')) {
+          setError('Пароль не соответствует требованиям безопасности. Проверьте требования выше.');
+          setShowRequirements(true);
         } else {
           setError(result.error.message);
         }

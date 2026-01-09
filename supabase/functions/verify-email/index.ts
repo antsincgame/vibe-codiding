@@ -7,6 +7,30 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
+const validatePassword = (password: string): { valid: boolean; message?: string } => {
+  if (!password || typeof password !== 'string') {
+    return { valid: false, message: 'Пароль обязателен' };
+  }
+
+  if (password.length < 8) {
+    return { valid: false, message: 'Пароль должен содержать минимум 8 символов' };
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return { valid: false, message: 'Пароль должен содержать заглавную букву (A-Z)' };
+  }
+
+  if (!/[a-z]/.test(password)) {
+    return { valid: false, message: 'Пароль должен содержать строчную букву (a-z)' };
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return { valid: false, message: 'Пароль должен содержать цифру (0-9)' };
+  }
+
+  return { valid: true };
+};
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, {
@@ -27,6 +51,17 @@ Deno.serve(async (req: Request) => {
     if (!token || !email || !password) {
       return new Response(
         JSON.stringify({ error: 'Token, email and password are required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      return new Response(
+        JSON.stringify({
+          error: 'weak_password',
+          message: passwordValidation.message || 'Пароль не соответствует требованиям безопасности'
+        }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
