@@ -144,151 +144,190 @@ const boltCourseContent = {
   ],
   program: [
     {
-      module: 'Модуль 1. Знакомство с Bolt.new',
-      description: 'Настройка среды и создание первого проекта за 10 минут',
+      module: 'Модуль 0. Введение в BOLT.AI',
+      description: 'Создать первый проект за 10 минут и понять возможности платформы',
       lessons: [
-        { title: 'Что такое Bolt.new: архитектура WebContainers и Claude AI', duration: '30 мин' },
-        { title: 'Регистрация и выбор тарифа: Free vs Pro - что выбрать', duration: '15 мин' },
-        { title: 'Интерфейс платформы: чат, редактор кода, превью, терминал', duration: '25 мин' },
-        { title: 'Первый проект: генерируем landing page с анимациями', duration: '40 мин' },
-        { title: 'Структура React-проекта: папки, файлы, компоненты', duration: '35 мин' },
-        { title: 'Практика: персональный сайт-визитка с формой обратной связи', duration: '60 мин' }
+        { title: 'Первое приложение за 10 минут', duration: '15 мин' },
+        { title: 'Вводная лекция', duration: '20 мин' },
+        { title: 'Что такое BOLT.AI', duration: '25 мин' },
+        { title: 'Регистрация и тарифы', duration: '15 мин' },
+        { title: 'OpenRouter — экономия на AI', duration: '20 мин' },
+        { title: 'Интерфейс платформы', duration: '25 мин' },
+        { title: 'Что можно создавать', duration: '20 мин' }
       ]
     },
     {
-      module: 'Модуль 2. Промпт-инжиниринг для разработчиков',
-      description: 'Искусство формулировать запросы так, чтобы AI генерировал идеальный код',
+      module: 'Модуль 1. Мастерство промптов',
+      description: 'Научиться формулировать запросы для получения идеального результата',
       lessons: [
-        { title: 'Анатомия эффективного промпта: контекст, задача, формат, ограничения', duration: '45 мин' },
-        { title: 'Системные промпты: как настроить поведение Claude под проект', duration: '30 мин' },
-        { title: 'Итеративная разработка: уточняем и дорабатываем через диалог', duration: '40 мин' },
-        { title: 'Работа с ошибками: как объяснить AI что пошло не так', duration: '35 мин' },
-        { title: 'Промпты для дизайна: цвета, типографика, отступы, анимации', duration: '40 мин' },
-        { title: 'Библиотека готовых промптов: формы, таблицы, карточки, навигация', duration: '25 мин' },
-        { title: 'Практика: создаем блог с постами и комментариями через промпты', duration: '90 мин' }
+        { title: 'Структура эффективного промпта', duration: '30 мин' },
+        { title: 'Enhance Prompt — автоулучшение промпта', duration: '20 мин' },
+        { title: 'Описание структуры сайта', duration: '25 мин' },
+        { title: 'Описание визуального стиля', duration: '25 мин' },
+        { title: 'Описание функциональности', duration: '25 мин' },
+        { title: 'Итеративная доработка', duration: '30 мин' },
+        { title: 'Работа с ошибками', duration: '25 мин' },
+        { title: 'Промпты для копирования стиля', duration: '20 мин' },
+        { title: 'Проектирование архитектуры с AI', duration: '35 мин' },
+        { title: 'Mind Map и структура проекта', duration: '25 мин' }
       ]
     },
     {
-      module: 'Модуль 3. Frontend: React + TypeScript + Tailwind',
-      description: 'Создание современных интерфейсов без ручного написания CSS',
+      module: 'Модуль 2. Создание лендингов',
+      description: 'Создавать продающие одностраничники разных типов',
       lessons: [
-        { title: 'React-компоненты: props, state, события через призму AI', duration: '50 мин' },
-        { title: 'TypeScript в Bolt.new: типы, интерфейсы, автодополнение', duration: '40 мин' },
-        { title: 'Tailwind CSS: utility-first подход и кастомизация темы', duration: '45 мин' },
-        { title: 'Адаптивная верстка: мобильные, планшеты, десктоп', duration: '35 мин' },
-        { title: 'React Router: многостраничные приложения и навигация', duration: '40 мин' },
-        { title: 'Формы и валидация: react-hook-form, zod, сообщения об ошибках', duration: '50 мин' },
-        { title: 'Анимации: Framer Motion и CSS transitions', duration: '40 мин' },
-        { title: 'Практика: дашборд аналитики с графиками и фильтрами', duration: '120 мин' }
+        { title: 'Сайт-визитка', duration: '40 мин' },
+        { title: 'Продающий лендинг', duration: '50 мин' },
+        { title: 'Лендинг для услуг', duration: '45 мин' },
+        { title: 'Лендинг для мероприятия', duration: '40 мин' },
+        { title: 'Мультилендинг', duration: '35 мин' }
       ]
     },
     {
-      module: 'Модуль 4. Supabase: база данных PostgreSQL',
-      description: 'Хранение данных в облачной базе с SQL и API',
+      module: 'Модуль 3. Многостраничные сайты',
+      description: 'Создавать сайты с несколькими связанными страницами',
       lessons: [
-        { title: 'Что такое Supabase: PostgreSQL + API + Auth + Storage', duration: '30 мин' },
-        { title: 'Подключение Supabase к Bolt.new проекту', duration: '25 мин' },
-        { title: 'Проектирование схемы: таблицы, типы данных, связи', duration: '50 мин' },
-        { title: 'CRUD через JavaScript SDK: select, insert, update, delete', duration: '60 мин' },
-        { title: 'Связи между таблицами: foreign keys, joins, вложенные запросы', duration: '45 мин' },
-        { title: 'Фильтрация и сортировка: where, order, limit, pagination', duration: '40 мин' },
-        { title: 'Real-time подписки: live updates без перезагрузки страницы', duration: '35 мин' },
-        { title: 'Практика: CRM-система для ведения клиентов и сделок', duration: '150 мин' }
+        { title: 'Структура многостраничника', duration: '35 мин' },
+        { title: 'Навигация между страницами', duration: '30 мин' },
+        { title: 'Страница «О компании»', duration: '35 мин' },
+        { title: 'Страница услуг/каталога', duration: '40 мин' },
+        { title: 'Страница контактов', duration: '30 мин' }
       ]
     },
     {
-      module: 'Модуль 5. Авторизация и безопасность',
-      description: 'Система пользователей с защитой данных на уровне строк',
+      module: 'Модуль 4. Адаптивный дизайн',
+      description: 'Создавать сайты которые отлично выглядят на любых устройствах',
       lessons: [
-        { title: 'Supabase Auth: архитектура и концепции', duration: '30 мин' },
-        { title: 'Регистрация и вход по email/паролю', duration: '45 мин' },
-        { title: 'OAuth провайдеры: вход через Google, GitHub', duration: '40 мин' },
-        { title: 'Сессии и токены: как работает авторизация под капотом', duration: '35 мин' },
-        { title: 'Row Level Security: политики доступа к данным', duration: '60 мин' },
-        { title: 'Роли пользователей: admin, moderator, user', duration: '45 мин' },
-        { title: 'Защищенные роуты в React: редиректы для неавторизованных', duration: '35 мин' },
-        { title: 'Практика: личный кабинет с профилем и настройками', duration: '90 мин' }
+        { title: 'Принципы адаптивности', duration: '25 мин' },
+        { title: 'Мобильная навигация', duration: '30 мин' },
+        { title: 'Адаптивные сетки', duration: '30 мин' },
+        { title: 'Адаптивная типографика', duration: '25 мин' },
+        { title: 'Тестирование адаптивности', duration: '20 мин' }
       ]
     },
     {
-      module: 'Модуль 6. Файловое хранилище и медиа',
-      description: 'Загрузка изображений, документов и видео в Supabase Storage',
+      module: 'Модуль 5. Публикация и деплой',
+      description: 'Выкладывать проекты в интернет с собственным адресом',
       lessons: [
-        { title: 'Supabase Storage: бакеты, политики, URL файлов', duration: '30 мин' },
-        { title: 'Загрузка файлов из браузера: drag-n-drop, превью', duration: '45 мин' },
-        { title: 'Оптимизация изображений: ресайз, сжатие, форматы', duration: '35 мин' },
-        { title: 'Публичные и приватные файлы: настройка доступа', duration: '30 мин' },
-        { title: 'Практика: галерея изображений с загрузкой и удалением', duration: '75 мин' }
+        { title: 'Способы публикации', duration: '20 мин' },
+        { title: 'Автодеплой через BOLT', duration: '25 мин' },
+        { title: 'Экспорт проекта', duration: '20 мин' },
+        { title: 'Публикация на поддомене школы', duration: '30 мин' },
+        { title: 'Подключение домена', duration: '35 мин' },
+        { title: 'Vercel как альтернатива', duration: '25 мин' }
       ]
     },
     {
-      module: 'Модуль 7. Прием платежей через Stripe',
-      description: 'Монетизация проекта: разовые платежи и подписки',
+      module: 'Модуль 6. База данных Supabase',
+      description: 'Хранить и получать данные для динамических сайтов',
       lessons: [
-        { title: 'Stripe: аккаунт, API ключи, тестовый режим', duration: '25 мин' },
-        { title: 'Checkout Session: страница оплаты от Stripe', duration: '45 мин' },
-        { title: 'Webhooks: обработка успешных платежей', duration: '50 мин' },
-        { title: 'Подписки: Stripe Billing, планы, отмена', duration: '55 мин' },
-        { title: 'Портал клиента: управление подпиской пользователем', duration: '35 мин' },
-        { title: 'Практика: SaaS с пробным периодом и подпиской', duration: '120 мин' }
+        { title: 'Зачем база данных', duration: '20 мин' },
+        { title: 'Создание проекта Supabase', duration: '25 мин' },
+        { title: 'Создание таблиц', duration: '35 мин' },
+        { title: 'Подключение к BOLT', duration: '30 мин' },
+        { title: 'Вывод данных', duration: '40 мин' },
+        { title: 'Добавление данных', duration: '35 мин' },
+        { title: 'Редактирование и удаление', duration: '35 мин' }
       ]
     },
     {
-      module: 'Модуль 8. Email уведомления и рассылки',
-      description: 'Отправка транзакционных и маркетинговых писем',
+      module: 'Модуль 7. Авторизация пользователей',
+      description: 'Добавлять регистрацию, вход и личные кабинеты',
       lessons: [
-        { title: 'Email сервисы: Resend, SendGrid, Postmark - сравнение', duration: '25 мин' },
-        { title: 'Интеграция Resend в Bolt.new проект', duration: '35 мин' },
-        { title: 'Транзакционные письма: подтверждение, сброс пароля', duration: '45 мин' },
-        { title: 'HTML шаблоны писем: react-email, адаптивная верстка', duration: '40 мин' },
-        { title: 'Практика: система уведомлений о новых заказах', duration: '60 мин' }
+        { title: 'Supabase Auth', duration: '25 мин' },
+        { title: 'Форма регистрации', duration: '35 мин' },
+        { title: 'Форма входа', duration: '30 мин' },
+        { title: 'Вход через Google', duration: '40 мин' },
+        { title: 'Защита страниц', duration: '30 мин' },
+        { title: 'Личный кабинет', duration: '45 мин' },
+        { title: 'Clerk — альтернатива Supabase Auth', duration: '30 мин' }
       ]
     },
     {
-      module: 'Модуль 9. Деплой и продакшен',
-      description: 'Публикация проекта в интернет с SSL и собственным доменом',
+      module: 'Модуль 8. Основы API и интеграций',
+      description: 'Понять как сервисы общаются между собой',
       lessons: [
-        { title: 'Подготовка к деплою: env переменные, билд, оптимизация', duration: '35 мин' },
-        { title: 'Netlify: автодеплой из Bolt.new в один клик', duration: '30 мин' },
-        { title: 'Собственный домен: DNS, CNAME, SSL сертификат', duration: '40 мин' },
-        { title: 'Альтернативы: Vercel, Cloudflare Pages, Railway', duration: '30 мин' },
-        { title: 'Мониторинг: ошибки, метрики, аналитика', duration: '35 мин' },
-        { title: 'Практика: публикуем портфолио на собственном домене', duration: '60 мин' }
+        { title: 'Что такое API', duration: '25 мин' },
+        { title: 'HTTP-методы', duration: '20 мин' },
+        { title: 'JSON — формат данных', duration: '20 мин' },
+        { title: 'Вебхуки — обратные вызовы', duration: '25 мин' },
+        { title: 'Безопасность вебхуков', duration: '25 мин' },
+        { title: 'Отладка API и вебхуков', duration: '30 мин' }
       ]
     },
     {
-      module: 'Модуль 10. SEO и оптимизация',
-      description: 'Продвижение в поисковиках и улучшение производительности',
+      module: 'Модуль 9. Email-уведомления Resend',
+      description: 'Отправлять красивые письма клиентам',
       lessons: [
-        { title: 'Техническое SEO: мета-теги, заголовки, структура URL', duration: '40 мин' },
-        { title: 'Open Graph: превью для социальных сетей и мессенджеров', duration: '25 мин' },
-        { title: 'Sitemap.xml и robots.txt для индексации', duration: '20 мин' },
-        { title: 'Core Web Vitals: LCP, FID, CLS - что это и как улучшить', duration: '45 мин' },
-        { title: 'Lighthouse аудит: анализ и исправление проблем', duration: '35 мин' },
-        { title: 'Практика: SEO-оптимизация интернет-магазина', duration: '60 мин' }
+        { title: 'Обзор Resend', duration: '20 мин' },
+        { title: 'Получение API-ключа', duration: '15 мин' },
+        { title: 'Подключение домена', duration: '30 мин' },
+        { title: 'Отправка писем из BOLT', duration: '35 мин' },
+        { title: 'HTML-шаблоны писем', duration: '40 мин' },
+        { title: 'Автоматические письма', duration: '35 мин' }
       ]
     },
     {
-      module: 'Модуль 11. Итоговые проекты',
-      description: 'Применяем все навыки для создания production-ready приложений',
+      module: 'Модуль 10. Telegram-уведомления',
+      description: 'Получать мгновенные уведомления о заявках и заказах',
       lessons: [
-        { title: 'Проект: Корпоративный сайт компании с CMS', duration: '180 мин' },
-        { title: 'Проект: Интернет-магазин с корзиной и оплатой', duration: '240 мин' },
-        { title: 'Проект: SaaS-платформа с подпиской и личным кабинетом', duration: '300 мин' },
-        { title: 'Разбор проектов: code review, рефакторинг, best practices', duration: '90 мин' },
-        { title: 'Защита финального проекта и вручение сертификата', duration: '60 мин' }
+        { title: 'Создание бота', duration: '20 мин' },
+        { title: 'Получение chat_id', duration: '15 мин' },
+        { title: 'Отправка уведомлений', duration: '30 мин' },
+        { title: 'Форматирование сообщений', duration: '25 мин' },
+        { title: 'Уведомления о заказах', duration: '30 мин' }
       ]
     },
     {
-      module: 'Бонус. Заработок на Bolt.new',
-      description: 'Монетизация навыков: фриланс, агентство, свои продукты',
+      module: 'Модуль 11. Платёжные системы',
+      description: 'Принимать онлайн-оплату картами и через ЕРИП',
       lessons: [
-        { title: 'Фриланс-биржи: Upwork, Fiverr, Kwork - где искать заказы', duration: '35 мин' },
-        { title: 'Ценообразование: сколько стоит лендинг, магазин, SaaS', duration: '30 мин' },
-        { title: 'Портфолио: как презентовать Bolt.new проекты клиентам', duration: '25 мин' },
-        { title: 'Работа с заказчиком: ТЗ, согласование, правки, сдача', duration: '40 мин' },
-        { title: 'Свое агентство: найм, процессы, масштабирование', duration: '45 мин' },
-        { title: 'Продуктовый подход: создаем и продаем свои SaaS', duration: '50 мин' }
+        { title: 'Обзор платёжных систем', duration: '25 мин' },
+        { title: 'Подключение WebPay', duration: '35 мин' },
+        { title: 'Интеграция оплаты', duration: '45 мин' },
+        { title: 'Обработка webhook оплаты', duration: '40 мин' },
+        { title: 'Оплата через ЕРИП', duration: '30 мин' },
+        { title: 'Stripe для международных', duration: '35 мин' },
+        { title: 'Подписки и регулярные платежи', duration: '45 мин' }
+      ]
+    },
+    {
+      module: 'Модуль 12. Готовые проекты',
+      description: 'Собрать всё вместе в коммерческие проекты',
+      lessons: [
+        { title: 'Интернет-магазин: структура', duration: '40 мин' },
+        { title: 'Интернет-магазин: корзина', duration: '50 мин' },
+        { title: 'Интернет-магазин: оформление заказа', duration: '45 мин' },
+        { title: 'Сервис записи: структура', duration: '40 мин' },
+        { title: 'Сервис записи: календарь', duration: '50 мин' },
+        { title: 'Сервис записи: уведомления', duration: '35 мин' },
+        { title: 'Админ-панель для бизнеса', duration: '60 мин' }
+      ]
+    },
+    {
+      module: 'Модуль 13. Безопасность',
+      description: 'Защитить сайт и данные пользователей',
+      lessons: [
+        { title: 'Основы веб-безопасности', duration: '25 мин' },
+        { title: 'HTTPS и SSL-сертификаты', duration: '20 мин' },
+        { title: 'Защита форм: reCAPTCHA', duration: '30 мин' },
+        { title: 'Защита форм: Honeypot', duration: '20 мин' },
+        { title: 'Cloudflare: защита от DDoS', duration: '30 мин' },
+        { title: 'Безопасность Supabase', duration: '35 мин' },
+        { title: 'Валидация данных', duration: '30 мин' },
+        { title: 'Чек-лист безопасности', duration: '20 мин' }
+      ]
+    },
+    {
+      module: 'Модуль 14. Монетизация',
+      description: 'Начать зарабатывать на своих навыках',
+      lessons: [
+        { title: 'Где искать клиентов', duration: '30 мин' },
+        { title: 'Ценообразование', duration: '25 мин' },
+        { title: 'Работа с клиентом', duration: '35 мин' },
+        { title: 'Портфолио', duration: '30 мин' },
+        { title: 'Дополнительные услуги', duration: '25 мин' },
+        { title: 'Масштабирование', duration: '30 мин' }
       ]
     }
   ],
@@ -301,8 +340,8 @@ const boltCourseContent = {
     { icon: '^', text: 'Вступите в закрытое сообщество: поддержка, разборы проектов, нетворкинг' }
   ],
   courseIncludes: [
-    '12 модулей видеоуроков с пожизненным доступом',
-    '80+ практических заданий с разбором решений',
+    '14 модулей видеоуроков с пожизненным доступом',
+    '90+ практических уроков с заданиями',
     'Готовые промпты и шаблоны для типовых задач',
     'Исходный код всех проектов курса на GitHub',
     'Сертификат о прохождении курса',
@@ -759,7 +798,7 @@ export default function CourseDetail() {
                 maxWidth: '700px',
                 margin: '0 auto 20px'
               }}>
-                12 модулей, 80+ уроков, 60+ часов практики
+                14 модулей, 90+ уроков - создание сайтов и приложений через промпты без кода
               </p>
 
               <div style={{
@@ -770,15 +809,15 @@ export default function CourseDetail() {
                 flexWrap: 'wrap'
               }}>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-cyan)' }}>12</div>
+                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-cyan)' }}>14</div>
                   <div style={{ fontSize: '14px', opacity: 0.7 }}>модулей</div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-green)' }}>80+</div>
+                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-green)' }}>90+</div>
                   <div style={{ fontSize: '14px', opacity: 0.7 }}>уроков</div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-pink)' }}>60+</div>
+                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-pink)' }}>50+</div>
                   <div style={{ fontSize: '14px', opacity: 0.7 }}>часов</div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
