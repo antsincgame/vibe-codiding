@@ -8,6 +8,7 @@ import HeroButton from '../components/HeroButton';
 interface ModuleData {
   id: string;
   title: string;
+  description?: string;
   lessons: { id: string; title: string; duration: string }[];
 }
 
@@ -118,57 +119,124 @@ const boltCourseContent = {
   ],
   program: [
     {
-      module: 'Модуль 1: Знакомство с Bolt.new',
+      module: 'Введение в Bolt.new и AI-разработку',
+      description: 'Погружение в мир ИИ-разработки и знакомство с платформой',
       lessons: [
-        'Что такое Bolt.new и как он работает',
-        'Регистрация и настройка аккаунта',
-        'Интерфейс платформы и основные функции',
-        'Создание первого проекта за 5 минут'
+        { title: 'Что такое Bolt.new и революция AI в веб-разработке', duration: '45 мин' },
+        { title: 'Регистрация, тарифы и настройка рабочего окружения', duration: '30 мин' },
+        { title: 'Интерфейс платформы: панели, инструменты, горячие клавиши', duration: '40 мин' },
+        { title: 'Создание первого проекта за 5 минут - от идеи до результата', duration: '50 мин' },
+        { title: 'Практика: Генерируем landing page по текстовому описанию', duration: '60 мин' }
       ]
     },
     {
-      module: 'Модуль 2: Промпт-инжиниринг',
+      module: 'Промпт-инжиниринг: искусство общения с ИИ',
+      description: 'Научитесь формулировать запросы так, чтобы получать идеальный результат с первого раза',
       lessons: [
-        'Как правильно формулировать запросы к ИИ',
-        'Структура эффективного промпта',
-        'Итеративная разработка: уточнение и доработка',
-        'Типичные ошибки и как их избежать'
+        { title: 'Анатомия идеального промпта: структура, ключевые слова, контекст', duration: '55 мин' },
+        { title: 'Техники итеративной разработки: уточнение и доработка кода', duration: '45 мин' },
+        { title: 'Работа с ошибками: как объяснить ИИ что пошло не так', duration: '40 мин' },
+        { title: 'Промпты для дизайна: цвета, шрифты, расположение элементов', duration: '50 мин' },
+        { title: 'Библиотека готовых промптов для типовых задач', duration: '35 мин' },
+        { title: 'Практика: Создаем портфолио через серию промптов', duration: '70 мин' }
       ]
     },
     {
-      module: 'Модуль 3: Создание интерфейсов',
+      module: 'Frontend-разработка: создание интерфейсов',
+      description: 'Освойте создание красивых и функциональных пользовательских интерфейсов',
       lessons: [
-        'Основы верстки и компонентов',
-        'Работа с React и современными фреймворками',
-        'Адаптивный дизайн для мобильных устройств',
-        'Анимации и интерактивные элементы'
+        { title: 'Основы HTML/CSS через призму AI: что нужно знать', duration: '60 мин' },
+        { title: 'React-компоненты: как ИИ структурирует код', duration: '55 мин' },
+        { title: 'Tailwind CSS: стилизация проектов в Bolt.new', duration: '50 мин' },
+        { title: 'Адаптивный дизайн: мобильная версия за минуты', duration: '45 мин' },
+        { title: 'Анимации и микровзаимодействия: оживляем интерфейс', duration: '40 мин' },
+        { title: 'Формы, модальные окна, навигация - типовые UI-паттерны', duration: '55 мин' },
+        { title: 'Практика: Разрабатываем дашборд аналитики', duration: '80 мин' }
       ]
     },
     {
-      module: 'Модуль 4: Работа с данными',
+      module: 'Backend и базы данных с Supabase',
+      description: 'Подключаем серверную часть и работаем с данными',
       lessons: [
-        'Подключение баз данных (Supabase)',
-        'CRUD-операции: создание, чтение, обновление, удаление',
-        'Авторизация пользователей',
-        'Защита данных и Row Level Security'
+        { title: 'Введение в Supabase: что это и зачем нужно', duration: '40 мин' },
+        { title: 'Создание таблиц и структура базы данных', duration: '50 мин' },
+        { title: 'CRUD-операции: создание, чтение, обновление, удаление данных', duration: '60 мин' },
+        { title: 'Связи между таблицами: один-к-одному, один-ко-многим', duration: '45 мин' },
+        { title: 'Запросы с фильтрацией, сортировкой и пагинацией', duration: '50 мин' },
+        { title: 'Real-time подписки: данные обновляются мгновенно', duration: '40 мин' },
+        { title: 'Практика: Создаем TODO-приложение с синхронизацией', duration: '75 мин' }
       ]
     },
     {
-      module: 'Модуль 5: Публикация и деплой',
+      module: 'Авторизация и безопасность',
+      description: 'Реализуем систему пользователей и защищаем данные',
       lessons: [
-        'Подготовка проекта к публикации',
-        'Деплой на различные платформы',
-        'Подключение домена',
-        'Мониторинг и аналитика'
+        { title: 'Supabase Auth: регистрация и вход пользователей', duration: '55 мин' },
+        { title: 'Email подтверждение и восстановление пароля', duration: '40 мин' },
+        { title: 'OAuth: вход через Google, GitHub и другие сервисы', duration: '45 мин' },
+        { title: 'Row Level Security (RLS): защита данных на уровне строк', duration: '60 мин' },
+        { title: 'Роли пользователей: админ, модератор, обычный пользователь', duration: '50 мин' },
+        { title: 'Защищенные маршруты и редиректы', duration: '35 мин' },
+        { title: 'Практика: Личный кабинет с профилем пользователя', duration: '70 мин' }
       ]
     },
     {
-      module: 'Модуль 6: Практические проекты',
+      module: 'Интеграции и внешние сервисы',
+      description: 'Расширяем функционал через подключение сторонних API',
       lessons: [
-        'Создание лендинга для бизнеса',
-        'Разработка веб-приложения с авторизацией',
-        'Интернет-магазин или каталог товаров',
-        'Финальный проект: полноценный SaaS'
+        { title: 'Работа с REST API: запросы, ответы, обработка ошибок', duration: '50 мин' },
+        { title: 'Интеграция платежей: Stripe для приема оплаты', duration: '65 мин' },
+        { title: 'Отправка email через Resend или SendGrid', duration: '40 мин' },
+        { title: 'Загрузка и хранение файлов в Supabase Storage', duration: '45 мин' },
+        { title: 'Карты и геолокация: интеграция с картографическими сервисами', duration: '40 мин' },
+        { title: 'Практика: Добавляем оплату и уведомления в проект', duration: '80 мин' }
+      ]
+    },
+    {
+      module: 'Деплой и публикация проектов',
+      description: 'Выводим проект в продакшен и настраиваем домен',
+      lessons: [
+        { title: 'Подготовка проекта к публикации: чеклист', duration: '35 мин' },
+        { title: 'Деплой на Netlify: автоматическая сборка и публикация', duration: '45 мин' },
+        { title: 'Альтернативы: Vercel, Cloudflare Pages, Railway', duration: '40 мин' },
+        { title: 'Подключение собственного домена', duration: '30 мин' },
+        { title: 'SSL-сертификат и HTTPS настройка', duration: '25 мин' },
+        { title: 'CI/CD: автоматический деплой при изменениях', duration: '40 мин' },
+        { title: 'Практика: Публикуем проект с кастомным доменом', duration: '50 мин' }
+      ]
+    },
+    {
+      module: 'SEO и оптимизация производительности',
+      description: 'Делаем проект быстрым и видимым в поисковиках',
+      lessons: [
+        { title: 'Основы SEO: мета-теги, заголовки, структура страниц', duration: '45 мин' },
+        { title: 'Open Graph и социальные превью', duration: '30 мин' },
+        { title: 'Sitemap и robots.txt для поисковых систем', duration: '25 мин' },
+        { title: 'Оптимизация изображений и lazy loading', duration: '35 мин' },
+        { title: 'Lighthouse аудит: улучшаем показатели', duration: '40 мин' },
+        { title: 'Практика: SEO-оптимизация готового проекта', duration: '55 мин' }
+      ]
+    },
+    {
+      module: 'Финальные проекты',
+      description: 'Применяем все знания на практике в реальных проектах',
+      lessons: [
+        { title: 'Проект 1: Корпоративный сайт с формой заявки', duration: '90 мин' },
+        { title: 'Проект 2: Блог-платформа с админ-панелью', duration: '120 мин' },
+        { title: 'Проект 3: Интернет-магазин с корзиной и оплатой', duration: '150 мин' },
+        { title: 'Проект 4: SaaS-приложение с подпиской', duration: '180 мин' },
+        { title: 'Защита финального проекта и получение сертификата', duration: '60 мин' }
+      ]
+    },
+    {
+      module: 'Бонус: Монетизация навыков',
+      description: 'Как зарабатывать на полученных знаниях',
+      lessons: [
+        { title: 'Фриланс на Bolt.new: где искать заказы', duration: '40 мин' },
+        { title: 'Ценообразование: сколько брать за проекты', duration: '35 мин' },
+        { title: 'Портфолио: как презентовать свои работы', duration: '30 мин' },
+        { title: 'Работа с клиентами: от ТЗ до сдачи проекта', duration: '45 мин' },
+        { title: 'Масштабирование: от фриланса к агентству', duration: '40 мин' }
       ]
     }
   ],
@@ -590,26 +658,81 @@ export default function CourseDetail() {
             </div>
           </section>
 
-          <section style={{ padding: '100px 20px' }}>
-            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <section style={{ padding: '100px 20px', position: 'relative' }}>
+            <div style={{
+              position: 'absolute',
+              right: 0,
+              top: '20%',
+              width: '400px',
+              height: '400px',
+              background: 'radial-gradient(circle, rgba(255, 0, 110, 0.08) 0%, transparent 70%)',
+              pointerEvents: 'none'
+            }} />
+
+            <div style={{ maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
               <h2 style={{
                 fontSize: 'clamp(32px, 5vw, 48px)',
                 textAlign: 'center',
-                marginBottom: '60px'
+                marginBottom: '20px'
               }}>
                 <span style={{ color: 'var(--neon-pink)' }}>Программа курса</span>
               </h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <p style={{
+                textAlign: 'center',
+                fontSize: '18px',
+                opacity: 0.8,
+                marginBottom: '20px',
+                maxWidth: '700px',
+                margin: '0 auto 20px'
+              }}>
+                10 модулей, 60+ уроков, 50+ часов практики
+              </p>
+
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '30px',
+                marginBottom: '50px',
+                flexWrap: 'wrap'
+              }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-cyan)' }}>10</div>
+                  <div style={{ fontSize: '14px', opacity: 0.7 }}>модулей</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-green)' }}>60+</div>
+                  <div style={{ fontSize: '14px', opacity: 0.7 }}>уроков</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-pink)' }}>50+</div>
+                  <div style={{ fontSize: '14px', opacity: 0.7 }}>часов</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-cyan)' }}>5</div>
+                  <div style={{ fontSize: '14px', opacity: 0.7 }}>проектов</div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {(modules.length > 0 ? modules : content.program.map((p, i) => ({
                   id: `static-${i}`,
                   title: p.module,
-                  lessons: p.lessons.map((l, li) => ({ id: `l-${li}`, title: l, duration: '' }))
+                  description: p.description,
+                  lessons: p.lessons.map((l, li) => ({
+                    id: `l-${li}`,
+                    title: typeof l === 'string' ? l : l.title,
+                    duration: typeof l === 'string' ? '' : l.duration
+                  }))
                 }))).map((mod, idx) => (
                   <div key={mod.id} style={{
-                    background: 'rgba(255, 0, 110, 0.05)',
-                    border: '1px solid rgba(255, 0, 110, 0.2)',
-                    borderRadius: '12px',
+                    background: expandedModule === mod.id
+                      ? 'linear-gradient(135deg, rgba(255, 0, 110, 0.1) 0%, rgba(0, 255, 249, 0.05) 100%)'
+                      : 'rgba(255, 0, 110, 0.03)',
+                    border: expandedModule === mod.id
+                      ? '1px solid rgba(255, 0, 110, 0.4)'
+                      : '1px solid rgba(255, 0, 110, 0.15)',
+                    borderRadius: '16px',
                     overflow: 'hidden',
                     transition: 'all 0.3s ease'
                   }}>
@@ -617,63 +740,127 @@ export default function CourseDetail() {
                       onClick={() => setExpandedModule(expandedModule === mod.id ? null : mod.id)}
                       style={{
                         width: '100%',
-                        padding: '25px 30px',
+                        padding: '24px 28px',
                         background: 'transparent',
                         border: 'none',
                         color: 'white',
                         cursor: 'pointer',
                         display: 'flex',
-                        alignItems: 'center',
+                        alignItems: 'flex-start',
                         justifyContent: 'space-between',
-                        gap: '15px',
+                        gap: '20px',
                         textAlign: 'left'
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '18px', flex: 1 }}>
                         <span style={{
-                          width: '40px',
-                          height: '40px',
-                          borderRadius: '10px',
-                          background: 'rgba(255, 0, 110, 0.2)',
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '12px',
+                          background: expandedModule === mod.id
+                            ? 'linear-gradient(135deg, var(--neon-pink), var(--neon-cyan))'
+                            : 'rgba(255, 0, 110, 0.15)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: 'var(--neon-pink)',
-                          fontWeight: 700,
-                          fontSize: '18px'
+                          color: expandedModule === mod.id ? '#0a0a0f' : 'var(--neon-pink)',
+                          fontWeight: 800,
+                          fontSize: '18px',
+                          flexShrink: 0,
+                          transition: 'all 0.3s ease'
                         }}>
                           {idx + 1}
                         </span>
-                        <span style={{ fontSize: '18px', fontWeight: 600 }}>{mod.title}</span>
+                        <div style={{ flex: 1 }}>
+                          <div style={{
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            marginBottom: mod.description ? '6px' : 0,
+                            color: expandedModule === mod.id ? 'white' : 'rgba(255, 255, 255, 0.95)'
+                          }}>
+                            {mod.title}
+                          </div>
+                          {mod.description && (
+                            <div style={{
+                              fontSize: '14px',
+                              opacity: 0.6,
+                              lineHeight: 1.4
+                            }}>
+                              {mod.description}
+                            </div>
+                          )}
+                        </div>
+                        <div style={{
+                          padding: '6px 14px',
+                          background: 'rgba(255, 0, 110, 0.1)',
+                          borderRadius: '20px',
+                          fontSize: '13px',
+                          color: 'var(--neon-pink)',
+                          fontWeight: 500,
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {mod.lessons.length} уроков
+                        </div>
                       </div>
                       <span style={{
                         transform: expandedModule === mod.id ? 'rotate(180deg)' : 'rotate(0)',
                         transition: 'transform 0.3s ease',
                         color: 'var(--neon-pink)',
-                        fontSize: '20px'
+                        fontSize: '18px',
+                        marginTop: '14px'
                       }}>▼</span>
                     </button>
 
                     {expandedModule === mod.id && (
                       <div style={{
-                        padding: '0 30px 25px',
+                        padding: '0 28px 24px',
                         borderTop: '1px solid rgba(255, 0, 110, 0.1)'
                       }}>
-                        {mod.lessons.map((lesson, li) => (
-                          <div key={lesson.id} style={{
-                            padding: '15px 0',
-                            borderBottom: li < mod.lessons.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px'
-                          }}>
-                            <span style={{ color: 'var(--neon-pink)', opacity: 0.5 }}>•</span>
-                            <span style={{ opacity: 0.9 }}>{lesson.title}</span>
-                            {lesson.duration && (
-                              <span style={{ marginLeft: 'auto', fontSize: '14px', opacity: 0.5 }}>{lesson.duration}</span>
-                            )}
-                          </div>
-                        ))}
+                        <div style={{ paddingTop: '16px' }}>
+                          {mod.lessons.map((lesson, li) => (
+                            <div key={lesson.id} style={{
+                              padding: '14px 16px',
+                              marginBottom: li < mod.lessons.length - 1 ? '8px' : 0,
+                              background: 'rgba(0, 0, 0, 0.3)',
+                              borderRadius: '10px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '14px',
+                              border: '1px solid rgba(255, 255, 255, 0.03)'
+                            }}>
+                              <span style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '6px',
+                                background: 'rgba(255, 0, 110, 0.15)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: 'var(--neon-pink)',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                flexShrink: 0
+                              }}>{li + 1}</span>
+                              <span style={{
+                                flex: 1,
+                                fontSize: '15px',
+                                opacity: 0.9,
+                                lineHeight: 1.4
+                              }}>{lesson.title}</span>
+                              {lesson.duration && (
+                                <span style={{
+                                  fontSize: '13px',
+                                  opacity: 0.5,
+                                  background: 'rgba(0, 255, 249, 0.1)',
+                                  padding: '4px 10px',
+                                  borderRadius: '12px',
+                                  color: 'var(--neon-cyan)',
+                                  whiteSpace: 'nowrap'
+                                }}>{lesson.duration}</span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
