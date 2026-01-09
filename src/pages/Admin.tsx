@@ -40,6 +40,7 @@ export default function Admin() {
   const [editingBlogPost, setEditingBlogPost] = useState<BlogPost | null>(null);
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
   const [managingLessonsCourse, setManagingLessonsCourse] = useState<Course | null>(null);
+  const [showCreateUser, setShowCreateUser] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -400,6 +401,39 @@ export default function Admin() {
       alert('Пользователь успешно удален');
     } catch (err) {
       alert('Произошла ошибка при удалении пользователя');
+    }
+  };
+
+  const createUser = async (userData: { email: string; password: string; full_name: string; role: string }) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert('Сессия истекла. Войдите снова.');
+        return;
+      }
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/create-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(`Ошибка создания: ${data.error || 'Unknown error'}`);
+        return;
+      }
+
+      setShowCreateUser(false);
+      loadData();
+      alert('Пользователь успешно создан');
+    } catch (err) {
+      alert('Произошла ошибка при создании пользователя');
     }
   };
 
@@ -1111,6 +1145,23 @@ export default function Admin() {
         {activeTab === 'users' && (
           <div>
             <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px'
+            }}>
+              <h2 style={{ color: 'var(--neon-cyan)', margin: 0 }}>
+                Пользователи ({users.length})
+              </h2>
+              <button
+                onClick={() => setShowCreateUser(true)}
+                className="cyber-button"
+                style={{ padding: '10px 20px' }}
+              >
+                + Добавить пользователя
+              </button>
+            </div>
+            <div style={{
               display: 'grid',
               gap: '20px',
               gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))'
@@ -1166,15 +1217,15 @@ export default function Admin() {
                     flexWrap: 'wrap'
                   }}>
                     <span style={{
-                      background: user.role === 'admin' ? 'var(--neon-pink)' : user.role === 'student' ? 'var(--neon-cyan)' : 'rgba(255, 255, 255, 0.2)',
-                      color: user.role === 'admin' || user.role === 'student' ? 'var(--bg-dark)' : 'white',
+                      background: user.role === 'admin' ? 'var(--neon-pink)' : user.role === 'teacher' ? 'var(--neon-green)' : 'var(--neon-cyan)',
+                      color: 'var(--bg-dark)',
                       padding: '4px 12px',
                       borderRadius: '12px',
                       fontSize: '11px',
                       fontWeight: 700,
                       textTransform: 'uppercase'
                     }}>
-                      {user.role === 'admin' ? 'Администратор' : user.role === 'student' ? 'Студент' : user.role}
+                      {user.role === 'admin' ? 'Администратор' : user.role === 'teacher' ? 'Преподаватель' : 'Студент'}
                     </span>
                   </div>
 
@@ -1257,6 +1308,13 @@ export default function Admin() {
           onSave={saveUser}
           onDelete={deleteUser}
           onClose={() => setEditingUser(null)}
+        />
+      )}
+
+      {showCreateUser && (
+        <CreateUserModal
+          onCreate={createUser}
+          onClose={() => setShowCreateUser(false)}
         />
       )}
 
@@ -3046,7 +3104,8 @@ function UserModal({
               cursor: 'pointer'
             }}
           >
-            <option value="student">Студент</option>
+            <option value="user">Студент</option>
+            <option value="teacher">Преподаватель</option>
             <option value="admin">Администратор</option>
           </select>
           <div style={{
@@ -3058,7 +3117,10 @@ function UserModal({
             border: '1px solid rgba(255, 255, 100, 0.3)',
             borderRadius: '4px'
           }}>
-            <strong style={{ color: 'var(--neon-pink)' }}>Внимание:</strong> Администраторы имеют полный доступ ко всем функциям системы
+            <strong>Роли:</strong><br />
+            - <strong>Студент:</strong> Доступ к курсам и личному кабинету<br />
+            - <strong>Преподаватель:</strong> Проверка домашних заданий студентов<br />
+            - <strong style={{ color: 'var(--neon-pink)' }}>Администратор:</strong> Полный доступ ко всем функциям системы
           </div>
         </div>
 
@@ -3175,6 +3237,173 @@ function UserModal({
               </div>
             </div>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CreateUserModal({
+  onCreate,
+  onClose
+}: {
+  onCreate: (userData: { email: string; password: string; full_name: string; role: string }) => void;
+  onClose: () => void;
+}) {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    full_name: '',
+    role: 'user'
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!formData.email || !formData.password) {
+      alert('Email и пароль обязательны');
+      return;
+    }
+    if (formData.password.length < 6) {
+      alert('Пароль должен быть не менее 6 символов');
+      return;
+    }
+    setIsSubmitting(true);
+    await onCreate(formData);
+    setIsSubmitting(false);
+  };
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'rgba(0, 0, 0, 0.9)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '20px',
+      overflow: 'auto'
+    }}>
+      <div className="cyber-card" style={{
+        maxWidth: '500px',
+        width: '100%',
+        maxHeight: '90vh',
+        overflow: 'auto'
+      }}>
+        <h2 style={{
+          fontSize: '28px',
+          marginBottom: '20px',
+          color: 'var(--neon-cyan)'
+        }}>
+          Добавить пользователя
+        </h2>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            color: 'var(--neon-cyan)',
+            fontWeight: 600
+          }}>
+            Email *
+          </label>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="cyber-input"
+            placeholder="user@example.com"
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            color: 'var(--neon-cyan)',
+            fontWeight: 600
+          }}>
+            Пароль *
+          </label>
+          <input
+            type="password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            className="cyber-input"
+            placeholder="Минимум 6 символов"
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            color: 'var(--neon-cyan)',
+            fontWeight: 600
+          }}>
+            Полное имя
+          </label>
+          <input
+            type="text"
+            value={formData.full_name}
+            onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+            className="cyber-input"
+            placeholder="Иван Иванов"
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            color: 'var(--neon-cyan)',
+            fontWeight: 600
+          }}>
+            Роль
+          </label>
+          <select
+            value={formData.role}
+            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              border: '2px solid var(--neon-cyan)',
+              borderRadius: '4px',
+              color: 'white',
+              fontSize: '16px',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="user">Студент</option>
+            <option value="teacher">Преподаватель</option>
+            <option value="admin">Администратор</option>
+          </select>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="cyber-button"
+            style={{ flex: 1, opacity: isSubmitting ? 0.5 : 1 }}
+          >
+            {isSubmitting ? 'Создание...' : 'Создать'}
+          </button>
+          <button
+            onClick={onClose}
+            className="cyber-button"
+            style={{
+              flex: 1,
+              borderColor: 'var(--neon-pink)',
+              color: 'var(--neon-pink)'
+            }}
+          >
+            Отмена
+          </button>
         </div>
       </div>
     </div>
