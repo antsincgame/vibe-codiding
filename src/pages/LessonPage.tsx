@@ -673,17 +673,34 @@ export default function LessonPage() {
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  marginBottom: '12px',
-                  color: 'var(--neon-pink)',
-                  fontWeight: 600
+                  justifyContent: 'space-between',
+                  marginBottom: '12px'
                 }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="15" y1="9" x2="9" y2="15" />
-                    <line x1="9" y1="9" x2="15" y2="15" />
-                  </svg>
-                  Требуется доработка
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    color: 'var(--neon-pink)',
+                    fontWeight: 600
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="15" y1="9" x2="9" y2="15" />
+                      <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                    Требуется доработка
+                  </div>
+                  {homework.reviewed_at && (
+                    <span style={{ fontSize: '13px', opacity: 0.6 }}>
+                      {new Date(homework.reviewed_at).toLocaleString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  )}
                 </div>
                 {homework.teacher_feedback && (
                   <div>
