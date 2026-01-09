@@ -38,8 +38,14 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { data: settings } = await supabase
+      .from('system_settings')
+      .select('key, value')
+      .eq('key', 'resend_api_key');
+
+    const resendApiKey = settings?.find(s => s.key === 'resend_api_key')?.value;
 
     console.log('[DEBUG] Environment check:', {
       hasSupabaseUrl: !!supabaseUrl,
@@ -106,11 +112,11 @@ Deno.serve(async (req: Request) => {
       console.log(`[DEBUG] Has Resend API key: ${!!resendApiKey}`);
 
       if (!resendApiKey) {
-        console.error('[ERROR] RESEND_API_KEY not found in environment variables!');
+        console.error('[ERROR] RESEND_API_KEY not found in system_settings!');
         await supabase.from('webhook_logs').insert({
           payload: {
             type: 'error',
-            message: 'RESEND_API_KEY not configured',
+            message: 'RESEND_API_KEY not configured in admin settings',
             email_id: emailData.email_id
           }
         });
@@ -225,7 +231,7 @@ Deno.serve(async (req: Request) => {
       storage_path: string;
     }> = [];
 
-    if (emailData.attachments && emailData.attachments.length > 0) {
+    if (emailData.attachments && emailData.attachments.length > 0 && resendApiKey) {
       console.log(`Processing ${emailData.attachments.length} attachments`);
 
       for (const attachment of emailData.attachments) {

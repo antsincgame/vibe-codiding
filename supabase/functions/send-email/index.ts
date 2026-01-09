@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,10 +22,30 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { data: settings } = await supabase
+      .from('system_settings')
+      .select('key, value')
+      .in('key', ['resend_api_key', 'resend_from_email', 'resend_from_name', 'resend_reply_to']);
+
+    const settingsMap: Record<string, string> = {};
+    settings?.forEach(item => {
+      settingsMap[item.key] = item.value;
+    });
+
+    const resendApiKey = settingsMap['resend_api_key'];
+    const defaultFromEmail = settingsMap['resend_from_email'];
+    const defaultFromName = settingsMap['resend_from_name'] || 'VIBECODING';
+    const defaultReplyTo = settingsMap['resend_reply_to'];
+
     if (!resendApiKey) {
-      throw new Error('RESEND_API_KEY not configured');
+      return new Response(
+        JSON.stringify({ error: 'Resend API key not configured in admin settings' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const payload: SendEmailRequest = await req.json();
@@ -43,15 +64,21 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const emailData: any = {
-      from: payload.from || 'VibeCoding <info@vibecoding.by>',
+    const fromAddress = payload.from || (defaultFromEmail ? `${defaultFromName} <${defaultFromEmail}>` : 'VibeCoding <info@vibecoding.by>');
+
+    const emailData: Record<string, unknown> = {
+      from: fromAddress,
       to: Array.isArray(payload.to) ? payload.to : [payload.to],
       subject: payload.subject,
     };
 
     if (payload.html) emailData.html = payload.html;
     if (payload.text) emailData.text = payload.text;
-    if (payload.replyTo) emailData.reply_to = payload.replyTo;
+    if (payload.replyTo) {
+      emailData.reply_to = payload.replyTo;
+    } else if (defaultReplyTo) {
+      emailData.reply_to = defaultReplyTo;
+    }
 
     console.log('Sending email via Resend:', {
       to: emailData.to,

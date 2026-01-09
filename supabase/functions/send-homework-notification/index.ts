@@ -25,16 +25,29 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
-    if (!RESEND_API_KEY) {
+    const { data: settings } = await supabase
+      .from('system_settings')
+      .select('key, value')
+      .in('key', ['resend_api_key', 'resend_from_email', 'resend_from_name']);
+
+    const settingsMap: Record<string, string> = {};
+    settings?.forEach(item => {
+      settingsMap[item.key] = item.value;
+    });
+
+    const resendApiKey = settingsMap['resend_api_key'];
+    const fromEmail = settingsMap['resend_from_email'];
+    const fromName = settingsMap['resend_from_name'] || 'VibeCoding';
+
+    if (!resendApiKey || !fromEmail) {
       return new Response(
-        JSON.stringify({ error: 'Email service not configured' }),
+        JSON.stringify({ error: 'Email service not configured in admin settings' }),
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -191,7 +204,7 @@ Deno.serve(async (req: Request) => {
       `}
       
       <div class="cta">
-        <a href="https://vibecoding.ru/student/dashboard">Перейти к обучению</a>
+        <a href="https://vibecoding.by/student/dashboard">Перейти к обучению</a>
       </div>
     </div>
     <div class="footer">
@@ -206,11 +219,11 @@ Deno.serve(async (req: Request) => {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Authorization': `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'VibeCoding <noreply@vibecoding.ru>',
+        from: `${fromName} <${fromEmail}>`,
         to: [studentEmail],
         subject,
         html: htmlContent,
