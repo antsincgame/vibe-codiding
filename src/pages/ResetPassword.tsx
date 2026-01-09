@@ -16,6 +16,19 @@ const isPasswordValid = (password: string) => {
   return hasMinLength && hasUpperCase && hasLowerCase && hasNumber;
 };
 
+const getPasswordErrorMessage = (password: string) => {
+  const validation = validatePassword(password);
+  const errors: string[] = [];
+
+  if (!validation.hasMinLength) errors.push('минимум 8 символов');
+  if (!validation.hasUpperCase) errors.push('заглавная буква (A-Z)');
+  if (!validation.hasLowerCase) errors.push('строчная буква (a-z)');
+  if (!validation.hasNumber) errors.push('цифра (0-9)');
+
+  if (errors.length === 0) return null;
+  return `Пароль должен содержать: ${errors.join(', ')}`;
+};
+
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const { resetPassword, verifyResetToken } = useAuth();
@@ -72,7 +85,8 @@ export default function ResetPassword() {
     }
 
     if (!isPasswordValid(password)) {
-      setError('Пароль не соответствует требованиям безопасности. Проверьте все требования ниже.');
+      const errorMsg = getPasswordErrorMessage(password);
+      setError(errorMsg || 'Пароль не соответствует требованиям безопасности');
       setShowRequirements(true);
       return;
     }
@@ -375,56 +389,54 @@ export default function ResetPassword() {
                   )}
                 </button>
               </div>
-              {showRequirements && (
-                <div style={{
-                  marginTop: '12px',
-                  padding: '12px',
-                  background: 'rgba(0, 0, 0, 0.3)',
-                  borderRadius: '6px',
-                  fontSize: '13px'
-                }}>
-                  <div style={{ marginBottom: '8px', opacity: 0.8 }}>Требования к паролю:</div>
+              <div style={{
+                marginTop: '12px',
+                padding: '15px',
+                background: 'rgba(0, 255, 249, 0.05)',
+                border: '1px solid rgba(0, 255, 249, 0.2)',
+                borderRadius: '8px',
+                fontSize: '13px'
+              }}>
+                <div style={{ marginBottom: '10px', fontWeight: 600, color: 'var(--neon-cyan)' }}>Требования к паролю:</div>
+                <div style={{ lineHeight: '1.8' }}>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    marginBottom: '4px',
-                    color: passwordValidation.hasMinLength ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                    color: passwordValidation.hasMinLength ? '#00ff64' : 'rgba(255,255,255,0.6)'
                   }}>
-                    <span>{passwordValidation.hasMinLength ? '+' : '-'}</span>
+                    <span style={{ fontWeight: 'bold' }}>{passwordValidation.hasMinLength ? '+' : '-'}</span>
                     <span>Минимум 8 символов</span>
                   </div>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    marginBottom: '4px',
-                    color: passwordValidation.hasUpperCase ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                    color: passwordValidation.hasUpperCase ? '#00ff64' : 'rgba(255,255,255,0.6)'
                   }}>
-                    <span>{passwordValidation.hasUpperCase ? '+' : '-'}</span>
+                    <span style={{ fontWeight: 'bold' }}>{passwordValidation.hasUpperCase ? '+' : '-'}</span>
                     <span>Заглавная буква (A-Z)</span>
                   </div>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    marginBottom: '4px',
-                    color: passwordValidation.hasLowerCase ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                    color: passwordValidation.hasLowerCase ? '#00ff64' : 'rgba(255,255,255,0.6)'
                   }}>
-                    <span>{passwordValidation.hasLowerCase ? '+' : '-'}</span>
+                    <span style={{ fontWeight: 'bold' }}>{passwordValidation.hasLowerCase ? '+' : '-'}</span>
                     <span>Строчная буква (a-z)</span>
                   </div>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    color: passwordValidation.hasNumber ? '#00ff64' : 'rgba(255,255,255,0.5)'
+                    color: passwordValidation.hasNumber ? '#00ff64' : 'rgba(255,255,255,0.6)'
                   }}>
-                    <span>{passwordValidation.hasNumber ? '+' : '-'}</span>
+                    <span style={{ fontWeight: 'bold' }}>{passwordValidation.hasNumber ? '+' : '-'}</span>
                     <span>Цифра (0-9)</span>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
 
             <div style={{ marginBottom: '30px' }}>
@@ -488,6 +500,15 @@ export default function ResetPassword() {
                   )}
                 </button>
               </div>
+              {confirmPassword && password !== confirmPassword && (
+                <div style={{
+                  marginTop: '8px',
+                  fontSize: '13px',
+                  color: 'var(--neon-pink)'
+                }}>
+                  Пароли не совпадают
+                </div>
+              )}
             </div>
 
             {error && (
