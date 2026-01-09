@@ -180,7 +180,7 @@ const cursorProgram: Module[] = [
 
 const coursePrograms: Record<string, Module[]> = {
   'vibecoding-bolt-new': boltProgram,
-  'curdor-ai': cursorProgram,
+  'cursor-ai': cursorProgram,
 };
 
 interface CourseProgramProps {

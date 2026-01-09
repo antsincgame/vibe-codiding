@@ -726,6 +726,6 @@ export const architectCourseContent: CourseContentType = {
 
 export const courseContentMap: Record<string, CourseContentType> = {
   'vibecoding-bolt-new': boltCourseContent,
-  'curdor-ai': cursorCourseContent,
+  'cursor-ai': cursorCourseContent,
   'architect-vibecode': architectCourseContent
 };

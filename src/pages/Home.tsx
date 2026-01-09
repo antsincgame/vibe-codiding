@@ -329,7 +329,7 @@ export default function Home() {
             const isMiddle = index === 1;
             const courseDescriptions: Record<string, string> = {
               'vibecoding-bolt-new': 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Идеальный старт в мир вайб-кодинга.',
-              'curdor-ai': 'Профессиональная разработка с ИИ-ассистентом. Создавайте продукты enterprise-уровня.',
+              'cursor-ai': 'Профессиональная разработка с ИИ-ассистентом. Создавайте продукты enterprise-уровня.',
               'architect-vibecode': 'Полное погружение в вайб-разработку. Два инструмента, максимум возможностей.'
             };
 
@@ -374,7 +374,7 @@ export default function Home() {
                   'Совместные проекты с другими студентами'
                 ]
               },
-              'curdor-ai': {
+              'cursor-ai': {
                 oldPrice: '2000 BYN',
                 discount: '-50%',
                 features: [
@@ -483,7 +483,7 @@ export default function Home() {
                         textShadow: isMiddle ? '0 0 30px var(--neon-cyan)' : '0 0 10px rgba(255,255,255,0.3)'
                       }}>
                         {course.slug === 'vibecoding-bolt-new' ? 'bolt.new' :
-                         course.slug === 'curdor-ai' ? 'CURSOR' : 'ARCHITECT'}
+                         course.slug === 'cursor-ai' ? 'CURSOR' : 'ARCHITECT'}
                       </div>
                     )}
                   </div>
