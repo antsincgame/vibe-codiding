@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { getReadingTime } from '../lib/markdown';
+import GeometricBackground from '../components/GeometricBackground';
 import type { BlogPost } from '../types';
 
 export default function Blog() {
@@ -86,6 +87,7 @@ export default function Blog() {
 
   return (
     <div className="blog-page">
+      <GeometricBackground variant="default" colorScheme="mixed" />
       <header className="blog-header">
         <nav className="blog-breadcrumb">
           <Link to="/">Главная</Link>
@@ -185,11 +187,19 @@ export default function Blog() {
           padding: 100px 20px 60px;
           max-width: 1200px;
           margin: 0 auto;
+          position: relative;
+          z-index: 1;
         }
 
         .blog-header {
           text-align: center;
           margin-bottom: 50px;
+          padding: 40px;
+          background: rgba(10, 15, 25, 0.7);
+          backdrop-filter: blur(20px);
+          border-radius: 24px;
+          border: 1px solid rgba(0, 255, 249, 0.1);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .blog-breadcrumb {
@@ -298,16 +308,19 @@ export default function Blog() {
           gap: 40px;
           text-decoration: none;
           color: inherit;
-          background: rgba(0, 20, 40, 0.5);
-          border: 1px solid rgba(0, 255, 249, 0.2);
-          border-radius: 16px;
+          background: rgba(10, 15, 25, 0.8);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(0, 255, 249, 0.15);
+          border-radius: 20px;
           overflow: hidden;
-          transition: border-color 0.3s, box-shadow 0.3s;
+          transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         .featured-post-link:hover {
           border-color: var(--neon-cyan);
-          box-shadow: 0 20px 60px rgba(0, 255, 249, 0.15);
+          box-shadow: 0 25px 70px rgba(0, 255, 249, 0.2);
+          transform: translateY(-5px);
         }
 
         .featured-post-image {
@@ -418,17 +431,19 @@ export default function Blog() {
 
         .post-card article {
           height: 100%;
-          background: rgba(0, 20, 40, 0.5);
-          border: 1px solid rgba(0, 255, 249, 0.15);
-          border-radius: 12px;
+          background: rgba(10, 15, 25, 0.8);
+          backdrop-filter: blur(15px);
+          border: 1px solid rgba(0, 255, 249, 0.12);
+          border-radius: 16px;
           overflow: hidden;
           transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
         }
 
         .post-card:hover article {
-          transform: translateY(-8px);
+          transform: translateY(-10px);
           border-color: var(--neon-cyan);
-          box-shadow: 0 15px 50px rgba(0, 255, 249, 0.12);
+          box-shadow: 0 20px 60px rgba(0, 255, 249, 0.15);
         }
 
         .post-card-image {

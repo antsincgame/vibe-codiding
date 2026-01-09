@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import ApplicationModal from '../components/ApplicationModal';
 import HeroButton from '../components/HeroButton';
+import GeometricBackground from '../components/GeometricBackground';
 
 const SEO = {
   title: 'Преподаватели вайбкодинга | Эксперты Cursor AI и Bolt.new - Vibecoding',
@@ -99,7 +100,8 @@ export default function About() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', paddingTop: '100px' }}>
+    <div style={{ minHeight: '100vh', paddingTop: '100px', position: 'relative', zIndex: 1 }}>
+      <GeometricBackground variant="waves" colorScheme="cyan" />
       <section style={{
         padding: '60px 20px 40px',
         maxWidth: '1200px',

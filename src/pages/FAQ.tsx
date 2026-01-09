@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import type { FAQ as FAQType } from '../types';
 import ApplicationModal from '../components/ApplicationModal';
 import HeroButton from '../components/HeroButton';
+import GeometricBackground from '../components/GeometricBackground';
 
 const SEO = {
   title: 'FAQ вайбкодинг | Вопросы и ответы о курсах Vibecoding',
@@ -242,8 +243,11 @@ export default function FAQ() {
       paddingTop: '120px',
       paddingBottom: '60px',
       paddingLeft: '20px',
-      paddingRight: '20px'
+      paddingRight: '20px',
+      position: 'relative',
+      zIndex: 1
     }}>
+      <GeometricBackground variant="minimal" colorScheme="cyan" />
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
         <h1 style={{
           fontSize: 'clamp(40px, 6vw, 60px)',

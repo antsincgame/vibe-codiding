@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
 import type { Course } from '../types';
 import HeroButton from '../components/HeroButton';
+import GeometricBackground from '../components/GeometricBackground';
 
 const SEO = {
   title: 'Курсы вайбкодинга 2025 | Cursor AI и Bolt.new - цены и программа',
@@ -55,8 +56,11 @@ export default function Courses() {
       paddingTop: '100px',
       paddingBottom: '40px',
       paddingLeft: '16px',
-      paddingRight: '16px'
+      paddingRight: '16px',
+      position: 'relative',
+      zIndex: 1
     }}>
+      <GeometricBackground variant="dense" colorScheme="mixed" intensity={0.8} />
       <div style={{ maxWidth: '1800px', margin: '0 auto' }}>
         <h1 style={{
           fontSize: 'clamp(40px, 6vw, 60px)',
