@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import type { Course } from '../types';
 import ApplicationModal from '../components/ApplicationModal';
 import HeroButton from '../components/HeroButton';
+import InteractiveBackground from '../components/InteractiveBackground';
 
 interface ModuleData {
   id: string;
@@ -770,63 +771,222 @@ export default function CourseDetail() {
             </div>
           </section>
 
-          <section style={{ padding: '100px 20px', position: 'relative' }}>
+          <section style={{ padding: '120px 20px', position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
             <div style={{
               position: 'absolute',
+              top: 0,
+              left: 0,
               right: 0,
-              top: '20%',
-              width: '400px',
-              height: '400px',
-              background: 'radial-gradient(circle, rgba(255, 0, 110, 0.08) 0%, transparent 70%)',
-              pointerEvents: 'none'
+              bottom: 0,
+              zIndex: 0
+            }}>
+              <InteractiveBackground particleCount={100} />
+            </div>
+
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'radial-gradient(ellipse at 30% 20%, rgba(255, 0, 110, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(0, 255, 249, 0.1) 0%, transparent 50%)',
+              pointerEvents: 'none',
+              zIndex: 1
             }} />
 
-            <div style={{ maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-              <h2 style={{
-                fontSize: 'clamp(32px, 5vw, 48px)',
-                textAlign: 'center',
-                marginBottom: '20px'
-              }}>
-                <span style={{ color: 'var(--neon-pink)' }}>Программа курса</span>
-              </h2>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
+              <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+                <div style={{
+                  display: 'inline-block',
+                  padding: '12px 30px',
+                  background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.2), rgba(0, 255, 249, 0.2))',
+                  border: '1px solid rgba(255, 0, 110, 0.5)',
+                  borderRadius: '50px',
+                  fontSize: '14px',
+                  letterSpacing: '3px',
+                  color: 'var(--neon-pink)',
+                  marginBottom: '30px',
+                  fontWeight: 600,
+                  textTransform: 'uppercase'
+                }}>
+                  BOLT.AI DEVELOPER
+                </div>
 
-              <p style={{
-                textAlign: 'center',
-                fontSize: '18px',
-                opacity: 0.8,
-                marginBottom: '20px',
-                maxWidth: '700px',
-                margin: '0 auto 20px'
-              }}>
-                14 модулей, 90+ уроков - создание сайтов и приложений через промпты без кода
-              </p>
+                <h2 style={{
+                  fontSize: 'clamp(40px, 8vw, 80px)',
+                  fontWeight: 900,
+                  marginBottom: '20px',
+                  background: 'linear-gradient(135deg, #ff006e 0%, #00fff9 50%, #39ff14 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: '0 0 80px rgba(255, 0, 110, 0.5)'
+                }}>
+                  Программа курса
+                </h2>
+
+                <p style={{
+                  fontSize: '24px',
+                  maxWidth: '700px',
+                  margin: '0 auto',
+                  lineHeight: 1.6,
+                  opacity: 0.9
+                }}>
+                  От нуля до создателя веб-приложений
+                </p>
+              </div>
 
               <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '30px',
-                marginBottom: '50px',
-                flexWrap: 'wrap'
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                gap: '20px',
+                marginBottom: '60px'
               }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-cyan)' }}>14</div>
-                  <div style={{ fontSize: '14px', opacity: 0.7 }}>модулей</div>
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-green)' }}>90+</div>
-                  <div style={{ fontSize: '14px', opacity: 0.7 }}>уроков</div>
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-pink)' }}>50+</div>
-                  <div style={{ fontSize: '14px', opacity: 0.7 }}>часов</div>
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--neon-cyan)' }}>5</div>
-                  <div style={{ fontSize: '14px', opacity: 0.7 }}>проектов</div>
+                {[
+                  { num: '14', label: 'модулей', color: '#ff006e', icon: '{ }' },
+                  { num: '90+', label: 'уроков', color: '#00fff9', icon: '</>' },
+                  { num: '50+', label: 'часов', color: '#39ff14', icon: '[ ]' },
+                  { num: '0', label: 'кода вручную', color: '#ff006e', icon: '///' }
+                ].map((stat, i) => (
+                  <div key={i} style={{
+                    padding: '30px 20px',
+                    background: 'rgba(0, 0, 0, 0.6)',
+                    border: `2px solid ${stat.color}`,
+                    borderRadius: '20px',
+                    textAlign: 'center',
+                    backdropFilter: 'blur(10px)',
+                    transition: 'all 0.3s ease',
+                    cursor: 'default'
+                  }}
+                  onMouseOver={e => {
+                    e.currentTarget.style.transform = 'translateY(-10px) scale(1.05)';
+                    e.currentTarget.style.boxShadow = `0 20px 60px ${stat.color}50`;
+                  }}
+                  onMouseOut={e => {
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}>
+                    <div style={{
+                      fontSize: '20px',
+                      fontFamily: 'monospace',
+                      color: stat.color,
+                      marginBottom: '10px',
+                      opacity: 0.7
+                    }}>{stat.icon}</div>
+                    <div style={{
+                      fontSize: '48px',
+                      fontWeight: 900,
+                      color: stat.color,
+                      lineHeight: 1,
+                      marginBottom: '8px',
+                      textShadow: `0 0 40px ${stat.color}80`
+                    }}>{stat.num}</div>
+                    <div style={{
+                      fontSize: '14px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '2px',
+                      opacity: 0.8
+                    }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(57, 255, 20, 0.15), rgba(0, 255, 249, 0.1))',
+                border: '2px solid rgba(57, 255, 20, 0.4)',
+                borderRadius: '24px',
+                padding: '50px',
+                marginBottom: '70px',
+                backdropFilter: 'blur(10px)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '-50px',
+                  right: '-50px',
+                  width: '200px',
+                  height: '200px',
+                  background: 'radial-gradient(circle, rgba(57, 255, 20, 0.3) 0%, transparent 70%)',
+                  pointerEvents: 'none'
+                }} />
+                <h3 style={{
+                  fontSize: '32px',
+                  fontWeight: 800,
+                  color: 'var(--neon-green)',
+                  marginBottom: '35px',
+                  textAlign: 'center',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '15px'
+                }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: '40px' }}>{'>'}_</span>
+                  После курса вы сможете
+                </h3>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                  gap: '20px'
+                }}>
+                  {[
+                    { text: 'Создавать сайты за часы, а не месяцы', icon: '+' },
+                    { text: 'Запускать интернет-магазины с оплатой', icon: '$' },
+                    { text: 'Делать сервисы записи и бронирования', icon: '#' },
+                    { text: 'Подключать базы данных и авторизацию', icon: '@' },
+                    { text: 'Принимать платежи картами и через ЕРИП', icon: '%' },
+                    { text: 'Зарабатывать на фрилансе от 200$/проект', icon: '*' }
+                  ].map((item, i) => (
+                    <div key={i} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '18px',
+                      padding: '22px',
+                      background: 'rgba(0, 0, 0, 0.4)',
+                      borderRadius: '16px',
+                      border: '1px solid rgba(57, 255, 20, 0.2)',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseOver={e => {
+                      e.currentTarget.style.borderColor = 'var(--neon-green)';
+                      e.currentTarget.style.background = 'rgba(57, 255, 20, 0.15)';
+                      e.currentTarget.style.transform = 'translateX(10px)';
+                    }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.borderColor = 'rgba(57, 255, 20, 0.2)';
+                      e.currentTarget.style.background = 'rgba(0, 0, 0, 0.4)';
+                      e.currentTarget.style.transform = 'translateX(0)';
+                    }}>
+                      <span style={{
+                        width: '50px',
+                        height: '50px',
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, var(--neon-green), var(--neon-cyan))',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#0a0a0f',
+                        fontWeight: 900,
+                        fontSize: '24px',
+                        flexShrink: 0,
+                        fontFamily: 'monospace'
+                      }}>{item.icon}</span>
+                      <span style={{ fontSize: '17px', fontWeight: 600, lineHeight: 1.4 }}>{item.text}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <h3 style={{
+                fontSize: '28px',
+                fontWeight: 700,
+                color: 'var(--neon-pink)',
+                marginBottom: '35px',
+                textAlign: 'center'
+              }}>
+                14 модулей с подробным описанием каждого урока
+              </h3>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {(modules.length > 0 ? modules : content.program.map((p, i) => ({
                   id: `static-${i}`,
                   title: p.module,
@@ -839,144 +999,194 @@ export default function CourseDetail() {
                 }))).map((mod, idx) => (
                   <div key={mod.id} style={{
                     background: expandedModule === mod.id
-                      ? 'linear-gradient(135deg, rgba(255, 0, 110, 0.1) 0%, rgba(0, 255, 249, 0.05) 100%)'
-                      : 'rgba(255, 0, 110, 0.03)',
+                      ? 'linear-gradient(135deg, rgba(255, 0, 110, 0.2) 0%, rgba(0, 255, 249, 0.1) 100%)'
+                      : 'rgba(0, 0, 0, 0.5)',
                     border: expandedModule === mod.id
-                      ? '1px solid rgba(255, 0, 110, 0.4)'
-                      : '1px solid rgba(255, 0, 110, 0.15)',
-                    borderRadius: '16px',
+                      ? '2px solid rgba(255, 0, 110, 0.7)'
+                      : '1px solid rgba(255, 0, 110, 0.25)',
+                    borderRadius: '20px',
                     overflow: 'hidden',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.4s ease',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                  onMouseOver={e => {
+                    if (expandedModule !== mod.id) {
+                      e.currentTarget.style.borderColor = 'rgba(255, 0, 110, 0.6)';
+                      e.currentTarget.style.background = 'rgba(255, 0, 110, 0.1)';
+                    }
+                  }}
+                  onMouseOut={e => {
+                    if (expandedModule !== mod.id) {
+                      e.currentTarget.style.borderColor = 'rgba(255, 0, 110, 0.25)';
+                      e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+                    }
                   }}>
                     <button
                       onClick={() => setExpandedModule(expandedModule === mod.id ? null : mod.id)}
                       style={{
                         width: '100%',
-                        padding: '24px 28px',
+                        padding: '28px 32px',
                         background: 'transparent',
                         border: 'none',
                         color: 'white',
                         cursor: 'pointer',
                         display: 'flex',
-                        alignItems: 'flex-start',
+                        alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: '20px',
                         textAlign: 'left'
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '18px', flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flex: 1 }}>
                         <span style={{
-                          width: '48px',
-                          height: '48px',
-                          borderRadius: '12px',
+                          width: '60px',
+                          height: '60px',
+                          borderRadius: '16px',
                           background: expandedModule === mod.id
                             ? 'linear-gradient(135deg, var(--neon-pink), var(--neon-cyan))'
-                            : 'rgba(255, 0, 110, 0.15)',
+                            : 'linear-gradient(135deg, rgba(255, 0, 110, 0.4), rgba(0, 255, 249, 0.2))',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: expandedModule === mod.id ? '#0a0a0f' : 'var(--neon-pink)',
-                          fontWeight: 800,
-                          fontSize: '18px',
+                          color: expandedModule === mod.id ? '#0a0a0f' : 'white',
+                          fontWeight: 900,
+                          fontSize: '22px',
                           flexShrink: 0,
-                          transition: 'all 0.3s ease'
+                          transition: 'all 0.4s ease',
+                          fontFamily: 'monospace',
+                          boxShadow: expandedModule === mod.id ? '0 0 40px rgba(255, 0, 110, 0.6)' : '0 0 20px rgba(255, 0, 110, 0.2)'
                         }}>
-                          {idx + 1}
+                          {idx}
                         </span>
                         <div style={{ flex: 1 }}>
                           <div style={{
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            marginBottom: mod.description ? '6px' : 0,
-                            color: expandedModule === mod.id ? 'white' : 'rgba(255, 255, 255, 0.95)'
+                            fontSize: '20px',
+                            fontWeight: 700,
+                            marginBottom: mod.description ? '8px' : 0,
+                            color: 'white'
                           }}>
                             {mod.title}
                           </div>
                           {mod.description && (
                             <div style={{
-                              fontSize: '14px',
-                              opacity: 0.6,
-                              lineHeight: 1.4
+                              fontSize: '15px',
+                              opacity: 0.8,
+                              lineHeight: 1.5,
+                              color: 'var(--neon-cyan)'
                             }}>
                               {mod.description}
                             </div>
                           )}
                         </div>
                         <div style={{
-                          padding: '6px 14px',
-                          background: 'rgba(255, 0, 110, 0.1)',
-                          borderRadius: '20px',
-                          fontSize: '13px',
-                          color: 'var(--neon-pink)',
-                          fontWeight: 500,
-                          whiteSpace: 'nowrap'
+                          padding: '12px 24px',
+                          background: expandedModule === mod.id
+                            ? 'linear-gradient(135deg, var(--neon-pink), var(--neon-cyan))'
+                            : 'rgba(255, 0, 110, 0.2)',
+                          borderRadius: '30px',
+                          fontSize: '15px',
+                          color: expandedModule === mod.id ? '#0a0a0f' : 'var(--neon-pink)',
+                          fontWeight: 700,
+                          whiteSpace: 'nowrap',
+                          transition: 'all 0.3s ease'
                         }}>
                           {mod.lessons.length} уроков
                         </div>
                       </div>
                       <span style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '50%',
+                        background: expandedModule === mod.id ? 'var(--neon-pink)' : 'rgba(255, 0, 110, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         transform: expandedModule === mod.id ? 'rotate(180deg)' : 'rotate(0)',
-                        transition: 'transform 0.3s ease',
-                        color: 'var(--neon-pink)',
+                        transition: 'all 0.4s ease',
+                        color: expandedModule === mod.id ? '#0a0a0f' : 'var(--neon-pink)',
                         fontSize: '18px',
-                        marginTop: '14px'
-                      }}>▼</span>
+                        flexShrink: 0,
+                        fontWeight: 700
+                      }}>V</span>
                     </button>
 
-                    {expandedModule === mod.id && (
+                    <div style={{
+                      maxHeight: expandedModule === mod.id ? '2000px' : '0',
+                      overflow: 'hidden',
+                      transition: 'max-height 0.5s ease'
+                    }}>
                       <div style={{
-                        padding: '0 28px 24px',
-                        borderTop: '1px solid rgba(255, 0, 110, 0.1)'
+                        padding: '0 32px 28px',
+                        borderTop: '1px solid rgba(255, 0, 110, 0.2)'
                       }}>
-                        <div style={{ paddingTop: '16px' }}>
+                        <div style={{ paddingTop: '20px' }}>
                           {mod.lessons.map((lesson, li) => (
                             <div key={lesson.id} style={{
-                              padding: '14px 16px',
-                              marginBottom: li < mod.lessons.length - 1 ? '8px' : 0,
-                              background: 'rgba(0, 0, 0, 0.3)',
-                              borderRadius: '10px',
+                              padding: '18px 22px',
+                              marginBottom: li < mod.lessons.length - 1 ? '12px' : 0,
+                              background: 'rgba(0, 0, 0, 0.5)',
+                              borderRadius: '14px',
                               display: 'flex',
                               alignItems: 'center',
-                              gap: '14px',
-                              border: '1px solid rgba(255, 255, 255, 0.03)'
+                              gap: '18px',
+                              border: '1px solid rgba(0, 255, 249, 0.15)',
+                              transition: 'all 0.3s ease'
+                            }}
+                            onMouseOver={e => {
+                              e.currentTarget.style.borderColor = 'rgba(0, 255, 249, 0.4)';
+                              e.currentTarget.style.background = 'rgba(0, 255, 249, 0.08)';
+                            }}
+                            onMouseOut={e => {
+                              e.currentTarget.style.borderColor = 'rgba(0, 255, 249, 0.15)';
+                              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
                             }}>
                               <span style={{
-                                width: '28px',
-                                height: '28px',
-                                borderRadius: '6px',
-                                background: 'rgba(255, 0, 110, 0.15)',
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '10px',
+                                background: 'linear-gradient(135deg, rgba(0, 255, 249, 0.4), rgba(57, 255, 20, 0.3))',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: 'var(--neon-pink)',
-                                fontSize: '12px',
-                                fontWeight: 600,
+                                color: 'var(--neon-cyan)',
+                                fontSize: '14px',
+                                fontWeight: 700,
+                                fontFamily: 'monospace',
                                 flexShrink: 0
-                              }}>{li + 1}</span>
+                              }}>{String(li + 1).padStart(2, '0')}</span>
                               <span style={{
                                 flex: 1,
-                                fontSize: '15px',
-                                opacity: 0.9,
-                                lineHeight: 1.4
+                                fontSize: '16px',
+                                lineHeight: 1.5
                               }}>{lesson.title}</span>
                               {lesson.duration && (
                                 <span style={{
-                                  fontSize: '13px',
-                                  opacity: 0.5,
-                                  background: 'rgba(0, 255, 249, 0.1)',
-                                  padding: '4px 10px',
-                                  borderRadius: '12px',
-                                  color: 'var(--neon-cyan)',
-                                  whiteSpace: 'nowrap'
+                                  fontSize: '14px',
+                                  background: 'rgba(57, 255, 20, 0.2)',
+                                  padding: '8px 16px',
+                                  borderRadius: '20px',
+                                  color: 'var(--neon-green)',
+                                  fontWeight: 600,
+                                  whiteSpace: 'nowrap',
+                                  fontFamily: 'monospace'
                                 }}>{lesson.duration}</span>
                               )}
                             </div>
                           ))}
                         </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 ))}
+              </div>
+
+              <div style={{
+                marginTop: '70px',
+                textAlign: 'center'
+              }}>
+                <HeroButton onClick={() => setIsApplicationModalOpen(true)} style={{ fontSize: '22px', padding: '26px 80px' }}>
+                  Записаться на курс
+                </HeroButton>
               </div>
             </div>
           </section>
