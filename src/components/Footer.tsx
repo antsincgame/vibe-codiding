@@ -282,6 +282,26 @@ export default function Footer() {
           >
             Политика конфиденциальности
           </Link>
+          <span style={{ margin: '0 8px' }}>|</span>
+          <Link
+            to="/offer"
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              transition: 'opacity 0.3s, color 0.3s',
+              fontSize: isMobile ? '13px' : '14px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = '1';
+              e.currentTarget.style.color = 'var(--neon-cyan)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = '0.6';
+              e.currentTarget.style.color = 'inherit';
+            }}
+          >
+            Публичная оферта
+          </Link>
         </div>
         <div style={{
           fontSize: isMobile ? '11px' : '13px',

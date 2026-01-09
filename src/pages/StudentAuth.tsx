@@ -16,6 +16,7 @@ export default function StudentAuth() {
     password: '',
     fullName: ''
   });
+  const [acceptedOffer, setAcceptedOffer] = useState(false);
 
   useEffect(() => {
     if (user && !authLoading) {
@@ -50,6 +51,11 @@ export default function StudentAuth() {
         }
         if (formData.password.length < 6) {
           setError('Пароль должен содержать минимум 6 символов');
+          setLoading(false);
+          return;
+        }
+        if (!acceptedOffer) {
+          setError('Необходимо принять условия публичной оферты');
           setLoading(false);
           return;
         }
@@ -261,6 +267,57 @@ export default function StudentAuth() {
                     Забыли пароль?
                   </Link>
                 </div>
+              </div>
+            )}
+
+            {!isLogin && (
+              <div style={{ marginBottom: '25px' }}>
+                <label style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  lineHeight: '1.5'
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={acceptedOffer}
+                    onChange={(e) => setAcceptedOffer(e.target.checked)}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      marginTop: '2px',
+                      accentColor: 'var(--neon-cyan)',
+                      cursor: 'pointer',
+                      flexShrink: 0
+                    }}
+                  />
+                  <span style={{ opacity: 0.9 }}>
+                    Я ознакомился и принимаю условия{' '}
+                    <Link
+                      to="/offer"
+                      target="_blank"
+                      style={{
+                        color: 'var(--neon-cyan)',
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      публичной оферты
+                    </Link>
+                    {' '}и{' '}
+                    <Link
+                      to="/privacy"
+                      target="_blank"
+                      style={{
+                        color: 'var(--neon-cyan)',
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      политики конфиденциальности
+                    </Link>
+                  </span>
+                </label>
               </div>
             )}
 
