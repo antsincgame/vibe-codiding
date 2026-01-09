@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -25,7 +26,12 @@ Deno.serve(async (req: Request) => {
 
   try {
     const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
-    
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+
     if (!RESEND_API_KEY) {
       return new Response(
         JSON.stringify({ error: 'Email service not configured' }),
@@ -215,6 +221,14 @@ Deno.serve(async (req: Request) => {
 
     if (!response.ok) {
       console.error('Resend API error:', result);
+      await supabase.from('email_logs').insert({
+        recipient_email: studentEmail,
+        subject,
+        template_type: 'homework_notification',
+        status: 'failed',
+        error_message: JSON.stringify(result),
+        metadata: { lessonTitle, courseTitle, homeworkStatus: status }
+      });
       return new Response(
         JSON.stringify({ error: 'Failed to send email', details: result }),
         {
@@ -223,6 +237,17 @@ Deno.serve(async (req: Request) => {
         }
       );
     }
+
+    await supabase.from('email_logs').insert({
+      resend_email_id: result.id,
+      recipient_email: studentEmail,
+      subject,
+      template_type: 'homework_notification',
+      status: 'sent',
+      metadata: { lessonTitle, courseTitle, homeworkStatus: status, feedback }
+    });
+
+    console.log('Homework notification sent successfully to:', studentEmail);
 
     return new Response(
       JSON.stringify({ success: true, emailId: result.id }),
