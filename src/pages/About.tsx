@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
 import ApplicationModal from '../components/ApplicationModal';
 import HeroButton from '../components/HeroButton';
 import GeometricBackground from '../components/GeometricBackground';
@@ -26,68 +25,63 @@ export default function About() {
     if (metaDesc) metaDesc.setAttribute('content', SEO.description);
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
+
+    let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = 'https://vibecoding.by/about';
+
     generateQuotes();
+
+    return () => {
+      canonicalLink.href = 'https://vibecoding.by/';
+    };
   }, []);
 
   const generateQuotes = async () => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
     try {
-      const { data: settings } = await supabase
-        .from('openrouter_settings')
-        .select('*')
-        .limit(1)
-        .maybeSingle();
-
-      if (settings && settings.api_key && settings.api_key.trim() !== '') {
-        const [responseDmitry, responseIgor] = await Promise.all([
-          fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${settings.api_key}`,
-              'HTTP-Referer': window.location.origin,
-              'X-Title': 'Vibecoding'
-            },
-            body: JSON.stringify({
-              model: settings.model,
-              messages: [{
-                role: 'user',
-                content: 'Создай короткую вдохновляющую цитату (2-3 предложения) о Vibecoding - современном подходе к обучению программированию, где сочетается практический опыт, AI-инструменты и понятная подача материала. Цитата должна быть от лица преподавателя и мотивировать учеников. Только текст цитаты, без кавычек и атрибуции.'
-              }]
-            })
-          }),
-          fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${settings.api_key}`,
-              'HTTP-Referer': window.location.origin,
-              'X-Title': 'Vibecoding'
-            },
-            body: JSON.stringify({
-              model: settings.model,
-              messages: [{
-                role: 'user',
-                content: 'Создай короткую вдохновляющую цитату (2-3 предложения) от лица опытного senior-разработчика и архитектора систем о важности чистой архитектуры, менторинга и минималистичных решений в программировании. Цитата должна мотивировать учеников изучать backend-разработку и проектирование систем. Только текст цитаты, без кавычек и атрибуции.'
-              }]
-            })
+      const [responseDmitry, responseIgor] = await Promise.all([
+        fetch(`${supabaseUrl}/functions/v1/generate-quote`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+          },
+          body: JSON.stringify({
+            prompt: 'Создай короткую вдохновляющую цитату (2-3 предложения) о Vibecoding - современном подходе к обучению программированию, где сочетается практический опыт, AI-инструменты и понятная подача материала. Цитата должна быть от лица преподавателя и мотивировать учеников. Только текст цитаты, без кавычек и атрибуции.',
+            teacher: 'dmitry'
           })
-        ]);
+        }),
+        fetch(`${supabaseUrl}/functions/v1/generate-quote`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+          },
+          body: JSON.stringify({
+            prompt: 'Создай короткую вдохновляющую цитату (2-3 предложения) от лица опытного senior-разработчика и архитектора систем о важности чистой архитектуры, менторинга и минималистичных решений в программировании. Цитата должна мотивировать учеников изучать backend-разработку и проектирование систем. Только текст цитаты, без кавычек и атрибуции.',
+            teacher: 'igor'
+          })
+        })
+      ]);
 
-        if (responseDmitry.ok) {
-          const data = await responseDmitry.json();
-          setQuoteDmitry(data.choices[0]?.message?.content || DEFAULT_QUOTE_DMITRY);
-        } else {
-          setQuoteDmitry(DEFAULT_QUOTE_DMITRY);
-        }
-
-        if (responseIgor.ok) {
-          const data = await responseIgor.json();
-          setQuoteIgor(data.choices[0]?.message?.content || DEFAULT_QUOTE_IGOR);
-        } else {
-          setQuoteIgor(DEFAULT_QUOTE_IGOR);
-        }
+      if (responseDmitry.ok) {
+        const data = await responseDmitry.json();
+        setQuoteDmitry(data.quote || DEFAULT_QUOTE_DMITRY);
       } else {
         setQuoteDmitry(DEFAULT_QUOTE_DMITRY);
+      }
+
+      if (responseIgor.ok) {
+        const data = await responseIgor.json();
+        setQuoteIgor(data.quote || DEFAULT_QUOTE_IGOR);
+      } else {
         setQuoteIgor(DEFAULT_QUOTE_IGOR);
       }
     } catch {

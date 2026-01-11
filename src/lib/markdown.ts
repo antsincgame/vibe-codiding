@@ -24,6 +24,32 @@ function escapeHtml(text: string): string {
     .replace(/'/g, '&#039;');
 }
 
+function sanitizeUrl(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+
+  const lower = trimmed.toLowerCase();
+  if (lower.startsWith('javascript:') ||
+      lower.startsWith('data:') ||
+      lower.startsWith('vbscript:') ||
+      lower.includes('<script') ||
+      lower.includes('onerror=') ||
+      lower.includes('onload=')) {
+    return '';
+  }
+
+  if (trimmed.startsWith('/') ||
+      trimmed.startsWith('http://') ||
+      trimmed.startsWith('https://') ||
+      trimmed.startsWith('#') ||
+      trimmed.startsWith('mailto:') ||
+      trimmed.startsWith('tel:')) {
+    return escapeHtml(trimmed);
+  }
+
+  return escapeHtml(trimmed);
+}
+
 export function renderMarkdown(text: string): string {
   if (!text) return '';
 
@@ -54,11 +80,24 @@ export function renderMarkdown(text: string): string {
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="md-strong">$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em class="md-em">$1</em>');
 
-  html = html.replace(/\[(.+?)\]\(\/([^)]+)\)/g, '<a href="/$2" class="md-link md-internal-link">$1</a>');
-  html = html.replace(/\[(.+?)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" class="md-link md-external-link" target="_blank" rel="noopener noreferrer">$1</a>');
-  html = html.replace(/\[(.+?)\]\(([^)]+)\)/g, '<a href="$2" class="md-link">$1</a>');
+  html = html.replace(/\[(.+?)\]\(\/([^)]+)\)/g, (_, text, path) => {
+    const safeUrl = sanitizeUrl('/' + path);
+    return safeUrl ? `<a href="${safeUrl}" class="md-link md-internal-link">${escapeHtml(text)}</a>` : escapeHtml(text);
+  });
+  html = html.replace(/\[(.+?)\]\((https?:\/\/[^)]+)\)/g, (_, text, url) => {
+    const safeUrl = sanitizeUrl(url);
+    return safeUrl ? `<a href="${safeUrl}" class="md-link md-external-link" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>` : escapeHtml(text);
+  });
+  html = html.replace(/\[(.+?)\]\(([^)]+)\)/g, (_, text, url) => {
+    const safeUrl = sanitizeUrl(url);
+    return safeUrl ? `<a href="${safeUrl}" class="md-link">${escapeHtml(text)}</a>` : escapeHtml(text);
+  });
 
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<figure class="md-figure"><img src="$2" alt="$1" class="md-image" loading="lazy"><figcaption class="md-figcaption">$1</figcaption></figure>');
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, url) => {
+    const safeUrl = sanitizeUrl(url);
+    const safeAlt = escapeHtml(alt);
+    return safeUrl ? `<figure class="md-figure"><img src="${safeUrl}" alt="${safeAlt}" class="md-image" loading="lazy"><figcaption class="md-figcaption">${safeAlt}</figcaption></figure>` : '';
+  });
 
   const lines = html.split('\n');
   const result: string[] = [];

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { stripMarkdown } from '../lib/markdown';
 import type { Course, HomePageSettings, VideoTestimonial } from '../types';
@@ -136,11 +136,23 @@ export default function Home() {
     };
   }, [settings, courses]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     await loadSettings();
     await loadCourses();
     await loadVideoTestimonials();
-  };
+  }, []);
+
+  const handleOpenModal = useCallback(() => {
+    setIsApplicationModalOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsApplicationModalOpen(false);
+  }, []);
+
+  const handleToggleCourseProgram = useCallback((courseId: string) => {
+    setExpandedCourseProgram(prev => prev === courseId ? null : courseId);
+  }, []);
 
   const loadSettings = async () => {
     try {

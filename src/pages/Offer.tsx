@@ -1,6 +1,33 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+
+const SEO = {
+  title: 'Публичная оферта | Школа вайбкодинга Vibecoding',
+  description: 'Договор публичной оферты на оказание образовательных услуг школы вайбкодинга Vibecoding. Условия обучения, права и обязанности сторон, порядок оплаты.',
+  keywords: 'оферта Vibecoding, договор вайбкодинг, условия обучения Vibecoding'
+};
 
 export default function Offer() {
+  useEffect(() => {
+    document.title = SEO.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', SEO.description);
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
+
+    let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = 'https://vibecoding.by/offer';
+
+    return () => {
+      canonicalLink.href = 'https://vibecoding.by/';
+    };
+  }, []);
+
   return (
     <div style={{
       minHeight: '100vh',

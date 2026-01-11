@@ -23,7 +23,20 @@ export default function Courses() {
     if (metaDesc) metaDesc.setAttribute('content', SEO.description);
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
+
+    let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = 'https://vibecoding.by/courses';
+
     loadCourses();
+
+    return () => {
+      canonicalLink.href = 'https://vibecoding.by/';
+    };
   }, []);
 
   const loadCourses = async () => {

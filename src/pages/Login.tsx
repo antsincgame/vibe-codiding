@@ -88,7 +88,6 @@ export default function Login() {
         return;
       }
 
-      localStorage.setItem('isAdminAuthenticated', 'true');
       navigate('/admin');
     } catch (err) {
       setError('Произошла ошибка при входе');

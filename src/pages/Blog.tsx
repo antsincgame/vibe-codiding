@@ -116,14 +116,17 @@ export default function Blog() {
           {posts.length > 0 && (
             <article className="featured-post">
               <Link to={`/blog/${posts[0].slug}`} className="featured-post-link">
-                <div
-                  className="featured-post-image"
-                  style={{
-                    backgroundImage: posts[0].image_url
-                      ? `url(${posts[0].image_url})`
-                      : 'linear-gradient(135deg, rgba(0, 255, 249, 0.4), rgba(57, 255, 20, 0.4))'
-                  }}
-                >
+                <div className="featured-post-image">
+                  {posts[0].image_url ? (
+                    <img
+                      src={posts[0].image_url}
+                      alt={posts[0].title}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="featured-post-placeholder" />
+                  )}
                   <span className="featured-badge">Новое</span>
                 </div>
                 <div className="featured-post-content">
@@ -153,14 +156,18 @@ export default function Blog() {
                     className="post-card"
                   >
                     <article>
-                      <div
-                        className="post-card-image"
-                        style={{
-                          backgroundImage: post.image_url
-                            ? `url(${post.image_url})`
-                            : 'linear-gradient(135deg, rgba(0, 255, 249, 0.3), rgba(57, 255, 20, 0.3))'
-                        }}
-                      />
+                      <div className="post-card-image">
+                        {post.image_url ? (
+                          <img
+                            src={post.image_url}
+                            alt={post.title}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="post-card-placeholder" />
+                        )}
+                      </div>
                       <div className="post-card-content">
                         <div className="post-card-meta">
                           <time>{formatDate(post.published_at)}</time>
@@ -325,9 +332,26 @@ export default function Blog() {
 
         .featured-post-image {
           min-height: 350px;
-          background-size: cover;
-          background-position: center;
           position: relative;
+          overflow: hidden;
+        }
+
+        .featured-post-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+
+        .featured-post-placeholder {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          background: linear-gradient(135deg, rgba(0, 255, 249, 0.4), rgba(57, 255, 20, 0.4));
         }
 
         .featured-badge {
@@ -448,8 +472,20 @@ export default function Blog() {
 
         .post-card-image {
           height: 200px;
-          background-size: cover;
-          background-position: center;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .post-card-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .post-card-placeholder {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, rgba(0, 255, 249, 0.3), rgba(57, 255, 20, 0.3));
         }
 
         .post-card-content {

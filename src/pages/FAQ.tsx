@@ -8,7 +8,8 @@ import GeometricBackground from '../components/GeometricBackground';
 const SEO = {
   title: 'FAQ вайбкодинг | Вопросы и ответы о курсах Vibecoding',
   description: 'Ответы на вопросы о вайбкодинге: стоимость обучения, как проходят занятия, какой компьютер нужен. Курсы вайбкодинга Cursor AI и Bolt.new - всё о формате, оплате и трудоустройстве. Возврат денег если не подойдёт!',
-  keywords: 'FAQ вайбкодинг, вопросы о вайбкодинге, обучение вайбкодингу стоимость, курсы вайбкодинга формат, Cursor AI FAQ, Bolt.new вопросы'
+  keywords: 'FAQ вайбкодинг, вопросы о вайбкодинге, обучение вайбкодингу стоимость, курсы вайбкодинга формат, Cursor AI FAQ, Bolt.new вопросы',
+  canonical: 'https://vibecoding.by/q-a'
 };
 
 interface FAQSection {
@@ -141,7 +142,20 @@ export default function FAQ() {
     if (metaDesc) metaDesc.setAttribute('content', SEO.description);
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) metaKeywords.setAttribute('content', SEO.keywords);
+
+    let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = SEO.canonical;
+
     loadFAQs();
+
+    return () => {
+      canonicalLink.href = 'https://vibecoding.by/';
+    };
   }, []);
 
   const loadFAQs = async () => {

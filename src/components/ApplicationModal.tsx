@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 
 interface ApplicationModalProps {
@@ -20,21 +20,56 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
   });
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [courses, setCourses] = useState<{ id: string; title: string; slug: string }[]>([]);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+
+    if (e.key === 'Tab' && modalRef.current) {
+      const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement?.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement?.focus();
+      }
+    }
+  }, [onClose]);
 
   useEffect(() => {
     if (isOpen) {
       loadCourses();
       document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleKeyDown);
+
+      setTimeout(() => {
+        if (firstInputRef.current) {
+          firstInputRef.current.focus();
+        }
+      }, 100);
+
       if (preselectedCourse) {
         setFormData(prev => ({ ...prev, course: preselectedCourse }));
       }
     } else {
       document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleKeyDown);
     }
     return () => {
       document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, preselectedCourse]);
+  }, [isOpen, preselectedCourse, handleKeyDown]);
 
   const loadCourses = async () => {
     const { data } = await supabase
@@ -133,6 +168,9 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
       style={{
         position: 'fixed',
         inset: 0,
@@ -151,9 +189,11 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
           background: 'rgba(0, 0, 0, 0.85)',
           backdropFilter: 'blur(8px)'
         }}
+        aria-hidden="true"
       />
 
       <div
+        ref={modalRef}
         style={{
           position: 'relative',
           width: '100%',
@@ -242,7 +282,9 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
         }} />
 
         <button
+          ref={closeButtonRef}
           onClick={onClose}
+          aria-label="Закрыть окно"
           style={{
             position: 'absolute',
             top: '16px',
@@ -269,7 +311,7 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
             e.currentTarget.style.boxShadow = 'none';
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
@@ -339,7 +381,7 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
                 }}>
                   Vibecoding School
                 </div>
-                <h2 style={{
+                <h2 id="modal-title" style={{
                   fontSize: 'clamp(24px, 5vw, 32px)',
                   fontFamily: 'Orbitron, sans-serif',
                   fontWeight: 700,
@@ -374,6 +416,7 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
                     Ваше имя *
                   </label>
                   <input
+                    ref={firstInputRef}
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -381,6 +424,7 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
                     className="cyber-input"
                     placeholder="Как к вам обращаться?"
                     style={{ fontSize: '15px' }}
+                    aria-required="true"
                   />
                 </div>
 
@@ -526,20 +570,22 @@ export default function ApplicationModal({ isOpen, onClose, preselectedCourse }:
                   </label>
                 </div>
 
-                {error && (
-                  <div style={{
-                    marginBottom: '20px',
-                    padding: '12px 16px',
-                    background: 'rgba(255, 0, 110, 0.1)',
-                    border: '1px solid var(--neon-pink)',
+                <div
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    marginBottom: error ? '20px' : 0,
+                    padding: error ? '12px 16px' : 0,
+                    background: error ? 'rgba(255, 0, 110, 0.1)' : 'transparent',
+                    border: error ? '1px solid var(--neon-pink)' : 'none',
                     borderRadius: '8px',
                     color: 'var(--neon-pink)',
                     fontSize: '14px',
                     textAlign: 'center'
-                  }}>
-                    {error}
-                  </div>
-                )}
+                  }}
+                >
+                  {error}
+                </div>
 
                 <button
                   type="submit"

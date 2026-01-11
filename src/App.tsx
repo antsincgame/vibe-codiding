@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Home = lazy(() => import('./pages/Home'));
 const Courses = lazy(() => import('./pages/Courses'));
@@ -70,13 +71,14 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <AuthProvider>
-        <div className="cyber-grid" />
-        <div className="scan-line" />
+    <ErrorBoundary>
+      <Router>
+        <ScrollToTop />
+        <AuthProvider>
+          <div className="cyber-grid" />
+          <div className="scan-line" />
 
-        <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/login" element={
             <div className="app-layout">
@@ -210,10 +212,11 @@ function App() {
             }
           />
         </Routes>
-        </Suspense>
-        <CookieConsent />
-      </AuthProvider>
-    </Router>
+          </Suspense>
+          <CookieConsent />
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

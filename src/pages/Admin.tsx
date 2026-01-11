@@ -46,7 +46,6 @@ export default function Admin() {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        localStorage.removeItem('isAdminAuthenticated');
         navigate('/login');
         return;
       }
@@ -57,7 +56,6 @@ export default function Admin() {
         .maybeSingle();
       if (!profile || profile.role !== 'admin') {
         await supabase.auth.signOut();
-        localStorage.removeItem('isAdminAuthenticated');
         navigate('/login');
         return;
       }
@@ -72,7 +70,6 @@ export default function Admin() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    localStorage.removeItem('isAdminAuthenticated');
     navigate('/');
   };
 
