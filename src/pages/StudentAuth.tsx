@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
+interface LocationState {
+  from?: { pathname: string };
+}
+
 export default function StudentAuth() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,7 +24,8 @@ export default function StudentAuth() {
 
   useEffect(() => {
     if (user && !authLoading) {
-      const from = (location.state as any)?.from?.pathname || '/student/dashboard';
+      const state = location.state as LocationState | null;
+      const from = state?.from?.pathname || '/student/dashboard';
       navigate(from, { replace: true });
     }
   }, [user, authLoading, navigate, location]);

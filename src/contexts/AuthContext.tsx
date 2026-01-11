@@ -209,7 +209,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const verifyResetToken = async (token: string, email: string) => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      console.log('Calling verify-reset-token API...');
 
       const response = await fetch(`${supabaseUrl}/functions/v1/verify-reset-token`, {
         method: 'POST',
@@ -221,7 +220,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       const data = await response.json();
-      console.log('verify-reset-token response:', data);
 
       if (!data.valid) {
         return {
@@ -232,12 +230,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       return { valid: true, error: null, message: null };
-    } catch (error) {
-      console.error('verify-reset-token network error:', error);
+    } catch {
       return {
         valid: false,
         error: 'network_error',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: 'Network error occurred'
       };
     }
   };
@@ -245,7 +242,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const resetPassword = async (token: string, email: string, newPassword: string) => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      console.log('Calling reset-password API...');
 
       const response = await fetch(`${supabaseUrl}/functions/v1/reset-password`, {
         method: 'POST',
@@ -257,8 +253,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       const data = await response.json();
-      console.log('reset-password response status:', response.status);
-      console.log('reset-password response data:', data);
 
       if (!response.ok) {
         return { error: new Error(data.error || data.message || 'Password reset failed') };
@@ -266,7 +260,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return { error: null };
     } catch (error) {
-      console.error('reset-password network error:', error);
       return { error: error as Error };
     }
   };

@@ -1,5 +1,9 @@
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://zxywgueplrosvdwgpmvb.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4eXdndWVwbHJvc3Zkd2dwbXZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMzE4NDcsImV4cCI6MjA3ODcwNzg0N30.xyJkFplsbLrBIWEHNksO681xR9htWpV0N45keuc-Uro';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables. Please check your .env file.');
+}
 
 export type ImageType = 'courses' | 'blog' | 'student-works' | 'general';
 

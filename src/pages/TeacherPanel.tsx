@@ -17,6 +17,54 @@ interface ExtendedHomework extends HomeworkSubmission {
   };
 }
 
+interface StudentCourse {
+  id: string;
+  title: string;
+  status: string;
+  enrolled_at: string;
+}
+
+interface StudentProfile {
+  id: string;
+  email: string;
+  full_name: string | null;
+}
+
+interface StudentEnrollment {
+  student: StudentProfile;
+  course: { id: string; title: string };
+  status: string;
+  enrolled_at: string;
+}
+
+interface StudentProgress {
+  id: string;
+  is_completed: boolean;
+  completed_at: string | null;
+  lesson: CourseLesson & {
+    module: CourseModule & {
+      course: Course;
+    };
+  };
+}
+
+interface StudentHomework {
+  id: string;
+  status: string;
+  submitted_at: string;
+  lesson: CourseLesson & {
+    module: CourseModule & {
+      course: Course;
+    };
+  };
+}
+
+interface Student extends StudentProfile {
+  courses: StudentCourse[];
+  progress?: StudentProgress[];
+  homework?: StudentHomework[];
+}
+
 type FilterStatus = 'all' | 'pending' | 'approved' | 'rejected';
 
 export default function TeacherPanel() {
@@ -85,7 +133,7 @@ export default function TeacherPanel() {
 
     if (filterCourse !== 'all') {
       filteredData = filteredData.filter(
-        (h: any) => h.lesson?.module?.course?.id === filterCourse
+        (h: ExtendedHomework) => h.lesson?.module?.course?.id === filterCourse
       );
     }
 
@@ -753,9 +801,9 @@ export default function TeacherPanel() {
 }
 
 function StudentsList() {
-  const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   useEffect(() => {
     loadStudents();
@@ -773,9 +821,9 @@ function StudentsList() {
       `)
       .order('enrolled_at', { ascending: false });
 
-    const studentMap = new Map();
+    const studentMap = new Map<string, Student>();
 
-    enrollments?.forEach((e: any) => {
+    enrollments?.forEach((e: StudentEnrollment) => {
       if (!studentMap.has(e.student.id)) {
         studentMap.set(e.student.id, {
           ...e.student,
@@ -907,7 +955,7 @@ function StudentsList() {
             flexWrap: 'wrap',
             gap: '8px'
           }}>
-            {student.courses.map((course: any) => (
+            {student.courses.map((course: StudentCourse) => (
               <span
                 key={course.id}
                 style={{
@@ -1015,7 +1063,7 @@ function StudentsList() {
                 Курсы ({selectedStudent.courses.length})
               </h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                {selectedStudent.courses.map((course: any) => (
+                {selectedStudent.courses.map((course: StudentCourse) => (
                   <span
                     key={course.id}
                     style={{
@@ -1041,7 +1089,7 @@ function StudentsList() {
                 textTransform: 'uppercase',
                 letterSpacing: '1px'
               }}>
-                Прогресс по урокам ({selectedStudent.progress?.filter((p: any) => p.is_completed).length || 0} завершено)
+                Прогресс по урокам ({selectedStudent.progress?.filter((p: StudentProgress) => p.is_completed).length || 0} завершено)
               </h3>
               {selectedStudent.progress?.length > 0 ? (
                 <div style={{
@@ -1051,7 +1099,7 @@ function StudentsList() {
                   maxHeight: '200px',
                   overflowY: 'auto'
                 }}>
-                  {selectedStudent.progress.filter((p: any) => p.is_completed).map((p: any) => (
+                  {selectedStudent.progress.filter((p: StudentProgress) => p.is_completed).map((p: StudentProgress) => (
                     <div key={p.id} style={{
                       padding: '8px 0',
                       borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
@@ -1084,7 +1132,7 @@ function StudentsList() {
                   maxHeight: '200px',
                   overflowY: 'auto'
                 }}>
-                  {selectedStudent.homework.map((hw: any) => (
+                  {selectedStudent.homework.map((hw: StudentHomework) => (
                     <div key={hw.id} style={{
                       padding: '10px 0',
                       borderBottom: '1px solid rgba(255, 255, 255, 0.05)',

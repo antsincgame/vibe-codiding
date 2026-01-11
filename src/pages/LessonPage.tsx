@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import type { CourseLesson, CourseModule, Course, LessonProgress, HomeworkSubmission, HomeworkAttachment } from '../types';
@@ -431,7 +432,12 @@ export default function LessonPage() {
         }}>
           {lesson.kinescope_embed ? (
             <div
-              dangerouslySetInnerHTML={{ __html: lesson.kinescope_embed }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(lesson.kinescope_embed, {
+                ALLOWED_TAGS: ['iframe', 'div', 'script'],
+                ALLOWED_ATTR: ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'style', 'class', 'id', 'data-*'],
+                ADD_TAGS: ['iframe'],
+                ADD_ATTR: ['allowfullscreen', 'allow']
+              }) }}
               style={{ width: '100%' }}
             />
           ) : lesson.youtube_url ? (

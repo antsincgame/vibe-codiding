@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { uploadStudentWorkImage, uploadCourseImage, uploadBlogImage } from '../lib/storageService';
 import { renderMarkdown, stripMarkdown } from '../lib/markdown';
+import { generateSlug } from '../lib/utils';
 import EmailSettingsManager from '../components/EmailSettingsManager';
 import EmailLogsManager from '../components/EmailLogsManager';
 import InboxManager from '../components/InboxManager';
@@ -184,8 +185,6 @@ export default function Admin() {
 
   const saveCourse = async (course: Partial<Course>) => {
     try {
-      console.log('Saving course with features:', course.features);
-
       if (course.id) {
         const { created_at, updated_at, ...courseData } = course;
         const updateData = {
@@ -194,7 +193,6 @@ export default function Admin() {
           updated_at: new Date().toISOString()
         };
 
-        console.log('Update data:', updateData);
         const { error } = await supabase.from('courses').update(updateData).eq('id', course.id);
         if (error) {
           alert(`Ошибка сохранения: ${error.message}`);
@@ -227,8 +225,7 @@ export default function Admin() {
     try {
       if (faq.id) {
         const { id, created_at, updated_at, ...faqData } = faq;
-        console.log('Updating FAQ:', { id, faqData });
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('faqs')
           .update({
             ...faqData,
@@ -237,15 +234,10 @@ export default function Admin() {
           .eq('id', id)
           .select();
 
-        console.log('Update result:', { data, error });
-
         if (error) {
           alert(`Ошибка сохранения: ${error.message}`);
-          console.error('Update error:', error);
           return;
         }
-
-        console.log('FAQ updated successfully:', data);
       } else {
         const { id, created_at, updated_at, ...faqWithoutId } = faq;
         const { error } = await supabase.from('faqs').insert([faqWithoutId]);
@@ -1341,19 +1333,6 @@ function CourseModal({
   const [newFeature, setNewFeature] = useState('');
   const [showPreview, setShowPreview] = useState(false);
 
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[а-яё]/gi, (char) => {
-        const ru = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
-        const en = ['a','b','v','g','d','e','yo','zh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','','y','','e','yu','ya'];
-        const index = ru.indexOf(char.toLowerCase());
-        return index >= 0 ? en[index] : char;
-      })
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-  };
-
   const handleTitleChange = (title: string) => {
     setFormData({
       ...formData,
@@ -2205,19 +2184,6 @@ function BlogPostModal({
     } finally {
       setIsUploading(false);
     }
-  };
-
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[а-яё]/gi, (char) => {
-        const ru = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
-        const en = ['a','b','v','g','d','e','yo','zh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','','y','','e','yu','ya'];
-        const index = ru.indexOf(char.toLowerCase());
-        return index >= 0 ? en[index] : char;
-      })
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
   };
 
   const handleTitleChange = (title: string) => {

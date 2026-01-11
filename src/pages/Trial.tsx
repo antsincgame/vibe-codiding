@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import SuccessModal from '../components/SuccessModal';
 import ApplicationModal from '../components/ApplicationModal';
 import HeroButton from '../components/HeroButton';
+import type { TrialRegistration } from '../types';
 
 const SEO = {
   title: 'Пробный урок вайбкодинга бесплатно | Записаться - Vibecoding',
@@ -61,7 +62,7 @@ export default function Trial() {
       return;
     }
 
-    const registrationData: any = {
+    const registrationData: Omit<TrialRegistration, 'id' | 'created_at'> = {
       age_group: 'adult',
       parent_name: formData.parent_name,
       email: formData.email,

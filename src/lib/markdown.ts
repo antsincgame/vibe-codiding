@@ -1,3 +1,5 @@
+import DOMPurify from 'dompurify';
+
 export function stripMarkdown(text: string): string {
   if (!text) return '';
 
@@ -162,7 +164,12 @@ export function renderMarkdown(text: string): string {
   html = html.replace(/<p class="md-p">(<pre|<h[1-4]|<ul|<ol|<blockquote|<hr|<figure)/g, '$1');
   html = html.replace(/(<\/pre>|<\/h[1-4]>|<\/ul>|<\/ol>|<\/blockquote>|<\/figure>)<\/p>/g, '$1');
 
-  return html;
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'img', 'figure', 'figcaption', 'hr', 'div', 'br'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'target', 'rel', 'data-lang', 'loading'],
+    ALLOW_DATA_ATTR: false,
+    ADD_ATTR: ['target', 'rel']
+  });
 }
 
 export function getReadingTime(text: string): number {
