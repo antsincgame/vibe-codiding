@@ -24,6 +24,7 @@ export default function StudentCoursePage() {
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   const [totalLessons, setTotalLessons] = useState(0);
   const [completedLessons, setCompletedLessons] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (profile && slug) {
@@ -34,12 +35,20 @@ export default function StudentCoursePage() {
   const loadCourse = async () => {
     if (!profile || !slug) return;
     setLoading(true);
+    setError(null);
 
-    const { data: courseData } = await supabase
+    try {
+    const { data: courseData, error: courseError } = await supabase
       .from('courses')
       .select('*')
       .eq('slug', slug)
       .maybeSingle();
+
+    if (courseError) {
+      setError('Не удалось загрузить курс');
+      setLoading(false);
+      return;
+    }
 
     if (!courseData) {
       navigate('/student/dashboard');
@@ -148,6 +157,10 @@ export default function StudentCoursePage() {
     }
 
     setLoading(false);
+    } catch {
+      setError('Произошла ошибка при загрузке курса');
+      setLoading(false);
+    }
   };
 
   const toggleModule = (moduleId: string) => {
@@ -240,6 +253,36 @@ export default function StudentCoursePage() {
             100% { transform: rotate(360deg); }
           }
         `}</style>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '20px',
+        padding: '20px'
+      }}>
+        <div style={{
+          fontSize: '60px',
+          background: 'rgba(255, 0, 110, 0.2)',
+          borderRadius: '50%',
+          width: '100px',
+          height: '100px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>!</div>
+        <h2 style={{ fontSize: '24px', color: 'var(--neon-pink)' }}>Ошибка</h2>
+        <p style={{ opacity: 0.7, textAlign: 'center' }}>{error}</p>
+        <button onClick={() => loadCourse()} className="cyber-button">
+          ПОПРОБОВАТЬ СНОВА
+        </button>
       </div>
     );
   }

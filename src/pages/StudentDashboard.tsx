@@ -24,6 +24,7 @@ export default function StudentDashboard() {
   const [saving, setSaving] = useState(false);
   const [enrollments, setEnrollments] = useState<EnrollmentWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (profile) {
@@ -34,8 +35,10 @@ export default function StudentDashboard() {
   const loadEnrollments = async () => {
     if (!profile) return;
     setLoading(true);
+    setError(null);
 
-    const { data: enrollmentData } = await supabase
+    try {
+    const { data: enrollmentData, error: enrollmentError } = await supabase
       .from('student_enrollments')
       .select(`
         *,
@@ -43,6 +46,12 @@ export default function StudentDashboard() {
       `)
       .eq('student_id', profile.id)
       .order('enrolled_at', { ascending: false });
+
+    if (enrollmentError) {
+      setError('Не удалось загрузить курсы');
+      setLoading(false);
+      return;
+    }
 
     if (!enrollmentData || enrollmentData.length === 0) {
       setEnrollments([]);
@@ -112,6 +121,10 @@ export default function StudentDashboard() {
 
     setEnrollments(enrichedEnrollments);
     setLoading(false);
+    } catch {
+      setError('Произошла ошибка при загрузке данных');
+      setLoading(false);
+    }
   };
 
   const handleSignOut = async () => {
@@ -246,7 +259,28 @@ export default function StudentDashboard() {
 
         {activeTab === 'courses' && (
           <div>
-            {loading ? (
+            {error ? (
+              <div className="cyber-card" style={{ padding: '60px 40px', textAlign: 'center' }}>
+                <div style={{
+                  fontSize: '60px',
+                  marginBottom: '20px',
+                  background: 'rgba(255, 0, 110, 0.2)',
+                  borderRadius: '50%',
+                  width: '100px',
+                  height: '100px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 20px'
+                }}>!</div>
+                <h3 style={{ fontSize: '24px', marginBottom: '15px', color: 'var(--neon-pink)' }}>
+                  {error}
+                </h3>
+                <button onClick={() => loadEnrollments()} className="cyber-button">
+                  ПОПРОБОВАТЬ СНОВА
+                </button>
+              </div>
+            ) : loading ? (
               <div style={{ textAlign: 'center', padding: '60px 20px' }}>
                 <div style={{
                   width: '50px',

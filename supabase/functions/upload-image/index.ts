@@ -15,6 +15,18 @@ const BUCKET_CONFIG: Record<BucketType, { bucket: string; folder: string }> = {
   'general': { bucket: 'images', folder: 'general' },
 };
 
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/svg+xml'
+];
+
+const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 async function ensureBucketExists(supabaseUrl: string, serviceKey: string, bucketName: string): Promise<void> {
   try {
     const response = await fetch(
@@ -73,8 +85,29 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    if (file.size > MAX_FILE_SIZE) {
+      return new Response(
+        JSON.stringify({ error: "File size exceeds 10MB limit" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const fileExt = file.name.split(".").pop()?.toLowerCase();
+    if (!fileExt || !ALLOWED_EXTENSIONS.includes(fileExt)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid file type. Allowed: jpg, jpeg, png, gif, webp, svg" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (file.type && !ALLOWED_MIME_TYPES.includes(file.type)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid MIME type. Only images are allowed." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const config = BUCKET_CONFIG[type] || BUCKET_CONFIG['general'];
-    const fileExt = file.name.split(".").pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `${config.folder}/${fileName}`;
 
@@ -108,7 +141,6 @@ Deno.serve(async (req: Request) => {
 
     if (!uploadResponse.ok) {
       const errorText = await uploadResponse.text();
-      console.error("Upload failed:", errorText, "Status:", uploadResponse.status);
       return new Response(
         JSON.stringify({
           error: "Failed to upload image",
@@ -125,7 +157,6 @@ Deno.serve(async (req: Request) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
