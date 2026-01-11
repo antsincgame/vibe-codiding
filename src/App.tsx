@@ -31,6 +31,7 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const StudentCoursePage = lazy(() => import('./pages/StudentCoursePage'));
 const LessonPage = lazy(() => import('./pages/LessonPage'));
 const TeacherPanel = lazy(() => import('./pages/TeacherPanel'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function PageLoader() {
   return (
@@ -205,6 +206,7 @@ function App() {
                     <Route path="/privacy" element={<Privacy />} />
                     <Route path="/offer" element={<Offer />} />
                     <Route path="/history" element={<ProgrammingHistory />} />
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
                   <Footer />
                 </main>
