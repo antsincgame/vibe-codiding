@@ -583,17 +583,6 @@ export default function Home() {
                     </span>
                   </div>
 
-                  <div style={{
-                    fontSize: '38px',
-                    fontWeight: 800,
-                    marginBottom: '20px',
-                    color: isMiddle ? 'var(--neon-cyan)' : '#fff',
-                    textShadow: isMiddle ? '0 0 20px rgba(0, 255, 249, 0.5)' : 'none',
-                    fontFamily: 'Orbitron, sans-serif'
-                  }}>
-                    {course.price}
-                  </div>
-
                   <div style={{ marginBottom: '16px' }}>
                     <div style={{
                       fontSize: '11px',

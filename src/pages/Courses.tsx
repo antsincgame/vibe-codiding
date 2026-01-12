@@ -227,18 +227,6 @@ export default function Courses() {
                       {course.duration}
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '14px', opacity: 0.6, marginBottom: '5px' }}>
-                      Стоимость
-                    </div>
-                    <div style={{
-                      fontSize: '28px',
-                      fontWeight: 700,
-                      color: 'var(--neon-pink)'
-                    }}>
-                      {course.price}
-                    </div>
-                  </div>
                 </div>
                 
                 <HeroButton

@@ -16,8 +16,8 @@ interface ModuleData {
 
 const setSEO = (course: Course) => {
   const shortDesc = course.description.substring(0, 80).replace(/\n/g, ' ').trim();
-  const defaultTitle = `${course.title} | Курс вайбкодинга - цена ${course.price}`;
-  const defaultDescription = `Курс вайбкодинга "${course.title}": ${shortDesc}... Стоимость ${course.price}, длительность ${course.duration}. Обучение вайбкодингу онлайн с практикой. Записаться!`;
+  const defaultTitle = `${course.title} | Курс вайбкодинга для ${course.age_group}`;
+  const defaultDescription = `Курс вайбкодинга "${course.title}": ${shortDesc}... Длительность ${course.duration}. Обучение вайбкодингу онлайн с практикой. Записаться!`;
   const defaultKeywords = `${course.title} курс вайбкодинга, обучение вайбкодингу, Cursor AI курс, Bolt.new курс, вайбкодинг онлайн`;
 
   document.title = course.meta_title || defaultTitle;
@@ -61,13 +61,6 @@ const setSEO = (course: Course) => {
     },
     "url": `https://vibecoding.by/course/${course.slug}`,
     "image": course.image_url || "https://vibecoding.by/bolt-new-logo.jpg",
-    "offers": {
-      "@type": "Offer",
-      "price": course.price.replace(/[^0-9]/g, '') || "0",
-      "priceCurrency": "BYN",
-      "availability": "https://schema.org/InStock",
-      "url": `https://vibecoding.by/course/${course.slug}`
-    },
     "hasCourseInstance": {
       "@type": "CourseInstance",
       "courseMode": "online",
@@ -301,16 +294,6 @@ export default function CourseDetail() {
             }}>
               <div style={{ fontSize: '14px', opacity: 0.7, marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '1px' }}>Формат</div>
               <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--neon-green)' }}>Онлайн</div>
-            </div>
-            <div style={{
-              padding: '20px 40px',
-              background: 'rgba(255, 0, 110, 0.1)',
-              border: '2px solid var(--neon-pink)',
-              borderRadius: '12px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '14px', opacity: 0.7, marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '1px' }}>Стоимость</div>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--neon-pink)' }}>{course.price}</div>
             </div>
           </div>
 
@@ -1287,7 +1270,7 @@ export default function CourseDetail() {
             Оставьте заявку и мы свяжемся с вами для уточнения деталей и подбора удобного времени занятий
           </p>
           <HeroButton onClick={() => setIsApplicationModalOpen(true)} style={{ fontSize: '20px', padding: '22px 70px' }}>
-            Записаться на курс — {course.price}
+            Записаться на курс
           </HeroButton>
         </div>
       </section>
