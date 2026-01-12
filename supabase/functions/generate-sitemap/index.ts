@@ -1,11 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
-};
-
 const SITE_URL = 'https://vibecoding.by';
 
 interface BlogPost {
@@ -15,11 +9,6 @@ interface BlogPost {
 
 interface Course {
   slug: string;
-  updated_at: string;
-}
-
-interface StudentWork {
-  id: string;
   updated_at: string;
 }
 
@@ -37,13 +26,6 @@ function escapeXml(str: string): string {
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 200,
-      headers: corsHeaders,
-    });
-  }
-
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -51,21 +33,15 @@ Deno.serve(async (req: Request) => {
 
     const today = formatDate(new Date().toISOString());
 
-    const { data: blogPosts, error: blogError } = await supabase
+    const { data: blogPosts } = await supabase
       .from('blog_posts')
       .select('slug, updated_at')
       .eq('is_published', true)
       .order('published_at', { ascending: false });
 
-    const { data: courses, error: coursesError } = await supabase
+    const { data: courses } = await supabase
       .from('courses')
       .select('slug, updated_at')
-      .eq('is_active', true)
-      .order('order_index');
-
-    const { data: studentWorks, error: worksError } = await supabase
-      .from('student_works')
-      .select('id, updated_at')
       .eq('is_active', true)
       .order('order_index');
 
@@ -129,7 +105,6 @@ Deno.serve(async (req: Request) => {
     return new Response(xml, {
       status: 200,
       headers: {
-        ...corsHeaders,
         'Content-Type': 'application/xml; charset=utf-8',
         'Cache-Control': 'public, max-age=3600',
       },
@@ -142,7 +117,6 @@ Deno.serve(async (req: Request) => {
       {
         status: 500,
         headers: {
-          ...corsHeaders,
           'Content-Type': 'application/xml; charset=utf-8',
         },
       }
