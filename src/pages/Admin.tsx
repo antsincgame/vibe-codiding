@@ -2591,7 +2591,7 @@ function BlogPostModal({
               type="text"
               value={formData.meta_keywords}
               onChange={(e) => setFormData({ ...formData, meta_keywords: e.target.value })}
-              placeholder="программирование, гродно, обучение, курсы"
+              placeholder="вайбкодинг, Cursor AI, обучение, курсы"
             />
           </div>
         </div>
@@ -2931,7 +2931,7 @@ function HomePageSettingsModal({
               type="text"
               value={formData.meta_keywords}
               onChange={(e) => setFormData({ ...formData, meta_keywords: e.target.value })}
-              placeholder="программирование, веб-разработка, гродно, курсы"
+              placeholder="вайбкодинг, веб-разработка, Cursor AI, Bolt.new"
               style={{ width: '100%' }}
             />
           </div>
