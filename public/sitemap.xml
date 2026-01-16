@@ -26,9 +26,15 @@
   </url>
   <url>
     <loc>https://vibecoding.by/blog</loc>
-    <lastmod>2026-01-12</lastmod>
+    <lastmod>2026-01-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vibecoding.by/blog/polnyy-gayd-po-vaybkodingu-2026-ot-novichka-do-masterstva</loc>
+    <lastmod>2026-01-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
   </url>
   <url>
     <loc>https://vibecoding.by/works</loc>
