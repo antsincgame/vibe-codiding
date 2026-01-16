@@ -97,7 +97,7 @@ const pioneers = [
     year: '1804',
     name: 'Joseph Marie Jacquard',
     title: 'Изобретатель перфокарт',
-    image: '/image copy copy copy copy copy copy.png',
+    image: '/pioneer-jacquard.png',
     story: 'Французский ткач, который революционизировал текстильную промышленность. Его механизм позволял ткацкому станку автоматически создавать сложные узоры по программе, записанной на перфокартах.',
     achievement: 'Первая программируемая машина после Антикитерского механизма',
     legacy: 'Перфокарты Жаккара вдохновили Чарльза Бэббиджа и использовались в компьютерах до 1970-х годов.',
@@ -110,7 +110,7 @@ const pioneers = [
     year: '1843',
     name: 'Ada Lovelace',
     title: 'Первый программист в истории',
-    image: '/image copy copy copy copy copy copy copy.png',
+    image: '/pioneer-lovelace.png',
     story: 'Дочь поэта Байрона. Работала с Чарльзом Бэббиджем над Analytical Engine. Написала первый в истории алгоритм, предназначенный для выполнения машиной - вычисление чисел Бернулли.',
     achievement: 'Первая компьютерная программа в истории человечества',
     legacy: 'Язык программирования Ada (1983) назван в её честь. День Ады Лавлейс отмечается ежегодно.',
@@ -123,7 +123,7 @@ const pioneers = [
     year: '1912-1914',
     name: 'Leonardo Torres Quevedo',
     title: 'Создатель первой "думающей" машины',
-    image: '/image copy copy copy copy copy copy copy copy.png',
+    image: '/pioneer-torres.png',
     story: 'Испанский инженер, создавший "El Ajedrecista" - автоматического шахматного игрока. Это была первая машина, которая сама принимала решения на основе логики, а не просто выполняла заранее запрограммированные действия.',
     achievement: 'Первая машина с искусственным интеллектом',
     legacy: 'Показал, что машины могут "думать" и принимать решения. Предтеча всех современных AI-систем.',
@@ -136,7 +136,7 @@ const pioneers = [
     year: '1930',
     name: 'Vannevar Bush',
     title: 'Создатель Differential Analyzer',
-    image: '/image copy copy copy copy copy copy copy copy copy.png',
+    image: '/pioneer-bush.png',
     story: 'Американский инженер из MIT, создавший первый аналоговый компьютер XX века. Огромная машина с шестернями и трубками автоматически решала дифференциальные уравнения.',
     achievement: 'Первый практический аналоговый компьютер',
     legacy: 'Позже предложил концепцию Memex - прообраз гипертекста и World Wide Web.',
@@ -149,7 +149,7 @@ const pioneers = [
     year: '1942',
     name: 'Hedy Lamarr',
     title: 'Мать Wi-Fi, Bluetooth и GPS',
-    image: '/image copy copy copy copy copy copy copy copy copy copy.png',
+    image: '/pioneer-lamarr.png',
     story: 'Голливудская актриса 1940-х, которую называли "самой красивой женщиной в мире". Днём снималась в фильмах, ночью изобретала оружие. Вместе с композитором George Antheil создала систему Frequency Hopping Spread Spectrum.',
     achievement: 'Патент US 2,292,387 на систему управления торпедами',
     legacy: 'Технология стала основой для Wi-Fi, Bluetooth, GPS, 4G/5G. Pioneer Award в 83 года (1997).',
@@ -162,7 +162,7 @@ const pioneers = [
     year: '1952',
     name: 'Grace Murray Hopper',
     title: 'Мать компиляторов',
-    image: '/image copy copy copy copy copy copy copy copy copy copy copy.png',
+    image: '/pioneer-hopper.png',
     story: 'Адмирал ВМС США, создавшая первый компилятор A-0. Революционная идея: машина АВТОМАТИЧЕСКИ переводит код с человеческого языка в машинный. До неё программисты писали в машинных кодах вручную.',
     achievement: 'Первый компилятор в истории (A-0, 1952)',
     legacy: 'COBOL (1960), FORTRAN. Миллионы программ до сих пор работают на языках, которые она помогла создать.',
@@ -273,7 +273,7 @@ function AntikytheraSection() {
           <div className="antikythera-image-block">
             <div className="antikythera-image-frame">
               <img
-                src="/image copy copy copy copy copy.png"
+                src="/antikythera.png"
                 alt="Антикитерский механизм - древний аналоговый компьютер"
                 className="antikythera-image"
               />
@@ -520,7 +520,7 @@ function AIEvolutionSection() {
         <div className="ai-evolution-karpathy">
           <div className="karpathy-portrait">
             <img
-              src="/image copy copy copy copy copy copy copy copy copy copy copy copy.png"
+              src="/karpathy.png"
               alt="Andrej Karpathy"
               className="karpathy-image"
             />
