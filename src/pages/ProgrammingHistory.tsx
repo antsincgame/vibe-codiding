@@ -123,7 +123,7 @@ const pioneers = [
     year: '1912-1914',
     name: 'Leonardo Torres Quevedo',
     title: 'Создатель первой "думающей" машины',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Leonardo_Torres_Quevedo.jpg/440px-Leonardo_Torres_Quevedo.jpg',
+    image: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=400',
     story: 'Испанский инженер, создавший "El Ajedrecista" - автоматического шахматного игрока. Это была первая машина, которая сама принимала решения на основе логики, а не просто выполняла заранее запрограммированные действия.',
     achievement: 'Первая машина с искусственным интеллектом',
     legacy: 'Показал, что машины могут "думать" и принимать решения. Предтеча всех современных AI-систем.',
@@ -520,7 +520,7 @@ function AIEvolutionSection() {
         <div className="ai-evolution-karpathy">
           <div className="karpathy-portrait">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Andrej_Karpathy_-_AI_for_Full-Self_Driving_at_Tesla_%2819%29.jpg/440px-Andrej_Karpathy_-_AI_for_Full-Self_Driving_at_Tesla_%2819%29.jpg"
+              src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400"
               alt="Andrej Karpathy"
               className="karpathy-image"
             />
