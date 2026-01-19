@@ -97,7 +97,7 @@ const pioneers = [
     year: '1804',
     name: 'Joseph Marie Jacquard',
     title: 'Изобретатель перфокарт',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Jacquard.jpg/440px-Jacquard.jpg',
+    image: 'https://images.collection.cooperhewitt.org/40107_7c1aa5537974b738_b.jpg',
     story: 'Французский ткач, который революционизировал текстильную промышленность. Его механизм позволял ткацкому станку автоматически создавать сложные узоры по программе, записанной на перфокартах.',
     achievement: 'Первая программируемая машина после Антикитерского механизма',
     legacy: 'Перфокарты Жаккара вдохновили Чарльза Бэббиджа и использовались в компьютерах до 1970-х годов.',
