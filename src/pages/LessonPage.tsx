@@ -1123,7 +1123,7 @@ export default function LessonPage() {
             Возникли вопросы по уроку? Задайте их в нашем чате поддержки
           </p>
           <a
-            href="https://t.me/+5iwI77TdHTJlYzNi"
+            href="https://t.me/vibecodingby"
             target="_blank"
             rel="noopener noreferrer"
             className="cyber-button"

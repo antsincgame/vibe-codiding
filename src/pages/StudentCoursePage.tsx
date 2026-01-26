@@ -371,7 +371,7 @@ export default function StudentCoursePage() {
             </div>
 
             <a
-              href="https://t.me/+5iwI77TdHTJlYzNi"
+              href="https://t.me/vibecodingby"
               target="_blank"
               rel="noopener noreferrer"
               className="cyber-button"

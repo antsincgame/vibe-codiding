@@ -200,7 +200,7 @@ export default function Footer() {
             </div>
             <div style={{ display: 'flex', gap: '15px', marginTop: '5px', alignItems: 'center' }}>
               <a
-                href="https://t.me/dzmitryarlou"
+                href="https://t.me/vibecodingby"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{

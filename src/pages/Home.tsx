@@ -74,7 +74,7 @@ export default function Home() {
         "addressLocality": "Минск"
       },
       "sameAs": [
-        "https://t.me/vibecoding_by"
+        "https://t.me/vibecodingby"
       ],
       "areaServed": {
         "@type": "Country",
