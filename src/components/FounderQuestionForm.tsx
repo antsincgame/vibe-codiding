@@ -234,6 +234,40 @@ export default function FounderQuestionForm({ onSuccess }: FounderQuestionFormPr
                 <span style={{ fontSize: '15px', opacity: 0.9 }}>Без обязательств</span>
               </div>
             </div>
+
+            <div style={{
+              marginTop: '25px',
+              padding: '18px',
+              background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 215, 0, 0.3)'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px'
+              }}>
+                <span style={{ fontSize: '24px', flexShrink: 0 }}>🎁</span>
+                <div>
+                  <div style={{
+                    fontSize: '15px',
+                    fontWeight: 600,
+                    color: '#FFD700',
+                    marginBottom: '8px'
+                  }}>
+                    Бесплатное обучение
+                  </div>
+                  <p style={{
+                    fontSize: '14px',
+                    lineHeight: 1.6,
+                    opacity: 0.85,
+                    margin: 0
+                  }}>
+                    Очень хочешь учиться, но нет денег? Напиши об этом! Расскажи о своих идеях и мотивации - мы рассмотрим возможность бесплатного обучения.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} style={{
