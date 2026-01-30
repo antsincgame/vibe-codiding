@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { copyFileSync, readdirSync, mkdirSync, existsSync, statSync, lstatSync } from 'fs'
+import { copyFileSync, readdirSync, mkdirSync, existsSync, lstatSync } from 'fs'
 import { join, resolve } from 'path'
 
 function copyPublicFilesPlugin() {
   return {
     name: 'copy-public-files',
+    apply: 'build' as const,
     closeBundle() {
       const publicDir = resolve(__dirname, 'public')
       const distDir = resolve(__dirname, 'dist')
@@ -16,7 +17,6 @@ function copyPublicFilesPlugin() {
 
       const files = readdirSync(publicDir)
       for (const file of files) {
-        if (file.includes('copy')) continue
         const src = join(publicDir, file)
         const dest = join(distDir, file)
         try {
@@ -24,16 +24,16 @@ function copyPublicFilesPlugin() {
           if (stat.isFile()) {
             copyFileSync(src, dest)
           }
-        } catch (e) {
+        } catch {
         }
       }
     }
   }
 }
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), copyPublicFilesPlugin()],
-  publicDir: false,
+  publicDir: command === 'serve' ? 'public' : false,
   build: {
     outDir: 'dist',
     sourcemap: false,
@@ -59,4 +59,4 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom']
   }
-})
+}))
