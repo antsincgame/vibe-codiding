@@ -273,7 +273,7 @@ function AntikytheraSection() {
           <div className="antikythera-image-block">
             <div className="antikythera-image-frame">
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/NAMA_Machine_d%27Anticyth%C3%A8re_1.jpg/440px-NAMA_Machine_d%27Anticyth%C3%A8re_1.jpg"
+                src="/image%20copy%20copy%20copy%20copy%20copy%20copy%20copy%20copy.png"
                 alt="Антикитерский механизм - древний аналоговый компьютер"
                 className="antikythera-image"
               />
