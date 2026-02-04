@@ -12,10 +12,10 @@ import HeroButton from '../components/HeroButton';
 const defaultSettings: HomePageSettings = {
   title: 'VIBECODING',
   subtitle: 'Vibecoding - лучшая школа программирования с помощью ИИ (вайбкодинг)',
-  description: 'Забудьте о сложных языках программирования! В Vibecoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайбкодинг с Cursor AI и Bolt.ai.',
-  meta_title: 'Вайбкодинг с нуля 2025 | Школа Vibecoding - Cursor AI и Bolt.new',
-  meta_description: 'Вайбкодинг - создавай сайты и приложения с ИИ за 2 месяца! Школа Vibecoding: курсы Cursor AI и Bolt.new для начинающих. Практика с первого дня, 7+ проектов в портфолио. Онлайн обучение от 16 лет.',
-  meta_keywords: 'вайбкодинг, вайбкодинг обучение, вайбкодинг курсы, Cursor AI, Bolt.new, создание сайтов с ИИ, программирование с нейросетью, vibecoding, школа вайбкодинга',
+  description: 'Забудьте о сложных языках программирования! В Vibecoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайбкодинг с Cursor AI. Начните с бесплатного курса!',
+  meta_title: 'Вайбкодинг с нуля 2026 | Школа Vibecoding - бесплатный курс и Cursor AI',
+  meta_description: 'Вайбкодинг - создавай сайты и приложения с ИИ! Школа Vibecoding: бесплатный курс вайбкодинга и Cursor AI для начинающих. Практика с первого дня, проекты в портфолио. Онлайн обучение от 16 лет.',
+  meta_keywords: 'вайбкодинг, вайбкодинг обучение, вайбкодинг курсы, Cursor AI, бесплатный курс вайбкодинга, создание сайтов с ИИ, программирование с нейросетью, vibecoding, школа вайбкодинга',
 };
 
 export default function Home() {
@@ -30,7 +30,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    document.title = settings.meta_title || 'Vibecoding - Курсы вайб-кодинга с Cursor AI и Bolt.new';
+    document.title = settings.meta_title || 'Vibecoding - Курсы вайб-кодинга с Cursor AI';
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
@@ -291,7 +291,7 @@ export default function Home() {
             opacity: 0.9,
             marginBottom: '20px'
           }}>
-            Вайб-кодинг (vibe coding) — это современный метод разработки программ с помощью искусственного интеллекта, который был представлен в 2025 году исследователем AI Андреем Карпати из OpenAI. Вместо написания кода строка за строкой, вы просто общаетесь с AI-помощником на обычном языке, описывая что хотите создать, а искусственный интеллект превращает ваши идеи в работающие приложения. Наша <strong>онлайн школа программирования вайб кодинга</strong> обучает работе с <strong>Cursor AI</strong> и <strong>Bolt.ai</strong> — ведущими инструментами для <strong>создания веб-приложений</strong>.
+            Вайб-кодинг (vibe coding) — это современный метод разработки программ с помощью искусственного интеллекта, который был представлен в 2025 году исследователем AI Андреем Карпати из OpenAI. Вместо написания кода строка за строкой, вы просто общаетесь с AI-помощником на обычном языке, описывая что хотите создать, а искусственный интеллект превращает ваши идеи в работающие приложения. Наша <strong>онлайн школа программирования вайб кодинга</strong> обучает работе с <strong>Cursor AI</strong> и <strong>AI-инструментами</strong> — ведущими инструментами для <strong>создания веб-приложений</strong>.
           </p>
           <p style={{
             fontSize: '18px',
@@ -327,7 +327,7 @@ export default function Home() {
           opacity: 0.8,
           marginBottom: '60px'
         }}>
-          <strong>Онлайн курсы vibe coding</strong> для подростков от 16 лет и взрослых. Освойте <strong>Cursor AI</strong> или <strong>Bolt.ai</strong> — два направления для <strong>создания веб-приложений</strong> с помощью искусственного интеллекта.
+          <strong>Онлайн курсы vibe coding</strong> для подростков от 16 лет и взрослых. Освойте <strong>Cursor AI</strong> или <strong>AI-инструментами</strong> — два направления для <strong>создания веб-приложений</strong> с помощью искусственного интеллекта.
         </p>
 
         <div style={{
@@ -340,7 +340,7 @@ export default function Home() {
           {courses.map((course, index) => {
             const isMiddle = index === 1;
             const courseDescriptions: Record<string, string> = {
-              'vibecoding-bolt-new': 'Создайте реальный веб-проект с нуля, даже если никогда не программировали. Идеальный старт в мир вайб-кодинга.',
+              'vibecoder-free': 'Бесплатный курс вайбкодинга: лучшие практики, обзоры сервисов, интересные решения от практикующих специалистов.',
               'cursor-ai': 'Профессиональная разработка с ИИ-ассистентом. Создавайте продукты enterprise-уровня.',
               'architect-vibecode': 'Полное погружение в вайб-разработку. Два инструмента, максимум возможностей.'
             };
@@ -352,19 +352,24 @@ export default function Home() {
               bonuses: string[];
               subtitle?: string;
               badge?: string;
+              isFree?: boolean;
             }> = {
-              'vibecoding-bolt-new': {
-                oldPrice: '2000 BYN',
-                discount: '-50%',
+              'vibecoder-free': {
+                oldPrice: '',
+                discount: '',
+                badge: 'FREE',
+                subtitle: 'От наставника с любовью',
+                isFree: true,
                 features: [
-                  'Пожизненный доступ к материалам',
-                  '3+ проекта в портфолио',
-                  'Создание интерактивных сайтов',
-                  'Работа с GitHub'
+                  'Видеоуроки на YouTube',
+                  'Обзоры AI-инструментов',
+                  'Практические примеры',
+                  'Лайфхаки разработки'
                 ],
                 bonuses: [
-                  'Общий чат поддержки',
-                  'Шаблоны промптов'
+                  'Разборы реальных проектов',
+                  'Уникальные подходы',
+                  'Новые уроки каждую неделю'
                 ]
               },
               'architect-vibecode': {
@@ -373,7 +378,7 @@ export default function Home() {
                 subtitle: 'Vibecoding Community',
                 badge: 'BEST VALUE',
                 features: [
-                  'Bolt.new + Cursor AI (оба курса)',
+                  'Полный курс Cursor AI',
                   '7+ проектов в портфолио',
                   'Полный стек AI-разработки',
                   'Персональные консультации'
@@ -488,14 +493,21 @@ export default function Home() {
                       />
                     ) : (
                       <div style={{
-                        fontSize: '36px',
+                        fontSize: course.slug === 'vibecoder-free' ? '28px' : '36px',
                         fontWeight: 900,
                         fontFamily: 'Orbitron, sans-serif',
-                        color: isMiddle ? 'var(--neon-cyan)' : '#fff',
-                        textShadow: isMiddle ? '0 0 30px var(--neon-cyan)' : '0 0 10px rgba(255,255,255,0.3)'
+                        color: course.slug === 'vibecoder-free' ? 'var(--neon-green)' : (isMiddle ? 'var(--neon-cyan)' : '#fff'),
+                        textShadow: course.slug === 'vibecoder-free' ? '0 0 30px var(--neon-green)' : (isMiddle ? '0 0 30px var(--neon-cyan)' : '0 0 10px rgba(255,255,255,0.3)'),
+                        textAlign: 'center',
+                        lineHeight: 1.2
                       }}>
-                        {course.slug === 'vibecoding-bolt-new' ? 'bolt.new' :
+                        {course.slug === 'vibecoder-free' ? 'VIBECODER' :
                          course.slug === 'cursor-ai' ? 'CURSOR' : 'ARCHITECT'}
+                        {course.slug === 'vibecoder-free' && (
+                          <div style={{ fontSize: '14px', marginTop: '8px', fontWeight: 600, letterSpacing: '2px' }}>
+                            FREE COURSE
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -556,32 +568,50 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    marginBottom: '8px'
-                  }}>
-                    <span style={{
-                      fontSize: '14px',
-                      textDecoration: 'line-through',
-                      opacity: 0.4
+                  {pricing.isFree ? (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      marginBottom: '8px'
                     }}>
-                      {pricing.oldPrice}
-                    </span>
-                    <span style={{
-                      background: isMiddle
-                        ? 'linear-gradient(90deg, var(--neon-cyan), var(--neon-green))'
-                        : 'var(--neon-green)',
-                      color: '#000',
-                      padding: '3px 10px',
-                      borderRadius: '4px',
-                      fontSize: '11px',
-                      fontWeight: 800
+                      <span style={{
+                        fontSize: '24px',
+                        fontWeight: 900,
+                        color: 'var(--neon-green)',
+                        fontFamily: 'Orbitron, sans-serif'
+                      }}>
+                        БЕСПЛАТНО
+                      </span>
+                    </div>
+                  ) : (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      marginBottom: '8px'
                     }}>
-                      {pricing.discount}
-                    </span>
-                  </div>
+                      <span style={{
+                        fontSize: '14px',
+                        textDecoration: 'line-through',
+                        opacity: 0.4
+                      }}>
+                        {pricing.oldPrice}
+                      </span>
+                      <span style={{
+                        background: isMiddle
+                          ? 'linear-gradient(90deg, var(--neon-cyan), var(--neon-green))'
+                          : 'var(--neon-green)',
+                        color: '#000',
+                        padding: '3px 10px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        fontWeight: 800
+                      }}>
+                        {pricing.discount}
+                      </span>
+                    </div>
+                  )}
 
                   <div style={{ marginBottom: '16px' }}>
                     <div style={{
@@ -664,17 +694,36 @@ export default function Home() {
                     </div>
                   )}
 
-                  <HeroButton
-                    onClick={() => setIsApplicationModalOpen(true)}
-                    style={{
-                      width: '100%',
-                      padding: '16px',
-                      fontSize: '14px',
-                      marginBottom: '12px'
-                    }}
-                  >
-                    {isMiddle ? 'Начать обучение' : 'Записаться'}
-                  </HeroButton>
+                  {pricing.isFree ? (
+                    <Link to={`/course/${course.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+                      <button
+                        className="cyber-button"
+                        style={{
+                          width: '100%',
+                          padding: '16px',
+                          fontSize: '14px',
+                          marginBottom: '12px',
+                          background: 'linear-gradient(135deg, rgba(57, 255, 20, 0.2), rgba(0, 255, 249, 0.1))',
+                          borderColor: 'var(--neon-green)',
+                          color: 'var(--neon-green)'
+                        }}
+                      >
+                        Смотреть бесплатно
+                      </button>
+                    </Link>
+                  ) : (
+                    <HeroButton
+                      onClick={() => setIsApplicationModalOpen(true)}
+                      style={{
+                        width: '100%',
+                        padding: '16px',
+                        fontSize: '14px',
+                        marginBottom: '12px'
+                      }}
+                    >
+                      {isMiddle ? 'Начать обучение' : 'Записаться'}
+                    </HeroButton>
+                  )}
 
                   <CourseProgram
                     isExpanded={expandedCourseProgram === course.id}
@@ -728,7 +777,7 @@ export default function Home() {
             Что вы освоите на курсе
           </h2>
           <p style={{ fontSize: '18px', lineHeight: '1.9', marginBottom: '20px', opacity: 0.95, textAlign: 'center' }}>
-            Хотите научиться <strong>созданию веб-приложений</strong>? Наша <strong>онлайн школа вайб кодинга</strong> проведет вас через весь путь — от идеи до запуска готового проекта. <strong>Обучение Cursor AI</strong> и <strong>Bolt.ai</strong> объясняется простым языком, делая <strong>курсы vibe coding</strong> доступными для каждого.
+            Хотите научиться <strong>созданию веб-приложений</strong>? Наша <strong>онлайн школа вайб кодинга</strong> проведет вас через весь путь — от идеи до запуска готового проекта. <strong>Обучение Cursor AI</strong> и <strong>AI-инструментами</strong> объясняется простым языком, делая <strong>курсы vibe coding</strong> доступными для каждого.
           </p>
 
           <h3 style={{
@@ -749,7 +798,7 @@ export default function Home() {
             margin: '0 auto'
           }}>
             <li>Работать с Cursor AI для профессиональной разработки</li>
-            <li>Создавать веб-приложения с помощью Bolt.ai</li>
+            <li>Создавать веб-приложения с помощью AI-инструментами</li>
             <li>Превращать идеи в работающие онлайн-проекты</li>
             <li>Размещать проекты на хостинге и настраивать домены</li>
             <li>Составлять эффективные промпты для AI-инструментов</li>
@@ -827,7 +876,7 @@ export default function Home() {
               marginBottom: '30px',
               lineHeight: '1.7'
             }}>
-              Оставьте заявку, чтобы записаться на <strong>обучение Cursor AI</strong> и <strong>Bolt.ai</strong> и узнать расписание онлайн-занятий
+              Оставьте заявку, чтобы записаться на <strong>обучение Cursor AI</strong> и <strong>AI-инструментами</strong> и узнать расписание онлайн-занятий
             </p>
             <HeroButton
               onClick={() => setIsApplicationModalOpen(true)}
@@ -1039,13 +1088,13 @@ export default function Home() {
             opacity: 0.85
           }}>
             <p style={{ marginBottom: '20px' }}>
-              <strong>Vibecoding</strong> — это <strong>лучшая онлайн школа вайб-кодинга</strong>, где вы освоите <strong>создание веб-приложений</strong> с помощью искусственного интеллекта. Наши <strong>курсы vibe coding</strong> включают <strong>обучение Cursor AI</strong> и <strong>Bolt.ai</strong> — ведущим инструментам AI-разработки. Программа подходит как для подростков от 16 лет, так и для взрослых, желающих освоить востребованную профессию.
+              <strong>Vibecoding</strong> — это <strong>лучшая онлайн школа вайб-кодинга</strong>, где вы освоите <strong>создание веб-приложений</strong> с помощью искусственного интеллекта. Наши <strong>курсы vibe coding</strong> включают <strong>обучение Cursor AI</strong> и <strong>AI-инструментами</strong> — ведущим инструментам AI-разработки. Программа подходит как для подростков от 16 лет, так и для взрослых, желающих освоить востребованную профессию.
             </p>
             <p style={{ marginBottom: '20px' }}>
               <strong>Школа программирования вайб кодинга</strong> Vibecoding не требует предварительной подготовки. Все объясняется простым языком, а искусственный интеллект становится вашим помощником в написании кода. <strong>Обучение вайб кодингу</strong> проходит онлайн — вы можете учиться из любой точки мира.
             </p>
             <p style={{ marginBottom: '20px' }}>
-              <strong>Курсы Cursor AI</strong> и <strong>Bolt.ai</strong> включают практические проекты для портфолио. Вы научитесь <strong>созданию веб-приложений</strong>, размещению проектов в интернете, настройке доменов и применению SEO-техник. Это полноценное <strong>обучение программированию с AI</strong> для современного рынка труда.
+              <strong>Курсы Cursor AI</strong> и <strong>AI-инструментами</strong> включают практические проекты для портфолио. Вы научитесь <strong>созданию веб-приложений</strong>, размещению проектов в интернете, настройке доменов и применению SEO-техник. Это полноценное <strong>обучение программированию с AI</strong> для современного рынка труда.
             </p>
             <p>
               Записывайтесь на <strong>онлайн курсы vibe coding</strong> уже сегодня и станьте частью сообщества AI-разработчиков с Vibecoding!

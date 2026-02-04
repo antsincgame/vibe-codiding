@@ -15,6 +15,7 @@ export interface Course {
   meta_keywords?: string;
   seo_text?: string;
   canonical_url?: string;
+  homework_optional?: boolean;
   created_at: string;
   updated_at: string;
 }

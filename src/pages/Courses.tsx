@@ -7,9 +7,9 @@ import HeroButton from '../components/HeroButton';
 import GeometricBackground from '../components/GeometricBackground';
 
 const SEO = {
-  title: 'Курсы вайбкодинга 2025 | Cursor AI и Bolt.new - цены и программа',
-  description: 'Курсы вайбкодинга в школе Vibecoding: Cursor AI для профессионалов, Bolt.new для быстрого старта. От 250 BYN/месяц. Создавай сайты с ИИ, получи 7+ проектов в портфолио. Онлайн обучение вайбкодингу с нуля.',
-  keywords: 'курсы вайбкодинга, вайбкодинг обучение, Cursor AI курс, Bolt.new курс, обучение вайбкодингу онлайн, создание сайтов с ИИ курсы'
+  title: 'Курсы вайбкодинга 2026 | Бесплатный курс и Cursor AI - цены и программа',
+  description: 'Курсы вайбкодинга в школе Vibecoding: бесплатный курс для начинающих, Cursor AI для профессионалов. Создавай сайты с ИИ, получи проекты в портфолио. Онлайн обучение вайбкодингу с нуля.',
+  keywords: 'курсы вайбкодинга, вайбкодинг обучение, Cursor AI курс, бесплатный курс вайбкодинга, обучение вайбкодингу онлайн, создание сайтов с ИИ курсы'
 };
 
 export default function Courses() {
@@ -91,7 +91,7 @@ export default function Courses() {
           maxWidth: '800px',
           margin: '0 auto 60px'
         }}>
-          Выбери направление для <strong>создания веб-приложений</strong>: <strong>Cursor AI</strong> для профессиональной разработки или <strong>Bolt.ai</strong> для быстрого старта!
+          Выбери направление для <strong>создания веб-приложений</strong>: <strong>Cursor AI</strong> для профессиональной разработки или <strong>AI-инструменты</strong> для быстрого старта!
         </p>
 
         {loading ? (

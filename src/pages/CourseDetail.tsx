@@ -18,7 +18,7 @@ const setSEO = (course: Course) => {
   const shortDesc = course.description.substring(0, 80).replace(/\n/g, ' ').trim();
   const defaultTitle = `${course.title} | Курс вайбкодинга для ${course.age_group}`;
   const defaultDescription = `Курс вайбкодинга "${course.title}": ${shortDesc}... Длительность ${course.duration}. Обучение вайбкодингу онлайн с практикой. Записаться!`;
-  const defaultKeywords = `${course.title} курс вайбкодинга, обучение вайбкодингу, Cursor AI курс, Bolt.new курс, вайбкодинг онлайн`;
+  const defaultKeywords = `${course.title} курс вайбкодинга, обучение вайбкодингу, Cursor AI курс, бесплатный курс вайбкодинга, вайбкодинг онлайн`;
 
   document.title = course.meta_title || defaultTitle;
 

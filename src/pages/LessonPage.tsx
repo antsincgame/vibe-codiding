@@ -161,6 +161,7 @@ export default function LessonPage() {
     const currentIndex = sortedLessons.findIndex(sl => sl.lesson.id === lessonId);
 
     let unlocked = true;
+    const homeworkOptional = courseData?.homework_optional || false;
     for (let i = 0; i < currentIndex; i++) {
       const prevL = sortedLessons[i].lesson;
       const prevProg = allProgress?.find(p => p.lesson_id === prevL.id);
@@ -171,7 +172,7 @@ export default function LessonPage() {
         unlocked = false;
         break;
       }
-      if (hasHomework && prevHw?.status !== 'approved') {
+      if (hasHomework && !homeworkOptional && prevHw?.status !== 'approved') {
         unlocked = false;
         break;
       }
@@ -195,7 +196,7 @@ export default function LessonPage() {
       const nextProg = allProgress?.find(p => p.lesson_id === lessonData.id);
       const nextHw = allHomework?.find(h => h.lesson_id === lessonData.id);
       const hasHomework = lessonData.homework_description && lessonData.homework_description.trim() !== '';
-      const canGoNext = nextProg?.is_completed && (!hasHomework || nextHw?.status === 'approved');
+      const canGoNext = nextProg?.is_completed && (!hasHomework || homeworkOptional || nextHw?.status === 'approved');
 
       if (canGoNext) {
         setNextLesson({
