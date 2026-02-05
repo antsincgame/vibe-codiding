@@ -695,7 +695,7 @@ export default function Home() {
                   )}
 
                   {pricing.isFree ? (
-                    <Link to="/student-auth" style={{ textDecoration: 'none', display: 'block' }}>
+                    <Link to="/student/login" style={{ textDecoration: 'none', display: 'block' }}>
                       <button
                         className="cyber-button"
                         style={{
