@@ -695,7 +695,7 @@ export default function Home() {
                   )}
 
                   {pricing.isFree ? (
-                    <Link to={`/course/${course.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+                    <Link to="/student-auth" style={{ textDecoration: 'none', display: 'block' }}>
                       <button
                         className="cyber-button"
                         style={{
@@ -708,31 +708,33 @@ export default function Home() {
                           color: 'var(--neon-green)'
                         }}
                       >
-                        Смотреть бесплатно
+                        Требуется регистрация
                       </button>
                     </Link>
                   ) : (
-                    <HeroButton
-                      onClick={() => setIsApplicationModalOpen(true)}
-                      style={{
-                        width: '100%',
-                        padding: '16px',
-                        fontSize: '14px',
-                        marginBottom: '12px'
-                      }}
-                    >
-                      {isMiddle ? 'Начать обучение' : 'Записаться'}
-                    </HeroButton>
-                  )}
+                    <>
+                      <HeroButton
+                        onClick={() => setIsApplicationModalOpen(true)}
+                        style={{
+                          width: '100%',
+                          padding: '16px',
+                          fontSize: '14px',
+                          marginBottom: '12px'
+                        }}
+                      >
+                        {isMiddle ? 'Начать обучение' : 'Записаться'}
+                      </HeroButton>
 
-                  <CourseProgram
-                    isExpanded={expandedCourseProgram === course.id}
-                    onToggle={() => setExpandedCourseProgram(
-                      expandedCourseProgram === course.id ? null : course.id
-                    )}
-                    courseSlug={course.slug || ''}
-                    courseId={course.id}
-                  />
+                      <CourseProgram
+                        isExpanded={expandedCourseProgram === course.id}
+                        onToggle={() => setExpandedCourseProgram(
+                          expandedCourseProgram === course.id ? null : course.id
+                        )}
+                        courseSlug={course.slug || ''}
+                        courseId={course.id}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             );
