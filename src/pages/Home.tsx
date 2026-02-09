@@ -10,7 +10,7 @@ import ApplicationModal from '../components/ApplicationModal';
 import HeroButton from '../components/HeroButton';
 
 const defaultSettings: HomePageSettings = {
-  title: 'Vibecoding life',
+  title: 'VIBECODING',
   subtitle: 'Vibecoding - лучшая школа программирования с помощью ИИ (вайбкодинг)',
   description: 'Забудьте о сложных языках программирования! В Vibecoding мы научим вас создавать настоящие сайты, веб-сервисы и приложения, используя революционный подход — вайбкодинг с Cursor AI. Начните с бесплатного курса!',
   meta_title: 'Вайбкодинг с нуля 2026 | Школа Vibecoding - бесплатный курс и Cursor AI',

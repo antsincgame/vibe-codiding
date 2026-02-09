@@ -38,8 +38,8 @@ export default function Header() {
       <header className="site-header">
         <nav className="header-nav">
           <Link to="/" className="header-logo">
-            <span className="neon-text glitch" data-text="Vibecoding life">
-              Vibecoding life
+            <span className="neon-text glitch" data-text="VIBECODING">
+              VIBECODING
             </span>
           </Link>
 
