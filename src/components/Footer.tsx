@@ -171,7 +171,7 @@ export default function Footer() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ flexShrink: 0 }}>📞</span>
               <a
-                href="tel:+375292828878"
+                href="tel:+375336110294"
                 style={{
                   color: 'inherit',
                   textDecoration: 'none',
@@ -180,7 +180,7 @@ export default function Footer() {
                 onMouseEnter={(e) => e.currentTarget.style.color = 'var(--neon-green)'}
                 onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
               >
-                {settings.phone || '+375 (29) 282-88-78'}
+                {settings.phone || '+375 (33) 611-02-94'}
               </a>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
