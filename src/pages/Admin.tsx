@@ -7,6 +7,7 @@ import { generateSlug } from '../lib/utils';
 import EmailSettingsManager from '../components/EmailSettingsManager';
 import EmailLogsManager from '../components/EmailLogsManager';
 import InboxManager from '../components/InboxManager';
+import ComposeEmailManager from '../components/ComposeEmailManager';
 import AdminFormField from '../components/AdminFormField';
 import CourseLessonsManager from '../components/CourseLessonsManager';
 import VideoTestimonialsManager from '../components/VideoTestimonialsManager';
@@ -25,7 +26,7 @@ interface UserProfile {
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'email-logs' | 'inbox' | 'questions' | 'users'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'faqs' | 'registrations' | 'works' | 'testimonials' | 'blog' | 'home' | 'email' | 'email-logs' | 'inbox' | 'compose' | 'questions' | 'users'>('courses');
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -581,6 +582,17 @@ export default function Admin() {
             Входящие письма
           </button>
           <button
+            onClick={() => setActiveTab('compose')}
+            className="cyber-button"
+            style={{
+              opacity: activeTab === 'compose' ? 1 : 0.5,
+              borderColor: '#f59e0b',
+              color: '#f59e0b'
+            }}
+          >
+            ✉️ Написать письмо
+          </button>
+          <button
             onClick={() => setActiveTab('questions')}
             className="cyber-button"
             style={{
@@ -1125,6 +1137,10 @@ export default function Admin() {
 
         {activeTab === 'inbox' && (
           <InboxManager />
+        )}
+
+        {activeTab === 'compose' && (
+          <ComposeEmailManager />
         )}
 
         {activeTab === 'questions' && (
