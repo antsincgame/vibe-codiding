@@ -156,12 +156,10 @@ export default function TeacherPanel() {
       .eq('id', selectedHomework.id);
 
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      await fetch(`${supabaseUrl}/functions/v1/send-homework-notification`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/send-homework-notification`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           studentEmail: selectedHomework.student.email,

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, AuthError } from '@supabase/supabase-js';
+import type { User, AuthError } from '../lib/supabase';
 import { supabase } from '../lib/supabase';
 
 interface Profile {
@@ -129,12 +129,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const sendVerificationEmail = async (email: string, fullName: string) => {
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const response = await fetch(`${supabaseUrl}/functions/v1/send-verification-email`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/send-verification-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           email,
@@ -157,12 +155,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const verifyEmailAndCreateUser = async (token: string, email: string, password: string, fullName: string) => {
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const response = await fetch(`${supabaseUrl}/functions/v1/verify-email`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/verify-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({ token, email, password, fullName }),
       });
@@ -181,12 +177,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const sendPasswordResetEmail = async (email: string) => {
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const response = await fetch(`${supabaseUrl}/functions/v1/send-password-reset`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/send-password-reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           email,
@@ -208,13 +202,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const verifyResetToken = async (token: string, email: string) => {
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
-      const response = await fetch(`${supabaseUrl}/functions/v1/verify-reset-token`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/verify-reset-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({ token, email }),
       });
@@ -241,13 +233,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const resetPassword = async (token: string, email: string, newPassword: string) => {
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
-      const response = await fetch(`${supabaseUrl}/functions/v1/reset-password`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({ token, email, newPassword }),
       });

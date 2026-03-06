@@ -16,9 +16,8 @@ export default function Login() {
 
     try {
       const origin = window.location.origin;
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
-      const edgeFunctionUrl = `${supabaseUrl}/functions/v1/auth-exchange`;
+      const edgeFunctionUrl = `${import.meta.env.VITE_API_URL}/auth-exchange`;
       const redirectUrl = `${edgeFunctionUrl}?origin=${encodeURIComponent(origin)}`;
 
       const { error: authError } = await supabase.auth.signInWithOAuth({

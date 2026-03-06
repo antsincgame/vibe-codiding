@@ -104,11 +104,10 @@ export default function ComposeEmailManager() {
       const htmlContent = getHtmlContent();
 
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-email`,
+        `${import.meta.env.VITE_API_URL}/send-email`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({

@@ -369,8 +369,7 @@ export default function Admin() {
         return;
       }
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const response = await fetch(`${supabaseUrl}/functions/v1/delete-user`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/delete-user`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -402,8 +401,7 @@ export default function Admin() {
         return;
       }
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const response = await fetch(`${supabaseUrl}/functions/v1/create-user`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/create-user`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

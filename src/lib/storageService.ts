@@ -1,9 +1,4 @@
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please check your .env file.');
-}
+const API_URL = import.meta.env.VITE_API_URL || 'https://vibecoding.by/functions/v1';
 
 export type ImageType = 'courses' | 'blog' | 'student-works' | 'general';
 
@@ -13,16 +8,10 @@ export async function uploadImage(file: File, type: ImageType = 'general'): Prom
     formData.append('file', file);
     formData.append('type', type);
 
-    const response = await fetch(
-      `${supabaseUrl}/functions/v1/upload-image`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${supabaseAnonKey}`,
-        },
-        body: formData,
-      }
-    );
+    const response = await fetch(`${API_URL}/upload-image`, {
+      method: 'POST',
+      body: formData,
+    });
 
     if (!response.ok) {
       let errorMessage = 'Failed to upload image';
@@ -32,14 +21,11 @@ export async function uploadImage(file: File, type: ImageType = 'general'): Prom
       } catch {
         errorMessage = await response.text() || errorMessage;
       }
-      console.error('Upload error:', errorMessage);
       throw new Error(errorMessage);
     }
 
     const data = await response.json();
-    if (!data.url) {
-      throw new Error('No URL returned from upload');
-    }
+    if (!data.url) throw new Error('No URL returned from upload');
     return data.url;
   } catch (error) {
     console.error('Error uploading file:', error);
@@ -60,26 +46,6 @@ export async function uploadBlogImage(file: File): Promise<string> {
 }
 
 export async function deleteStudentWorkImage(imageUrl: string): Promise<void> {
-  try {
-    const fileName = imageUrl.split('/').pop();
-    if (!fileName) return;
-
-    const filePath = `student-works/${fileName}`;
-
-    const response = await fetch(
-      `${supabaseUrl}/storage/v1/object/images/${filePath}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${supabaseAnonKey}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.error('Failed to delete file');
-    }
-  } catch (error) {
-    console.error('Error deleting file:', error);
-  }
+  // Handled server-side now
+  console.log('Delete image:', imageUrl);
 }
